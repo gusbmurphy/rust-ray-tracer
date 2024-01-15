@@ -145,4 +145,14 @@ mod tests {
 
         assert_eq!(result, Tuple::new_point(-2.0, -4.0, -6.0))
     }
+
+    #[test]
+    fn subtracting_two_vectors() {
+        let point1 = Tuple::new_vector(3.0, 2.0, 1.0);
+        let point2 = Tuple::new_vector(5.0, 6.0, 7.0);
+
+        let result = point1 - point2;
+
+        assert_eq!(result, Tuple::new_vector(-2.0, -4.0, -6.0))
+    }
 }
