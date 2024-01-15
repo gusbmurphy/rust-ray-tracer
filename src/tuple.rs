@@ -72,6 +72,19 @@ impl ops::Sub<Tuple> for Tuple {
     }
 }
 
+impl ops::Neg for Tuple {
+    type Output = Tuple;
+
+    fn neg(self) -> Self::Output {
+        return Tuple::new(
+            -self.get_x(),
+            -self.get_y(),
+            -self.get_z(),
+            -self.get_w(),
+        );
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -154,5 +167,11 @@ mod tests {
         let result = point1 - point2;
 
         assert_eq!(result, Tuple::new_vector(-2.0, -4.0, -6.0))
+    }
+
+    #[test]
+    fn negation() {
+        let tuple = Tuple::new(1.0, -2.0, 3.0, -4);
+        assert_eq!(-tuple, Tuple::new(-1.0, 2.0, -3.0, 4));
     }
 }
