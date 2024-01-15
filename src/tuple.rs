@@ -1,5 +1,6 @@
-#[derive(PartialEq)]
-#[derive(Debug)]
+use std::ops;
+
+#[derive(PartialEq, Debug)]
 pub struct Tuple {
     x: f64,
     y: f64,
@@ -45,6 +46,19 @@ impl Tuple {
     }
 }
 
+impl ops::Add<Tuple> for Tuple {
+    type Output = Tuple;
+
+    fn add(self, other: Tuple) -> Self::Output {
+        return Tuple::new(
+            self.get_x() + other.get_x(),
+            self.get_y() + other.get_y(),
+            self.get_z() + other.get_z(),
+            self.get_w() + other.get_w(),
+        );
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -87,5 +101,15 @@ mod tests {
         let tuple = Tuple::new(4.3, -4.2, 3.1, 0);
 
         assert_eq!(vector, tuple);
+    }
+
+    #[test]
+    fn adding_two_tuples() {
+        let tuple1 = Tuple::new(3.0, -2.0, 5.0, 1);
+        let tuple2 = Tuple::new(-2.0, 3.0, 1.0, 0);
+
+        let result = tuple1 + tuple2;
+
+        assert_eq!(result, Tuple::new(1.0, 1.0, 6.0, 1))
     }
 }
