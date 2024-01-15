@@ -1,0 +1,65 @@
+pub struct Tuple {
+    x: f64,
+    y: f64,
+    z: f64,
+    w: i32,
+}
+
+impl Tuple {
+    pub fn new(x: f64, y: f64, z: f64, w: i32) -> Self {
+        Tuple { x, y, z, w }
+    }
+
+    pub fn is_point(&self) -> bool {
+        return self.w == 1;
+    }
+
+    pub fn is_vector(&self) -> bool {
+        return self.w == 0;
+    }
+
+    pub fn get_x(&self) -> f64 {
+        return self.x;
+    }
+
+    pub fn get_y(&self) -> f64 {
+        return self.y;
+    }
+
+    pub fn get_z(&self) -> f64 {
+        return self.z;
+    }
+
+    pub fn get_w(&self) -> i32 {
+        return self.w;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tuple_with_1_for_w_is_a_point() {
+        let tuple = Tuple::new(4.3, -4.2, 3.1, 1);
+
+        assert_eq!(tuple.get_x(), 4.3);
+        assert_eq!(tuple.get_y(), -4.2);
+        assert_eq!(tuple.get_z(), 3.1);
+        assert_eq!(tuple.get_w(), 1);
+        assert_eq!(tuple.is_point(), true);
+        assert_eq!(tuple.is_vector(), false);
+    }
+
+    #[test]
+    fn tuple_with_1_for_w_is_a_vector() {
+        let tuple = Tuple::new(4.3, -4.2, 3.1, 0);
+
+        assert_eq!(tuple.get_x(), 4.3);
+        assert_eq!(tuple.get_y(), -4.2);
+        assert_eq!(tuple.get_z(), 3.1);
+        assert_eq!(tuple.get_w(), 0);
+        assert_eq!(tuple.is_point(), false);
+        assert_eq!(tuple.is_vector(), true);
+    }
+}
