@@ -135,4 +135,14 @@ mod tests {
 
         assert_eq!(result, Tuple::new_vector(-2.0, -4.0, -6.0))
     }
+
+    #[test]
+    fn subtracting_vector_from_point() {
+        let point = Tuple::new_point(3.0, 2.0, 1.0);
+        let vector = Tuple::new_vector(5.0, 6.0, 7.0);
+
+        let result = point - vector;
+
+        assert_eq!(result, Tuple::new_point(-2.0, -4.0, -6.0))
+    }
 }
