@@ -1,3 +1,5 @@
+#[derive(PartialEq)]
+#[derive(Debug)]
 pub struct Tuple {
     x: f64,
     y: f64,
@@ -8,6 +10,14 @@ pub struct Tuple {
 impl Tuple {
     pub fn new(x: f64, y: f64, z: f64, w: i32) -> Self {
         Tuple { x, y, z, w }
+    }
+
+    pub fn new_point(x: f64, y: f64, z: f64) -> Self {
+        Tuple { x, y, z, w: 1 }
+    }
+
+    pub fn new_vector(x: f64, y: f64, z: f64) -> Self {
+        Tuple { x, y, z, w: 0 }
     }
 
     pub fn is_point(&self) -> bool {
@@ -61,5 +71,21 @@ mod tests {
         assert_eq!(tuple.get_w(), 0);
         assert_eq!(tuple.is_point(), false);
         assert_eq!(tuple.is_vector(), true);
+    }
+
+    #[test]
+    fn new_point_is_the_same_as_tuple_with_1_for_w() {
+        let point = Tuple::new_point(4.3, -4.2, 3.1);
+        let tuple = Tuple::new(4.3, -4.2, 3.1, 1);
+
+        assert_eq!(point, tuple);
+    }
+
+    #[test]
+    fn new_vector_is_the_same_as_tuple_with_0_for_w() {
+        let vector = Tuple::new_vector(4.3, -4.2, 3.1);
+        let tuple = Tuple::new(4.3, -4.2, 3.1, 0);
+
+        assert_eq!(vector, tuple);
     }
 }
