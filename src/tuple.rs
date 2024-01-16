@@ -61,7 +61,7 @@ impl Tuple {
     }
 }
 
-pub fn dot(a: Tuple, b: Tuple) -> f64 {
+pub fn dot(a: &Tuple, b: &Tuple) -> f64 {
     return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
@@ -254,7 +254,7 @@ mod tests {
         let a = Tuple::new_vector(1.0, 2.0, 3.0);
         let b = Tuple::new_vector(2.0, 3.0, 4.0);
 
-        let result = dot(a, b);
+        let result = dot(&a, &b);
 
         assert_eq!(result, 20.0);
     }
