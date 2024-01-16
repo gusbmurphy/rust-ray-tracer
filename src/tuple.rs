@@ -56,9 +56,13 @@ impl Tuple {
             self.x / magnitude,
             self.y / magnitude,
             self.z / magnitude,
-            self.w / magnitude
+            self.w / magnitude,
         );
     }
+}
+
+pub fn dot(a: Tuple, b: Tuple) -> f64 {
+    return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
 impl ops::Add<Tuple> for Tuple {
@@ -233,13 +237,25 @@ mod tests {
         let vector = Tuple::new_vector(1.0, 2.0, 3.0);
         let normalized_vector = vector.normalize();
 
-        assert_eq!(normalized_vector, Tuple::new_vector(
-                1.0/(14.0 as f64).sqrt(), 
-                2.0/(14.0 as f64).sqrt(), 
-                3.0/(14.0 as f64).sqrt()
+        assert_eq!(
+            normalized_vector,
+            Tuple::new_vector(
+                1.0 / (14.0 as f64).sqrt(),
+                2.0 / (14.0 as f64).sqrt(),
+                3.0 / (14.0 as f64).sqrt()
             )
         );
 
         assert_eq!(normalized_vector.get_magnitude(), 1.0);
+    }
+
+    #[test]
+    fn dot_product() {
+        let a = Tuple::new_vector(1.0, 2.0, 3.0);
+        let b = Tuple::new_vector(2.0, 3.0, 4.0);
+
+        let result = dot(a, b);
+
+        assert_eq!(result, 20.0);
     }
 }
