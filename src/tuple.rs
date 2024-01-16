@@ -65,6 +65,14 @@ pub fn dot(a: &Tuple, b: &Tuple) -> f64 {
     return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
+pub fn three_cross(a: &Tuple, b: &Tuple) -> Tuple {
+    let x = a.y * b.z - a.z * b.y;
+    let y = a.z * b.x - a.x * b.z;
+    let z = a.x * b.y - a.y * b.x;
+
+    Tuple::new_vector(x, y, z)
+}
+
 impl ops::Add<Tuple> for Tuple {
     type Output = Tuple;
 
@@ -257,5 +265,17 @@ mod tests {
         let result = dot(&a, &b);
 
         assert_eq!(result, 20.0);
+    }
+
+    #[test]
+    fn cross_product_of_vectors() {
+        let a = Tuple::new_vector(1.0, 2.0, 3.0);
+        let b = Tuple::new_vector(2.0, 3.0, 4.0);
+
+        let result1 = three_cross(&a, &b);
+        let result2 = three_cross(&b, &a);
+
+        assert_eq!(result1, Tuple::new_vector(-1.0, 2.0, -1.0));
+        assert_eq!(result2, Tuple::new_vector(1.0, -2.0, 1.0));
     }
 }
