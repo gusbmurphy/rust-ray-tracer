@@ -48,6 +48,17 @@ impl Tuple {
     pub fn get_magnitude(&self) -> f64 {
         return ((self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)) as f64).sqrt();
     }
+
+    pub fn normalize(&self) -> Tuple {
+        let magnitude = self.get_magnitude();
+
+        return Tuple::new(
+            self.x / magnitude,
+            self.y / magnitude,
+            self.z / magnitude,
+            self.w / magnitude
+        );
+    }
 }
 
 impl ops::Add<Tuple> for Tuple {
@@ -215,5 +226,20 @@ mod tests {
         let result = vector.get_magnitude();
 
         assert_eq!(result, (14.0 as f64).sqrt());
+    }
+
+    #[test]
+    fn normalized_vector() {
+        let vector = Tuple::new_vector(1.0, 2.0, 3.0);
+        let normalized_vector = vector.normalize();
+
+        assert_eq!(normalized_vector, Tuple::new_vector(
+                1.0/(14.0 as f64).sqrt(), 
+                2.0/(14.0 as f64).sqrt(), 
+                3.0/(14.0 as f64).sqrt()
+            )
+        );
+
+        assert_eq!(normalized_vector.get_magnitude(), 1.0);
     }
 }
