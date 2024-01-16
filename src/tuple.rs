@@ -44,6 +44,10 @@ impl Tuple {
     pub fn get_w(&self) -> f64 {
         return self.w;
     }
+
+    pub fn get_magnitude(&self) -> f64 {
+        return ((self.x.powi(2) + self.y.powi(2) + self.z.powi(2) + self.w.powi(2)) as f64).sqrt();
+    }
 }
 
 impl ops::Add<Tuple> for Tuple {
@@ -202,5 +206,14 @@ mod tests {
         let result = tuple / 2.0;
 
         assert_eq!(result, Tuple::new(0.5, -1.0, 1.5, -2.0))
+    }
+
+    #[test]
+    fn vector_magnitude() {
+        let vector = Tuple::new_vector(-1.0, -2.0, -3.0);
+
+        let result = vector.get_magnitude();
+
+        assert_eq!(result, (14.0 as f64).sqrt());
     }
 }
