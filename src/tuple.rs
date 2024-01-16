@@ -98,6 +98,19 @@ impl ops::Mul<f64> for Tuple {
     }
 }
 
+impl ops::Div<f64> for Tuple {
+    type Output = Tuple;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        return Tuple::new(
+            self.x / rhs,
+            self.y / rhs,
+            self.z / rhs,
+            self.w / rhs
+        );
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -195,5 +208,14 @@ mod tests {
         let result = tuple * 3.5;
 
         assert_eq!(result, Tuple::new(3.5, -7.0, 10.5, -14.0))
+    }
+
+    #[test]
+    fn scalar_division() {
+        let tuple = Tuple::new(1.0, -2.0, 3.0, -4.0);
+
+        let result = tuple / 2.0;
+
+        assert_eq!(result, Tuple::new(0.5, -1.0, 1.5, -2.0))
     }
 }
