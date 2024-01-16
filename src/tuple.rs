@@ -76,12 +76,7 @@ impl ops::Neg for Tuple {
     type Output = Tuple;
 
     fn neg(self) -> Self::Output {
-        return Tuple::new(
-            -self.get_x(),
-            -self.get_y(),
-            -self.get_z(),
-            -self.get_w(),
-        );
+        return Tuple::new(-self.get_x(), -self.get_y(), -self.get_z(), -self.get_w());
     }
 }
 
@@ -89,12 +84,7 @@ impl ops::Mul<f64> for Tuple {
     type Output = Tuple;
 
     fn mul(self, rhs: f64) -> Self::Output {
-        return Tuple::new(
-            self.x * rhs,
-            self.y * rhs,
-            self.z * rhs,
-            self.w * rhs
-            );
+        return Tuple::new(self.x * rhs, self.y * rhs, self.z * rhs, self.w * rhs);
     }
 }
 
@@ -102,12 +92,7 @@ impl ops::Div<f64> for Tuple {
     type Output = Tuple;
 
     fn div(self, rhs: f64) -> Self::Output {
-        return Tuple::new(
-            self.x / rhs,
-            self.y / rhs,
-            self.z / rhs,
-            self.w / rhs
-        );
+        return Tuple::new(self.x / rhs, self.y / rhs, self.z / rhs, self.w / rhs);
     }
 }
 
