@@ -1,28 +1,28 @@
-use crate::tuple::Tuple;
+use crate::{point::Point, vector::Vector};
 
 pub struct Environment {
-    gravity: Tuple,
-    wind: Tuple,
+    gravity: Vector,
+    wind: Vector,
 }
 
 impl Environment {
-    pub fn new(gravity: Tuple, wind: Tuple) -> Self {
+    pub fn new(gravity: Vector, wind: Vector) -> Self {
         Environment { gravity, wind }
     }
 }
 
 #[derive(Copy, Clone)]
 pub struct Projectile {
-    position: Tuple,
-    velocity: Tuple,
+    position: Point,
+    velocity: Vector,
 }
 
 impl Projectile {
-    pub fn new(position: Tuple, velocity: Tuple) -> Self {
+    pub fn new(position: Point, velocity: Vector) -> Self {
         Projectile { position, velocity }
     }
 
-    pub fn get_position(&self) -> &Tuple {
+    pub fn get_position(&self) -> &Point {
         &self.position
     }
 }

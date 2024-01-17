@@ -1,19 +1,22 @@
-use projectile_tick::{Projectile, Environment, tick};
-use tuple::Tuple;
+pub use crate::projectile_tick::*;
 
+mod point;
 mod projectile_tick;
 mod tuple;
+mod vector;
+
+mod prelude {
+    pub use crate::point::*;
+    pub use crate::tuple::*;
+}
+
+use prelude::*;
+use vector::Vector;
 
 fn main() {
-    let mut projectile = Projectile::new(
-        Tuple::new_point(0.0, 0.1, 0.0),
-        Tuple::new_vector(1.0, 1.0, 1.0),
-    );
+    let mut projectile = Projectile::new(Point::new(0.0, 0.1, 0.0), Vector::new(1.0, 1.0, 1.0));
 
-    let environment = Environment::new(
-        Tuple::new_vector(0.0, -0.1, 0.0),
-        Tuple::new_vector(0.0, -0.1, 0.0)
-    );
+    let environment = Environment::new(Vector::new(0.0, -0.1, 0.0), Vector::new(0.0, -0.1, 0.0));
 
     while projectile.get_position().get_y() > 0.0 {
         let x = projectile.get_position().get_x();
