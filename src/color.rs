@@ -46,6 +46,14 @@ impl ops::Mul<f64> for Color {
     }
 }
 
+impl ops::Mul<Color> for Color {
+    type Output = Color;
+
+    fn mul(self, other: Color) -> Self::Output {
+        Color::new(self.r * other.r, self.b * other.b, self.g * other.g)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -75,5 +83,15 @@ mod test {
         let color = Color::new(0.2, 0.3, 0.4);
 
         assert_eq!(color * 2.0, Color::new(0.4, 0.6, 0.8));
+    }
+
+    #[test]
+    fn multiply_color_by_another_color() {
+        let c1 = Color::new(1.0, 0.2, 0.4);
+        let c2 = Color::new(0.9, 1.0, 0.1);
+
+        let result = c1 * c2;
+
+        assert_eq!(result, Color::new(0.9, 0.2, 0.04));
     }
 }
