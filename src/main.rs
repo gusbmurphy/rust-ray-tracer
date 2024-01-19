@@ -1,5 +1,6 @@
 pub use crate::projectile_tick::*;
 
+mod color;
 mod point;
 mod projectile_tick;
 mod tuple;
