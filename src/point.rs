@@ -3,6 +3,7 @@ use std::ops;
 
 use crate::tuple::Tuple;
 
+// TODO: Should probably use the "approx_eq" macro here...
 #[derive(PartialEq, Debug, Copy, Clone)]
 pub struct Point {
     x: f64,
