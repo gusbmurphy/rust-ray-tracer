@@ -1,5 +1,6 @@
 pub use crate::projectile_tick::*;
 
+mod canvas;
 mod color;
 mod point;
 mod projectile_tick;
