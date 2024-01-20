@@ -1,6 +1,6 @@
 use crate::color::Color;
 
-struct Canvas {
+pub struct Canvas {
     width: u8,
     height: u8,
     pixels: Vec<Vec<Color>>,
@@ -56,6 +56,14 @@ fn create_default_row(length: u8) -> Vec<Color> {
     return row;
 }
 
+pub fn create_ppm_from_canvas(canvas: Canvas) -> String {
+    let mut header = "P3\n".to_owned();
+    header.push_str(format!("{} {}\n", canvas.get_width(), canvas.get_height()).as_str());
+    header.push_str("255\n");
+
+    header
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -84,5 +92,19 @@ mod test {
         canvas.write_pixel(2, 3, color);
 
         assert_eq!(canvas.get_pixel_at(2, 3), Color::new(1.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn constructing_ppm_header() {
+        let canvas = Canvas::new(5, 3);
+        let ppm = create_ppm_from_canvas(canvas);
+
+        let expected_header = "\
+            P3\n\
+            5 3\n\
+            255\n\
+        ";
+
+        assert!(ppm.starts_with(expected_header));
     }
 }
