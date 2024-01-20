@@ -26,6 +26,14 @@ impl Canvas {
     pub fn get_rows(&self) -> &Vec<Vec<Color>> {
         return &self.pixels;
     }
+
+    pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) {
+        self.pixels[y][x] = color;
+    }
+
+    pub fn get_pixel_at(&self, x: usize, y: usize) -> Color {
+        return self.pixels[y][x];
+    }
 }
 
 fn create_all_default_rows(width: u8, height: u8) -> Vec<Vec<Color>> {
@@ -66,5 +74,15 @@ mod test {
                 assert_eq!(*pixel, Color::new(0.0, 0.0, 0.0))
             }
         }
+    }
+
+    #[test]
+    fn writing_pixel_to_canvas() {
+        let mut canvas = Canvas::new(10, 20);
+        let color = Color::new(1.0, 0.0, 0.0);
+
+        canvas.write_pixel(2, 3, color);
+
+        assert_eq!(canvas.get_pixel_at(2, 3), Color::new(1.0, 0.0, 0.0));
     }
 }
