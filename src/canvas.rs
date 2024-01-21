@@ -1,4 +1,5 @@
 use crate::color::Color;
+use std::cmp;
 
 pub struct Canvas {
     width: u8,
@@ -56,12 +57,49 @@ fn create_default_row(length: u8) -> Vec<Color> {
     return row;
 }
 
+const MAX_PPM_COLOR_VALUE: u8 = 255;
+
 pub fn create_ppm_from_canvas(canvas: Canvas) -> String {
     let mut header = "P3\n".to_owned();
     header.push_str(format!("{} {}\n", canvas.get_width(), canvas.get_height()).as_str());
-    header.push_str("255\n");
+    header.push_str(format!("{}\n", MAX_PPM_COLOR_VALUE).as_str());
 
-    header
+    let mut pixel_data = String::new();
+
+    for row in canvas.get_rows() {
+        for (i, color) in row.iter().enumerate() {
+            if i > 0 && i < row.len() {
+                pixel_data.push(' ');
+            }
+
+            pixel_data.push_str(convert_color_to_ppm_pixel(color).as_str());
+        }
+        pixel_data.push('\n')
+    }
+
+    return String::from(header + pixel_data.as_str());
+}
+
+fn convert_color_to_ppm_pixel(color: &Color) -> String {
+    let r = convert_color_value_to_ppm_value(color.get_r());
+    let b = convert_color_value_to_ppm_value(color.get_b());
+    let g = convert_color_value_to_ppm_value(color.get_g());
+
+    return String::from(format!("{} {} {}", r, b, g));
+}
+
+fn convert_color_value_to_ppm_value(value: f64) -> u8 {
+    let ppm_value = ((MAX_PPM_COLOR_VALUE as f64) * value) as f64;
+
+    if ppm_value < 0.0 {
+        return 0;
+    }
+
+    if ppm_value > MAX_PPM_COLOR_VALUE as f64 {
+        return MAX_PPM_COLOR_VALUE;
+    }
+
+    return ppm_value.round() as u8;
 }
 
 #[cfg(test)]
@@ -106,5 +144,37 @@ mod test {
         ";
 
         assert!(ppm.starts_with(expected_header));
+    }
+
+    #[test]
+    fn ppm_pixel_data() {
+        let mut canvas = Canvas::new(5, 3);
+
+        let c1 = Color::new(1.5, 0.0, 0.0);
+        let c2 = Color::new(0.0, 0.5, 0.0);
+        let c3 = Color::new(-0.5, 0.0, 1.0);
+
+        canvas.write_pixel(0, 0, c1);
+        canvas.write_pixel(2, 1, c2);
+        canvas.write_pixel(4, 2, c3);
+
+        let ppm = create_ppm_from_canvas(canvas);
+
+        let mut pixel_data = String::new();
+
+        for (i, line) in ppm.lines().enumerate() {
+            if i > 2 && i < 6 {
+                pixel_data.push_str(line);
+                pixel_data.push('\n');
+            }
+        }
+
+        let expected_pixel_data = "\
+            255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n\
+            0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n\
+            0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n\
+        ";
+
+        assert_eq!(pixel_data, expected_pixel_data);
     }
 }

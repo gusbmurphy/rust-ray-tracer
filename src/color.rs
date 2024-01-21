@@ -12,6 +12,18 @@ impl Color {
     pub fn new(r: f64, b: f64, g: f64) -> Self {
         Color { r, b, g }
     }
+
+    pub fn get_r(&self) -> f64 {
+        self.r
+    }
+
+    pub fn get_b(&self) -> f64 {
+        self.b
+    }
+
+    pub fn get_g(&self) -> f64 {
+        self.g
+    }
 }
 
 impl PartialEq for Color {
