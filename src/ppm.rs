@@ -20,9 +20,10 @@ pub fn create_ppm_from_canvas(canvas: Canvas) -> String {
             for ppm_value in ppm_values {
                 let value_string = ppm_value.to_string();
 
-                if row_string.chars().count() + 1 + value_string.chars().count()
-                    < MAX_PPM_LINE_LENGTH as usize
-                {
+                if row_length_will_be_under_max_after_adding_space_and_value(
+                    &row_string,
+                    &value_string,
+                ) {
                     if !row_string.is_empty() {
                         row_string.push(' ');
                     }
@@ -40,6 +41,10 @@ pub fn create_ppm_from_canvas(canvas: Canvas) -> String {
     }
 
     return String::from(header + pixel_data.as_str());
+}
+
+fn row_length_will_be_under_max_after_adding_space_and_value(row: &String, value: &String) -> bool {
+    row.chars().count() + 1 + value.chars().count() < MAX_PPM_LINE_LENGTH as usize
 }
 
 fn convert_color_to_ppm_values(color: &Color) -> [u8; 3] {
