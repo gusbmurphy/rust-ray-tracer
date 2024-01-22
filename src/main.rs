@@ -22,18 +22,27 @@ use prelude::*;
 use vector::Vector;
 
 fn main() -> std::io::Result<()> {
-    let mut projectile = Projectile::new(Point::new(0.0, 0.1, 0.0), Vector::new(1.0, 1.0, 1.0));
+    let velocity = Vector::new(1.0, 1.8, 0.0).normalize() * 11.25;
+    let mut projectile = Projectile::new(Point::new(0.0, 1.0, 0.0), velocity);
 
-    let environment = Environment::new(Vector::new(0.0, -0.1, 0.0), Vector::new(0.0, -0.1, 0.0));
+    let gravity = Vector::new(0.0, -0.1, 0.0);
+    let wind = Vector::new(-0.01, 0.0, 0.0);
 
-    let mut canvas = Canvas::new(15, 15);
+    let environment = Environment::new(gravity, wind);
+
+    let canvas_height = 500;
+    let mut canvas = Canvas::new(900, canvas_height);
 
     while projectile.get_position().get_y() > 0.0 {
         let x = projectile.get_position().get_x();
         let y = projectile.get_position().get_y();
         let z = projectile.get_position().get_z();
 
-        canvas.write_pixel(x.round() as usize, y.round() as usize, Color::new(1.0, 0.0, 0.0));
+        canvas.write_pixel(
+            x.round() as usize,
+            (canvas_height as usize) - y.round() as usize,
+            Color::new(1.0, 0.0, 0.0),
+        );
         println!("Projectile is at {:?}", (x, y, z));
         projectile = tick(&environment, projectile);
     }
