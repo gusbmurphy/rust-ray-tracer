@@ -3,6 +3,7 @@ pub use crate::projectile_tick::*;
 mod canvas;
 mod color;
 mod point;
+mod ppm;
 mod projectile_tick;
 mod tuple;
 mod vector;
