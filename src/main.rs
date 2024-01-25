@@ -10,6 +10,7 @@ mod ppm;
 mod projectile_tick;
 mod tuple;
 mod vector;
+mod matrix;
 
 mod prelude {
     pub use crate::point::*;
