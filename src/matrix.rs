@@ -8,7 +8,7 @@ impl Matrix {
     }
 
     pub fn get_value(&self, index: (usize, usize)) -> Option<&f32> {
-        return Some(self.values.get(index.0).unwrap().get(index.1).unwrap());
+        self.values.get(index.0).and_then(|row| row.get(index.1))
     }
 }
 
@@ -32,5 +32,15 @@ mod test {
         assert_eq!(matrix.get_value((2, 2)).unwrap().to_owned(), 11.0);
         assert_eq!(matrix.get_value((3, 0)).unwrap().to_owned(), 13.5);
         assert_eq!(matrix.get_value((3, 2)).unwrap().to_owned(), 15.5);
+    }
+
+    #[test]
+    fn get_value_returns_nothing_outside_of_bounds() {
+        let matrix = Matrix::new(vec![
+            vec![1.0],
+        ]);
+
+        assert_eq!(matrix.get_value((1, 0)), None);
+        assert_eq!(matrix.get_value((0, 1)), None);
     }
 }
