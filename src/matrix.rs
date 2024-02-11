@@ -40,6 +40,23 @@ impl Mul<Matrix> for Matrix {
     }
 }
 
+impl Mul<[f32; 4]> for Matrix {
+    type Output = [f32; 4];
+
+    fn mul(self, rhs: [f32; 4]) -> Self::Output {
+        let mut result = [0.0f32; 4];
+
+        for row in 0..4 {
+            for column in 0..4 {
+                // TODO: So much unwrapping happening...
+                result[row] += self.get_value((row, column)).unwrap() * rhs[column];
+            }
+        }
+
+        return result;
+    }
+}
+
 fn create_empty_values(size: usize) -> Vec<Vec<f32>> {
     let mut values: Vec<Vec<f32>> = Vec::new();
 
@@ -156,5 +173,21 @@ mod test {
                 )
             }
         }
+    }
+
+    #[test]
+    fn matrix_multiplication_by_tuple() {
+        let matrix = Matrix::new(vec![
+            vec![1.0, 2.0, 3.0, 4.0],
+            vec![2.0, 4.0, 4.0, 2.0],
+            vec![8.0, 6.0, 4.0, 1.0],
+            vec![0.0, 0.0, 0.0, 1.0],
+        ]);
+
+        let tuple = [1.0, 2.0, 3.0, 1.0];
+
+        let result = matrix * tuple;
+
+        assert_eq!(result, [18.0, 24.0, 33.0, 1.0]);
     }
 }
