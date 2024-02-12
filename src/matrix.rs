@@ -1,11 +1,11 @@
 use std::ops::Mul;
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-struct Matrix {
+struct FourByFourMatrix {
     values: [[f32; 4]; 4],
 }
 
-const IDENTITY_MATRIX: Matrix = Matrix {
+const IDENTITY_MATRIX: FourByFourMatrix = FourByFourMatrix {
     values: [
         [1.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 0.0, 0.0],
@@ -14,12 +14,12 @@ const IDENTITY_MATRIX: Matrix = Matrix {
     ],
 };
 
-impl Matrix {
+impl FourByFourMatrix {
     pub fn get_value(&self, index: (usize, usize)) -> Option<&f32> {
         self.values.get(index.0).and_then(|row| row.get(index.1))
     }
 
-    pub fn transpose(&self) -> Matrix {
+    pub fn transpose(&self) -> FourByFourMatrix {
         let mut result_values = [[0.0f32; 4]; 4];
 
         for column in 0..4 {
@@ -28,17 +28,17 @@ impl Matrix {
             }
         }
 
-        Matrix {
+        FourByFourMatrix {
             values: result_values,
         }
     }
 }
 
 // TODO: Handle multiplication of different sized Matrixes handle better.
-impl Mul<Matrix> for Matrix {
-    type Output = Matrix;
+impl Mul<FourByFourMatrix> for FourByFourMatrix {
+    type Output = FourByFourMatrix;
 
-    fn mul(self, rhs: Matrix) -> Self::Output {
+    fn mul(self, rhs: FourByFourMatrix) -> Self::Output {
         let size = self.values.len();
         let mut result_values = [[0.0; 4]; 4];
 
@@ -55,13 +55,13 @@ impl Mul<Matrix> for Matrix {
             }
         }
 
-        return Matrix {
+        return FourByFourMatrix {
             values: result_values,
         };
     }
 }
 
-impl Mul<[f32; 4]> for Matrix {
+impl Mul<[f32; 4]> for FourByFourMatrix {
     type Output = [f32; 4];
 
     fn mul(self, rhs: [f32; 4]) -> Self::Output {
@@ -84,7 +84,7 @@ mod test {
 
     #[test]
     fn building_4_by_4_matrix() {
-        let matrix = Matrix {
+        let matrix = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -104,7 +104,7 @@ mod test {
 
     #[test]
     fn get_value_returns_nothing_outside_of_bounds() {
-        let matrix = Matrix {
+        let matrix = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -119,7 +119,7 @@ mod test {
 
     #[test]
     fn matrix_equality() {
-        let matrix1 = Matrix {
+        let matrix1 = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -128,7 +128,7 @@ mod test {
             ],
         };
 
-        let matrix2 = Matrix {
+        let matrix2 = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -142,7 +142,7 @@ mod test {
 
     #[test]
     fn matrix_non_equality() {
-        let matrix1 = Matrix {
+        let matrix1 = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -151,7 +151,7 @@ mod test {
             ],
         };
 
-        let matrix2 = Matrix {
+        let matrix2 = FourByFourMatrix {
             values: [
                 [9999.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -165,7 +165,7 @@ mod test {
 
     #[test]
     fn matrix_multiplication() {
-        let matrix1 = Matrix {
+        let matrix1 = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.0, 6.0, 7.0, 8.0],
@@ -174,7 +174,7 @@ mod test {
             ],
         };
 
-        let matrix2 = Matrix {
+        let matrix2 = FourByFourMatrix {
             values: [
                 [-2.0, 1.0, 2.0, 3.0],
                 [3.0, 2.0, 1.0, -1.0],
@@ -184,7 +184,7 @@ mod test {
         };
 
         let result = matrix1 * matrix2;
-        let expected = Matrix {
+        let expected = FourByFourMatrix {
             values: [
                 [20.0, 22.0, 50.0, 48.0],
                 [44.0, 54.0, 114.0, 108.0],
@@ -205,7 +205,7 @@ mod test {
 
     #[test]
     fn matrix_multiplication_by_tuple() {
-        let matrix = Matrix {
+        let matrix = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [2.0, 4.0, 4.0, 2.0],
@@ -223,7 +223,7 @@ mod test {
 
     #[test]
     fn multiplication_by_identity_matrix_returns_original_matrix() {
-        let matrix = Matrix {
+        let matrix = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [2.0, 4.0, 4.0, 2.0],
@@ -239,7 +239,7 @@ mod test {
 
     #[test]
     fn matrix_transposition() {
-        let matrix = Matrix {
+        let matrix = FourByFourMatrix {
             values: [
                 [0.0, 9.0, 3.0, 0.0],
                 [9.0, 8.0, 0.0, 8.0],
@@ -249,7 +249,7 @@ mod test {
         };
 
         let transposed_matrix = matrix.transpose();
-        let expected_result = Matrix {
+        let expected_result = FourByFourMatrix {
             values: [
                 [0.0, 9.0, 1.0, 0.0],
                 [9.0, 8.0, 8.0, 0.0],
