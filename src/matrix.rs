@@ -236,4 +236,11 @@ mod test {
 
         assert_eq!(transposed_matrix, expected_result)
     }
+
+    #[test]
+    fn identity_matrix_transposition() {
+        let result = IDENTITY_MATRIX.transpose();
+
+        assert_eq!(result, IDENTITY_MATRIX)
+    }
 }
