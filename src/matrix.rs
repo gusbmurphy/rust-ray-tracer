@@ -22,6 +22,20 @@ impl Matrix {
     pub fn get_value(&self, index: (usize, usize)) -> Option<&f32> {
         self.values.get(index.0).and_then(|row| row.get(index.1))
     }
+
+    pub fn transpose(&self) -> Matrix {
+        let mut result_values = [[0.0f32; 4]; 4];
+
+        for column in 0..4 {
+            for row in 0..4 {
+                result_values[row][column] = self.values[column][row];
+            }
+        }
+
+        Matrix {
+            values: result_values,
+        }
+    }
 }
 
 // TODO: Handle multiplication of different sized Matrixes handle better.
@@ -201,5 +215,25 @@ mod test {
         let result = matrix * IDENTITY_MATRIX;
 
         assert_eq!(result, matrix)
+    }
+
+    #[test]
+    fn matrix_transposition() {
+        let matrix = Matrix::new([
+            [0.0, 9.0, 3.0, 0.0],
+            [9.0, 8.0, 0.0, 8.0],
+            [1.0, 8.0, 5.0, 3.0],
+            [0.0, 0.0, 5.0, 8.0],
+        ]);
+
+        let transposed_matrix = matrix.transpose();
+        let expected_result = Matrix::new([
+            [0.0, 9.0, 1.0, 0.0],
+            [9.0, 8.0, 8.0, 0.0],
+            [3.0, 0.0, 5.0, 5.0],
+            [0.0, 8.0, 3.0, 8.0],
+        ]);
+
+        assert_eq!(transposed_matrix, expected_result)
     }
 }
