@@ -1,9 +1,18 @@
 use std::ops::Mul;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug, Clone, Copy)]
 struct Matrix {
     values: [[f32; 4]; 4],
 }
+
+const IDENTITY_MATRIX: Matrix = Matrix {
+    values: [
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0],
+    ],
+};
 
 impl Matrix {
     pub fn new(values: [[f32; 4]; 4]) -> Self {
@@ -59,7 +68,7 @@ impl Mul<[f32; 4]> for Matrix {
 
 #[cfg(test)]
 mod test {
-    use super::Matrix;
+    use super::{Matrix, IDENTITY_MATRIX};
 
     #[test]
     fn building_4_by_4_matrix() {
@@ -178,5 +187,19 @@ mod test {
         let result = matrix * tuple;
 
         assert_eq!(result, [18.0, 24.0, 33.0, 1.0]);
+    }
+
+    #[test]
+    fn mulitplication_by_identity_matrix_returns_original_matrix() {
+        let matrix = Matrix::new([
+            [1.0, 2.0, 3.0, 4.0],
+            [2.0, 4.0, 4.0, 2.0],
+            [8.0, 6.0, 4.0, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]);
+
+        let result = matrix * IDENTITY_MATRIX;
+
+        assert_eq!(result, matrix)
     }
 }
