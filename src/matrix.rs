@@ -78,6 +78,16 @@ impl Mul<[f32; 4]> for FourByFourMatrix {
     }
 }
 
+struct TwoByTwoMatrix {
+    values: [[f32; 2]; 2],
+}
+
+impl TwoByTwoMatrix {
+    pub fn calculate_determinate(&self) -> f32 {
+        self.values[0][0] * self.values[1][1] - self.values[0][1] * self.values[1][0]
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -266,5 +276,16 @@ mod test {
         let result = IDENTITY_MATRIX.transpose();
 
         assert_eq!(result, IDENTITY_MATRIX)
+    }
+
+    #[test]
+    fn determinate_of_2_by_2_matrix() {
+        let matrix = TwoByTwoMatrix {
+            values: [[1.0, 5.0], [-3.0, 2.0]],
+        };
+
+        let result = matrix.calculate_determinate();
+
+        assert_eq!(result, 17.0)
     }
 }
