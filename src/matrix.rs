@@ -15,10 +15,6 @@ const IDENTITY_MATRIX: Matrix = Matrix {
 };
 
 impl Matrix {
-    pub fn new(values: [[f32; 4]; 4]) -> Self {
-        return Matrix { values };
-    }
-
     pub fn get_value(&self, index: (usize, usize)) -> Option<&f32> {
         self.values.get(index.0).and_then(|row| row.get(index.1))
     }
@@ -59,7 +55,9 @@ impl Mul<Matrix> for Matrix {
             }
         }
 
-        return Matrix::new(result_values);
+        return Matrix {
+            values: result_values,
+        };
     }
 }
 
@@ -82,16 +80,18 @@ impl Mul<[f32; 4]> for Matrix {
 
 #[cfg(test)]
 mod test {
-    use super::{Matrix, IDENTITY_MATRIX};
+    use super::*;
 
     #[test]
     fn building_4_by_4_matrix() {
-        let matrix = Matrix::new([
-            [1.0, 2.0, 3.0, 4.0],
-            [5.5, 6.5, 7.5, 8.5],
-            [9.0, 10.0, 11.0, 12.0],
-            [13.5, 14.5, 15.5, 16.5],
-        ]);
+        let matrix = Matrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [5.5, 6.5, 7.5, 8.5],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.5, 14.5, 15.5, 16.5],
+            ],
+        };
 
         assert_eq!(matrix.get_value((0, 0)).unwrap().to_owned(), 1.0);
         assert_eq!(matrix.get_value((0, 3)).unwrap().to_owned(), 4.0);
@@ -104,12 +104,14 @@ mod test {
 
     #[test]
     fn get_value_returns_nothing_outside_of_bounds() {
-        let matrix = Matrix::new([
-            [1.0, 2.0, 3.0, 4.0],
-            [5.5, 6.5, 7.5, 8.5],
-            [9.0, 10.0, 11.0, 12.0],
-            [13.5, 14.5, 15.5, 16.5],
-        ]);
+        let matrix = Matrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [5.5, 6.5, 7.5, 8.5],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.5, 14.5, 15.5, 16.5],
+            ],
+        };
 
         assert_eq!(matrix.get_value((4, 0)), None);
         assert_eq!(matrix.get_value((0, 4)), None);
@@ -117,65 +119,79 @@ mod test {
 
     #[test]
     fn matrix_equality() {
-        let matrix1 = Matrix::new([
-            [1.0, 2.0, 3.0, 4.0],
-            [5.5, 6.5, 7.5, 8.5],
-            [9.0, 10.0, 11.0, 12.0],
-            [13.5, 14.5, 15.5, 16.5],
-        ]);
+        let matrix1 = Matrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [5.5, 6.5, 7.5, 8.5],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.5, 14.5, 15.5, 16.5],
+            ],
+        };
 
-        let matrix2 = Matrix::new([
-            [1.0, 2.0, 3.0, 4.0],
-            [5.5, 6.5, 7.5, 8.5],
-            [9.0, 10.0, 11.0, 12.0],
-            [13.5, 14.5, 15.5, 16.5],
-        ]);
+        let matrix2 = Matrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [5.5, 6.5, 7.5, 8.5],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.5, 14.5, 15.5, 16.5],
+            ],
+        };
 
         assert!(matrix1 == matrix2)
     }
 
     #[test]
     fn matrix_non_equality() {
-        let matrix1 = Matrix::new([
-            [1.0, 2.0, 3.0, 4.0],
-            [5.5, 6.5, 7.5, 8.5],
-            [9.0, 10.0, 11.0, 12.0],
-            [13.5, 14.5, 15.5, 16.5],
-        ]);
+        let matrix1 = Matrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [5.5, 6.5, 7.5, 8.5],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.5, 14.5, 15.5, 16.5],
+            ],
+        };
 
-        let matrix2 = Matrix::new([
-            [9999.0, 2.0, 3.0, 4.0],
-            [5.5, 6.5, 7.5, 8.5],
-            [9.0, 10.0, 11.0, 12.0],
-            [13.5, 14.5, 15.5, 16.5],
-        ]);
+        let matrix2 = Matrix {
+            values: [
+                [9999.0, 2.0, 3.0, 4.0],
+                [5.5, 6.5, 7.5, 8.5],
+                [9.0, 10.0, 11.0, 12.0],
+                [13.5, 14.5, 15.5, 16.5],
+            ],
+        };
 
         assert!(matrix1 != matrix2)
     }
 
     #[test]
     fn matrix_multiplication() {
-        let matrix1 = Matrix::new([
-            [1.0, 2.0, 3.0, 4.0],
-            [5.0, 6.0, 7.0, 8.0],
-            [9.0, 8.0, 7.0, 6.0],
-            [5.0, 4.0, 3.0, 2.0],
-        ]);
+        let matrix1 = Matrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [5.0, 6.0, 7.0, 8.0],
+                [9.0, 8.0, 7.0, 6.0],
+                [5.0, 4.0, 3.0, 2.0],
+            ],
+        };
 
-        let matrix2 = Matrix::new([
-            [-2.0, 1.0, 2.0, 3.0],
-            [3.0, 2.0, 1.0, -1.0],
-            [4.0, 3.0, 6.0, 5.0],
-            [1.0, 2.0, 7.0, 8.0],
-        ]);
+        let matrix2 = Matrix {
+            values: [
+                [-2.0, 1.0, 2.0, 3.0],
+                [3.0, 2.0, 1.0, -1.0],
+                [4.0, 3.0, 6.0, 5.0],
+                [1.0, 2.0, 7.0, 8.0],
+            ],
+        };
 
         let result = matrix1 * matrix2;
-        let expected = Matrix::new([
-            [20.0, 22.0, 50.0, 48.0],
-            [44.0, 54.0, 114.0, 108.0],
-            [40.0, 58.0, 110.0, 102.0],
-            [16.0, 26.0, 46.0, 42.0],
-        ]);
+        let expected = Matrix {
+            values: [
+                [20.0, 22.0, 50.0, 48.0],
+                [44.0, 54.0, 114.0, 108.0],
+                [40.0, 58.0, 110.0, 102.0],
+                [16.0, 26.0, 46.0, 42.0],
+            ],
+        };
 
         for column in 0..4 {
             for row in 0..4 {
@@ -189,12 +205,14 @@ mod test {
 
     #[test]
     fn matrix_multiplication_by_tuple() {
-        let matrix = Matrix::new([
-            [1.0, 2.0, 3.0, 4.0],
-            [2.0, 4.0, 4.0, 2.0],
-            [8.0, 6.0, 4.0, 1.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ]);
+        let matrix = Matrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [2.0, 4.0, 4.0, 2.0],
+                [8.0, 6.0, 4.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+        };
 
         let tuple = [1.0, 2.0, 3.0, 1.0];
 
@@ -205,12 +223,14 @@ mod test {
 
     #[test]
     fn multiplication_by_identity_matrix_returns_original_matrix() {
-        let matrix = Matrix::new([
-            [1.0, 2.0, 3.0, 4.0],
-            [2.0, 4.0, 4.0, 2.0],
-            [8.0, 6.0, 4.0, 1.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ]);
+        let matrix = Matrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [2.0, 4.0, 4.0, 2.0],
+                [8.0, 6.0, 4.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
+        };
 
         let result = matrix * IDENTITY_MATRIX;
 
@@ -219,20 +239,24 @@ mod test {
 
     #[test]
     fn matrix_transposition() {
-        let matrix = Matrix::new([
-            [0.0, 9.0, 3.0, 0.0],
-            [9.0, 8.0, 0.0, 8.0],
-            [1.0, 8.0, 5.0, 3.0],
-            [0.0, 0.0, 5.0, 8.0],
-        ]);
+        let matrix = Matrix {
+            values: [
+                [0.0, 9.0, 3.0, 0.0],
+                [9.0, 8.0, 0.0, 8.0],
+                [1.0, 8.0, 5.0, 3.0],
+                [0.0, 0.0, 5.0, 8.0],
+            ],
+        };
 
         let transposed_matrix = matrix.transpose();
-        let expected_result = Matrix::new([
-            [0.0, 9.0, 1.0, 0.0],
-            [9.0, 8.0, 8.0, 0.0],
-            [3.0, 0.0, 5.0, 5.0],
-            [0.0, 8.0, 3.0, 8.0],
-        ]);
+        let expected_result = Matrix {
+            values: [
+                [0.0, 9.0, 1.0, 0.0],
+                [9.0, 8.0, 8.0, 0.0],
+                [3.0, 0.0, 5.0, 5.0],
+                [0.0, 8.0, 3.0, 8.0],
+            ],
+        };
 
         assert_eq!(transposed_matrix, expected_result)
     }
