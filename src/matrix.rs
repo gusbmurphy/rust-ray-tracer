@@ -190,7 +190,7 @@ mod test {
     }
 
     #[test]
-    fn mulitplication_by_identity_matrix_returns_original_matrix() {
+    fn multiplication_by_identity_matrix_returns_original_matrix() {
         let matrix = Matrix::new([
             [1.0, 2.0, 3.0, 4.0],
             [2.0, 4.0, 4.0, 2.0],
