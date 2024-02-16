@@ -78,6 +78,36 @@ impl Mul<[f32; 4]> for FourByFourMatrix {
     }
 }
 
+struct ThreeByThreeMatrix {
+    values: [[f32; 3]; 3],
+}
+
+impl ThreeByThreeMatrix {
+    fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> TwoByTwoMatrix {
+        let mut values = [[0.0f32; 2]; 2];
+
+        let mut column_shift = 0;
+
+        for column in 0..2 {
+            if column == column_to_drop {
+                column_shift += 1;
+            }
+
+            let mut row_shift = 0;
+            for row in 0..2 {
+                if row == row_to_drop {
+                    row_shift += 1;
+                }
+
+                values[row][column] = self.values[row + row_shift][column + column_shift]
+            }
+        }
+
+        TwoByTwoMatrix { values }
+    }
+}
+
+#[derive(Debug, PartialEq)]
 struct TwoByTwoMatrix {
     values: [[f32; 2]; 2],
 }
@@ -287,5 +317,19 @@ mod test {
         let result = matrix.calculate_determinate();
 
         assert_eq!(result, 17.0)
+    }
+
+    #[test]
+    fn getting_submatrix_of_3_by_3_matrix() {
+        let matrix = ThreeByThreeMatrix {
+            values: [[1.0, 5.0, 0.0], [-3.0, 2.0, 7.0], [0.0, 6.0, -3.0]],
+        };
+
+        let submatrix = matrix.get_submatrix(0, 2);
+        let expected = TwoByTwoMatrix {
+            values: [[-3.0, 2.0], [0.0, 6.0]],
+        };
+
+        assert_eq!(submatrix, expected)
     }
 }
