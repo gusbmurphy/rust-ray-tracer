@@ -32,6 +32,30 @@ impl FourByFourMatrix {
             values: result_values,
         }
     }
+
+    pub fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> ThreeByThreeMatrix {
+        const SUBMATRIX_SIZE: usize = 3;
+        let mut values = [[0.0f32; SUBMATRIX_SIZE]; SUBMATRIX_SIZE];
+
+        let mut column_shift = 0;
+
+        for column in 0..SUBMATRIX_SIZE {
+            if column == column_to_drop {
+                column_shift += 1;
+            }
+
+            let mut row_shift = 0;
+            for row in 0..SUBMATRIX_SIZE {
+                if row == row_to_drop {
+                    row_shift += 1;
+                }
+
+                values[row][column] = self.values[row + row_shift][column + column_shift]
+            }
+        }
+
+        ThreeByThreeMatrix { values }
+    }
 }
 
 // TODO: Handle multiplication of different sized Matrixes handle better.
@@ -78,6 +102,7 @@ impl Mul<[f32; 4]> for FourByFourMatrix {
     }
 }
 
+#[derive(Debug, PartialEq)]
 struct ThreeByThreeMatrix {
     values: [[f32; 3]; 3],
 }
@@ -328,6 +353,26 @@ mod test {
         let submatrix = matrix.get_submatrix(0, 2);
         let expected = TwoByTwoMatrix {
             values: [[-3.0, 2.0], [0.0, 6.0]],
+        };
+
+        assert_eq!(submatrix, expected)
+    }
+
+    #[test]
+    fn getting_submatrix_of_4_by_4_matrix() {
+        let matrix = FourByFourMatrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [9.0, -3.0, 7.0, 2.0],
+                [-32.0, 7.0, 10.0, -2.0],
+                [-8.0, 13.0, 1.0, 9.0],
+            ],
+        };
+
+        let submatrix = matrix.get_submatrix(2, 1);
+
+        let expected = ThreeByThreeMatrix {
+            values: [[1.0, 3.0, 4.0], [9.0, 7.0, 2.0], [-8.0, 1.0, 9.0]],
         };
 
         assert_eq!(submatrix, expected)
