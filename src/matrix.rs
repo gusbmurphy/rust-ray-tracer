@@ -19,6 +19,10 @@ impl FourByFourMatrix {
         self.values.get(index.0).and_then(|row| row.get(index.1))
     }
 
+    pub fn get_row(&self, row: usize) -> &[f32; 4] {
+        &self.values[row]
+    }
+
     pub fn transpose(&self) -> FourByFourMatrix {
         let mut result_values = [[0.0f32; 4]; 4];
 
@@ -108,6 +112,10 @@ struct ThreeByThreeMatrix {
 }
 
 impl ThreeByThreeMatrix {
+    fn get_row(&self, row: usize) -> &[f32; 3] {
+        &self.values[row]
+    }
+
     fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> TwoByTwoMatrix {
         let mut values = [[0.0f32; 2]; 2];
 
@@ -152,6 +160,10 @@ struct TwoByTwoMatrix {
 }
 
 impl TwoByTwoMatrix {
+    fn get_row(&self, row: usize) -> &[f32; 2] {
+        &self.values[row]
+    }
+
     pub fn calculate_determinate(&self) -> f32 {
         self.values[0][0] * self.values[1][1] - self.values[0][1] * self.values[1][0]
     }
@@ -159,6 +171,8 @@ impl TwoByTwoMatrix {
 
 #[cfg(test)]
 mod test {
+    use std::borrow::Borrow;
+
     use super::*;
 
     #[test]
@@ -409,5 +423,28 @@ mod test {
 
         assert_eq!(matrix.calculate_cofactor_at(1, 0), -25.0);
         assert_eq!(matrix.calculate_cofactor_at(2, 0), -35.0);
+    }
+
+    #[test]
+    fn getting_row_of_a_matrix() {
+        let four_matrix = FourByFourMatrix {
+            values: [
+                [1.0, 2.0, 3.0, 4.0],
+                [9.0, -3.0, 7.0, 2.0],
+                [-32.0, 7.0, 10.0, -2.0],
+                [-8.0, 13.0, 1.0, 9.0],
+            ],
+        };
+        assert_eq!(four_matrix.get_row(2).to_owned(), [-32.0, 7.0, 10.0, -2.0]);
+
+        let three_matrix = ThreeByThreeMatrix {
+            values: [[3.0, 5.0, 0.0], [2.0, -1.0, -7.0], [6.0, -1.0, 5.0]],
+        };
+        assert_eq!(three_matrix.get_row(1).to_owned(), [2.0, -1.0, -7.0]);
+
+        let two_matrix = TwoByTwoMatrix {
+            values: [[1.0, 5.0], [-3.0, 2.0]],
+        };
+        assert_eq!(two_matrix.get_row(1).to_owned(), [-3.0, 2.0]);
     }
 }
