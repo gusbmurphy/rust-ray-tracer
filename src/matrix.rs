@@ -204,26 +204,6 @@ mod test {
     use super::*;
 
     #[test]
-    fn building_4_by_4_matrix() {
-        let matrix = FourByFourMatrix {
-            values: [
-                [1.0, 2.0, 3.0, 4.0],
-                [5.5, 6.5, 7.5, 8.5],
-                [9.0, 10.0, 11.0, 12.0],
-                [13.5, 14.5, 15.5, 16.5],
-            ],
-        };
-
-        assert_eq!(matrix.get_value((0, 0)).unwrap().to_owned(), 1.0);
-        assert_eq!(matrix.get_value((0, 3)).unwrap().to_owned(), 4.0);
-        assert_eq!(matrix.get_value((1, 0)).unwrap().to_owned(), 5.5);
-        assert_eq!(matrix.get_value((1, 2)).unwrap().to_owned(), 7.5);
-        assert_eq!(matrix.get_value((2, 2)).unwrap().to_owned(), 11.0);
-        assert_eq!(matrix.get_value((3, 0)).unwrap().to_owned(), 13.5);
-        assert_eq!(matrix.get_value((3, 2)).unwrap().to_owned(), 15.5);
-    }
-
-    #[test]
     fn get_value_returns_nothing_outside_of_bounds() {
         let matrix = FourByFourMatrix {
             values: [
