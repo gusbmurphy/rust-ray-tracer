@@ -130,6 +130,11 @@ impl ThreeByThreeMatrix {
 
         TwoByTwoMatrix { values }
     }
+
+    fn calculate_minor_at(&self, row: usize, column: usize) -> f32 {
+        let sub_matrix = self.get_submatrix(row, column);
+        sub_matrix.calculate_determinate()
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -376,5 +381,14 @@ mod test {
         };
 
         assert_eq!(submatrix, expected)
+    }
+
+    #[test]
+    fn calculating_minor_of_3_by_3_matrix() {
+        let matrix = ThreeByThreeMatrix {
+            values: [[3.0, 5.0, 0.0], [2.0, -1.0, -7.0], [6.0, -1.0, 5.0]],
+        };
+
+        assert_eq!(matrix.calculate_minor_at(1, 0), 25.0)
     }
 }
