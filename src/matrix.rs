@@ -23,6 +23,16 @@ impl FourByFourMatrix {
         &self.values[row]
     }
 
+    pub fn get_column(&self, column: usize) -> [f32; 4] {
+        let mut column_values = [0.0f32; 4];
+
+        for row in 0..4 {
+            column_values[row] = self.values[row][column];
+        }
+
+        column_values
+    }
+
     pub fn transpose(&self) -> FourByFourMatrix {
         let mut result_values = [[0.0f32; 4]; 4];
 
@@ -116,6 +126,16 @@ impl ThreeByThreeMatrix {
         &self.values[row]
     }
 
+    fn get_column(&self, column: usize) -> [f32; 3] {
+        let mut column_values = [0.0f32; 3];
+
+        for row in 0..3 {
+            column_values[row] = self.values[row][column];
+        }
+
+        column_values
+    }
+
     fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> TwoByTwoMatrix {
         let mut values = [[0.0f32; 2]; 2];
 
@@ -164,6 +184,16 @@ impl TwoByTwoMatrix {
         &self.values[row]
     }
 
+    fn get_column(&self, column: usize) -> [f32; 2] {
+        let mut column_values = [0.0f32; 2];
+
+        for row in 0..2 {
+            column_values[row] = self.values[row][column];
+        }
+
+        column_values
+    }
+
     pub fn calculate_determinate(&self) -> f32 {
         self.values[0][0] * self.values[1][1] - self.values[0][1] * self.values[1][0]
     }
@@ -171,8 +201,6 @@ impl TwoByTwoMatrix {
 
 #[cfg(test)]
 mod test {
-    use std::borrow::Borrow;
-
     use super::*;
 
     #[test]
@@ -426,7 +454,7 @@ mod test {
     }
 
     #[test]
-    fn getting_row_of_a_matrix() {
+    fn getting_rows_and_columns_of_matrices() {
         let four_matrix = FourByFourMatrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
@@ -436,15 +464,18 @@ mod test {
             ],
         };
         assert_eq!(four_matrix.get_row(2).to_owned(), [-32.0, 7.0, 10.0, -2.0]);
+        assert_eq!(four_matrix.get_column(1), [2.0, -3.0, 7.0, 13.0]);
 
         let three_matrix = ThreeByThreeMatrix {
             values: [[3.0, 5.0, 0.0], [2.0, -1.0, -7.0], [6.0, -1.0, 5.0]],
         };
         assert_eq!(three_matrix.get_row(1).to_owned(), [2.0, -1.0, -7.0]);
+        assert_eq!(three_matrix.get_column(0), [3.0, 2.0, 6.0]);
 
         let two_matrix = TwoByTwoMatrix {
             values: [[1.0, 5.0], [-3.0, 2.0]],
         };
         assert_eq!(two_matrix.get_row(1).to_owned(), [-3.0, 2.0]);
+        assert_eq!(two_matrix.get_column(1), [5.0, 2.0]);
     }
 }
