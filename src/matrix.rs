@@ -15,10 +15,6 @@ const IDENTITY_MATRIX: FourByFourMatrix = FourByFourMatrix {
 };
 
 impl FourByFourMatrix {
-    pub fn get_value(&self, index: (usize, usize)) -> Option<&f32> {
-        self.values.get(index.0).and_then(|row| row.get(index.1))
-    }
-
     pub fn get_row(&self, row: usize) -> &[f32; 4] {
         &self.values[row]
     }
@@ -85,8 +81,7 @@ impl Mul<FourByFourMatrix> for FourByFourMatrix {
                 let mut value = 0.0;
 
                 for i in 0..size {
-                    value += self.get_value((row_index, i)).unwrap()
-                        * rhs.get_value((i, column_index)).unwrap();
+                    value += self.get_row(row_index)[i] * rhs.get_column(column_index)[i];
                 }
 
                 result_values[row_index][column_index] = value;
@@ -107,8 +102,7 @@ impl Mul<[f32; 4]> for FourByFourMatrix {
 
         for row in 0..4 {
             for column in 0..4 {
-                // TODO: So much unwrapping happening...
-                result[row] += self.get_value((row, column)).unwrap() * rhs[column];
+                result[row] += self.get_row(row)[column] * rhs[column];
             }
         }
 
@@ -204,21 +198,6 @@ mod test {
     use super::*;
 
     #[test]
-    fn get_value_returns_nothing_outside_of_bounds() {
-        let matrix = FourByFourMatrix {
-            values: [
-                [1.0, 2.0, 3.0, 4.0],
-                [5.5, 6.5, 7.5, 8.5],
-                [9.0, 10.0, 11.0, 12.0],
-                [13.5, 14.5, 15.5, 16.5],
-            ],
-        };
-
-        assert_eq!(matrix.get_value((4, 0)), None);
-        assert_eq!(matrix.get_value((0, 4)), None);
-    }
-
-    #[test]
     fn matrix_equality() {
         let matrix1 = FourByFourMatrix {
             values: [
@@ -297,8 +276,8 @@ mod test {
         for column in 0..4 {
             for row in 0..4 {
                 assert_eq!(
-                    result.get_value((column, row)),
-                    expected.get_value((column, row))
+                    result.get_column(column)[row],
+                    expected.get_column(column)[row]
                 )
             }
         }
