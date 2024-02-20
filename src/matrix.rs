@@ -155,7 +155,7 @@ impl ThreeByThreeMatrix {
 
     fn calculate_minor_at(&self, row: usize, column: usize) -> f32 {
         let sub_matrix = self.get_submatrix(row, column);
-        sub_matrix.calculate_determinate()
+        sub_matrix.calculate_determinant()
     }
 
     fn calculate_cofactor_at(&self, row: usize, column: usize) -> f32 {
@@ -165,6 +165,22 @@ impl ThreeByThreeMatrix {
         } else {
             return -minor;
         }
+    }
+
+    fn calculate_determinant(&self) -> f32 {
+        let mut determinant = 0.0f32;
+
+        const ROW_INDEX_TO_USE: usize = 0;
+        let row_to_use = self.get_row(ROW_INDEX_TO_USE);
+
+        for column in 0..3 {
+            let value = row_to_use[column];
+            let cofactor = self.calculate_cofactor_at(ROW_INDEX_TO_USE, column);
+
+            determinant += value * cofactor;
+        }
+
+        determinant
     }
 }
 
@@ -188,7 +204,7 @@ impl TwoByTwoMatrix {
         column_values
     }
 
-    pub fn calculate_determinate(&self) -> f32 {
+    pub fn calculate_determinant(&self) -> f32 {
         self.values[0][0] * self.values[1][1] - self.values[0][1] * self.values[1][0]
     }
 }
@@ -349,12 +365,12 @@ mod test {
     }
 
     #[test]
-    fn determinate_of_2_by_2_matrix() {
+    fn determinant_of_2_by_2_matrix() {
         let matrix = TwoByTwoMatrix {
             values: [[1.0, 5.0], [-3.0, 2.0]],
         };
 
-        let result = matrix.calculate_determinate();
+        let result = matrix.calculate_determinant();
 
         assert_eq!(result, 17.0)
     }
@@ -436,5 +452,14 @@ mod test {
         };
         assert_eq!(two_matrix.get_row(1).to_owned(), [-3.0, 2.0]);
         assert_eq!(two_matrix.get_column(1), [5.0, 2.0]);
+    }
+
+    #[test]
+    fn calculating_determinant_of_3_by_3_matrix() {
+        let matrix = ThreeByThreeMatrix {
+            values: [[1.0, 2.0, 6.0], [-5.0, 8.0, -4.0], [2.0, 6.0, 4.0]],
+        };
+
+        assert_eq!(matrix.calculate_determinant(), -196.0);
     }
 }
