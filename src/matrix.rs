@@ -66,6 +66,36 @@ impl FourByFourMatrix {
 
         ThreeByThreeMatrix { values }
     }
+
+    fn calculate_minor_at(&self, row: usize, column: usize) -> f32 {
+        let sub_matrix = self.get_submatrix(row, column);
+        sub_matrix.calculate_determinant()
+    }
+
+    fn calculate_cofactor_at(&self, row: usize, column: usize) -> f32 {
+        let minor = self.calculate_minor_at(row, column);
+        if (row + column) % 2 == 0 {
+            return minor;
+        } else {
+            return -minor;
+        }
+    }
+
+    fn calculate_determinant(&self) -> f32 {
+        let mut determinant = 0.0f32;
+
+        const ROW_INDEX_TO_USE: usize = 0;
+        let row_to_use = self.get_row(ROW_INDEX_TO_USE);
+
+        for column in 0..4 {
+            let value = row_to_use[column];
+            let cofactor = self.calculate_cofactor_at(ROW_INDEX_TO_USE, column);
+
+            determinant += value * cofactor;
+        }
+
+        determinant
+    }
 }
 
 // TODO: Handle multiplication of different sized Matrixes handle better.
@@ -461,5 +491,19 @@ mod test {
         };
 
         assert_eq!(matrix.calculate_determinant(), -196.0);
+    }
+
+    #[test]
+    fn calculating_determinant_of_4_by_4_matrix() {
+        let matrix = FourByFourMatrix {
+            values: [
+                [-2.0, -8.0, 3.0, 5.0],
+                [-3.0, 1.0, 7.0, 3.0],
+                [1.0, 2.0, -9.0, 6.0],
+                [-6.0, 7.0, 7.0, -9.0],
+            ],
+        };
+
+        assert_eq!(matrix.calculate_determinant(), -4071.0);
     }
 }
