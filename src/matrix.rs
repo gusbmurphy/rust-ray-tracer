@@ -96,6 +96,10 @@ impl FourByFourMatrix {
 
         determinant
     }
+
+    fn invert(&self) -> Result<FourByFourMatrix, &'static str> {
+        Err("Matrix cannot be inverted.")
+    }
 }
 
 // TODO: Handle multiplication of different sized Matrixes handle better.
@@ -505,5 +509,21 @@ mod test {
         };
 
         assert_eq!(matrix.calculate_determinant(), -4071.0);
+    }
+
+    #[test]
+    fn inverting_non_invertable_matrix() {
+        // A matrix whose determinant is 0 is not invertable.
+        let matrix = FourByFourMatrix {
+            values: [
+                [-4.0, 2.0, -2.0, -3.0],
+                [9.0, 6.0, 2.0, 6.0],
+                [0.0, -5.0, 1.0, -5.0],
+                [0.0, 0.0, 0.0, 0.0],
+            ],
+        };
+
+        let result = matrix.invert();
+        assert!(result.is_err());
     }
 }
