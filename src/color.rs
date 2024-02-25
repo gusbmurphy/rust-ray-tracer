@@ -1,4 +1,4 @@
-use float_cmp::approx_eq;
+use crate::close_enough::close_enough;
 use std::ops;
 
 #[derive(Debug, Copy, Clone)]
@@ -28,9 +28,9 @@ impl Color {
 
 impl PartialEq for Color {
     fn eq(&self, other: &Self) -> bool {
-        approx_eq!(f32, self.r, other.r)
-            && approx_eq!(f32, self.b, other.b)
-            && approx_eq!(f32, self.g, other.g)
+        close_enough(&self.r, &other.r)
+            && close_enough(&self.b, &other.b)
+            && close_enough(&self.g, &other.g)
     }
 }
 
