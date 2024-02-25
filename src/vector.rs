@@ -18,25 +18,25 @@ impl Vector {
     pub fn normalize(&self) -> Self {
         let magnitude = self.get_magnitude();
 
-        return Vector::new(self.x / magnitude, self.y / magnitude, self.z / magnitude);
+        Vector::new(self.x / magnitude, self.y / magnitude, self.z / magnitude)
     }
 }
 
 impl Tuple for Vector {
     fn get_x(&self) -> f64 {
-        return self.x;
+        self.x
     }
 
     fn get_y(&self) -> f64 {
-        return self.y;
+        self.y
     }
 
     fn get_z(&self) -> f64 {
-        return self.z;
+        self.z
     }
 
     fn get_w(&self) -> f64 {
-        return 0.0;
+        0.0
     }
 }
 
@@ -97,7 +97,7 @@ pub fn cross(a: &Vector, b: &Vector) -> Vector {
 }
 
 pub fn dot(a: &Vector, b: &Vector) -> f64 {
-    return a.get_x() * b.get_x() + a.get_y() * b.get_y() + a.get_z() * b.get_z();
+    a.get_x() * b.get_x() + a.get_y() * b.get_y() + a.get_z() * b.get_z()
 }
 
 #[cfg(test)]

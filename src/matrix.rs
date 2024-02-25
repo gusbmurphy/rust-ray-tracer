@@ -77,9 +77,9 @@ impl FourByFourMatrix {
     fn calculate_cofactor_at(&self, row: usize, column: usize) -> f32 {
         let minor = self.calculate_minor_at(row, column);
         if (row + column) % 2 == 0 {
-            return minor;
+            minor
         } else {
-            return -minor;
+            -minor
         }
     }
 
@@ -153,9 +153,9 @@ impl Mul<FourByFourMatrix> for FourByFourMatrix {
             }
         }
 
-        return FourByFourMatrix {
+        FourByFourMatrix {
             values: result_values,
-        };
+        }
     }
 }
 
@@ -171,7 +171,7 @@ impl Mul<[f32; 4]> for FourByFourMatrix {
             }
         }
 
-        return result;
+        result
     }
 }
 
@@ -252,9 +252,9 @@ impl ThreeByThreeMatrix {
     fn calculate_cofactor_at(&self, row: usize, column: usize) -> f32 {
         let minor = self.calculate_minor_at(row, column);
         if (row + column) % 2 == 0 {
-            return minor;
+            minor
         } else {
-            return -minor;
+            -minor
         }
     }
 

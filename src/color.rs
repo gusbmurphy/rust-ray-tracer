@@ -28,9 +28,9 @@ impl Color {
 
 impl PartialEq for Color {
     fn eq(&self, other: &Self) -> bool {
-        return approx_eq!(f64, self.r, other.r)
+        approx_eq!(f64, self.r, other.r)
             && approx_eq!(f64, self.b, other.b)
-            && approx_eq!(f64, self.g, other.g);
+            && approx_eq!(f64, self.g, other.g)
     }
 }
 

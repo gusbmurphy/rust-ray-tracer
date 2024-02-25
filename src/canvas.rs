@@ -16,15 +16,15 @@ impl Canvas {
     }
 
     pub fn get_width(&self) -> u64 {
-        return self.width;
+        self.width
     }
 
     pub fn get_height(&self) -> u64 {
-        return self.height;
+        self.height
     }
 
     pub fn get_rows(&self) -> &Vec<Vec<Color>> {
-        return &self.pixels;
+        &self.pixels
     }
 
     pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) {
@@ -32,7 +32,7 @@ impl Canvas {
     }
 
     pub fn get_pixel_at(&self, x: usize, y: usize) -> Color {
-        return self.pixels[y][x];
+        self.pixels[y][x]
     }
 }
 
@@ -43,7 +43,7 @@ fn create_all_default_rows(width: u64, height: u64) -> Vec<Vec<Color>> {
         rows.push(create_default_row(width));
     }
 
-    return rows;
+    rows
 }
 
 fn create_default_row(length: u64) -> Vec<Color> {
@@ -53,7 +53,7 @@ fn create_default_row(length: u64) -> Vec<Color> {
         row.push(Color::new(0.0, 0.0, 0.0));
     }
 
-    return row;
+    row
 }
 
 #[cfg(test)]

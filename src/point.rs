@@ -24,19 +24,19 @@ impl Point {
 
 impl Tuple for Point {
     fn get_x(&self) -> f64 {
-        return self.x;
+        self.x
     }
 
     fn get_y(&self) -> f64 {
-        return self.y;
+        self.y
     }
 
     fn get_z(&self) -> f64 {
-        return self.z;
+        self.z
     }
 
     fn get_w(&self) -> f64 {
-        return 0.0;
+        0.0
     }
 }
 

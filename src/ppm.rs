@@ -40,7 +40,7 @@ pub fn create_ppm_from_canvas(canvas: Canvas) -> String {
         pixel_data.push('\n');
     }
 
-    return String::from(header + pixel_data.as_str());
+    String::from(header + pixel_data.as_str())
 }
 
 fn row_length_will_be_under_max_after_adding_space_and_value(row: &String, value: &String) -> bool {
@@ -52,7 +52,7 @@ fn convert_color_to_ppm_values(color: &Color) -> [u8; 3] {
     let b = convert_color_value_to_ppm_value(color.get_b());
     let g = convert_color_value_to_ppm_value(color.get_g());
 
-    return [r, b, g];
+    [r, b, g]
 }
 
 fn convert_color_value_to_ppm_value(value: f64) -> u8 {
@@ -66,7 +66,7 @@ fn convert_color_value_to_ppm_value(value: f64) -> u8 {
         return MAX_PPM_COLOR_VALUE;
     }
 
-    return ppm_value.round() as u8;
+    ppm_value.round() as u8
 }
 
 #[cfg(test)]
