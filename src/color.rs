@@ -3,34 +3,34 @@ use std::ops;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Color {
-    r: f64,
-    b: f64,
-    g: f64,
+    r: f32,
+    b: f32,
+    g: f32,
 }
 
 impl Color {
-    pub fn new(r: f64, b: f64, g: f64) -> Self {
+    pub fn new(r: f32, b: f32, g: f32) -> Self {
         Color { r, b, g }
     }
 
-    pub fn get_r(&self) -> f64 {
+    pub fn get_r(&self) -> f32 {
         self.r
     }
 
-    pub fn get_b(&self) -> f64 {
+    pub fn get_b(&self) -> f32 {
         self.b
     }
 
-    pub fn get_g(&self) -> f64 {
+    pub fn get_g(&self) -> f32 {
         self.g
     }
 }
 
 impl PartialEq for Color {
     fn eq(&self, other: &Self) -> bool {
-        approx_eq!(f64, self.r, other.r)
-            && approx_eq!(f64, self.b, other.b)
-            && approx_eq!(f64, self.g, other.g)
+        approx_eq!(f32, self.r, other.r)
+            && approx_eq!(f32, self.b, other.b)
+            && approx_eq!(f32, self.g, other.g)
     }
 }
 
@@ -50,10 +50,10 @@ impl ops::Sub<Color> for Color {
     }
 }
 
-impl ops::Mul<f64> for Color {
+impl ops::Mul<f32> for Color {
     type Output = Color;
 
-    fn mul(self, rhs: f64) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self::Output {
         Color::new(self.r * rhs, self.b * rhs, self.g * rhs)
     }
 }
