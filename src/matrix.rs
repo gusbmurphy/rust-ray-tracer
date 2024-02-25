@@ -1,6 +1,5 @@
+use crate::close_enough::close_enough;
 use std::ops::Mul;
-
-use crate::EPSILON;
 
 #[derive(Debug, Clone, Copy)]
 struct FourByFourMatrix {
@@ -179,25 +178,13 @@ impl PartialEq<FourByFourMatrix> for FourByFourMatrix {
     fn eq(&self, other: &FourByFourMatrix) -> bool {
         for row in 0..4 {
             for column in 0..4 {
-                if (self.values[row][column] - other.values[row][column]).abs() > EPSILON {
+                if !close_enough(&self.values[row][column], &other.values[row][column]) {
                     return false;
                 }
             }
         }
 
         true
-    }
-
-    fn ne(&self, other: &FourByFourMatrix) -> bool {
-        for row in 0..4 {
-            for column in 0..4 {
-                if (self.values[row][column] - other.values[row][column]).abs() > EPSILON {
-                    return true;
-                }
-            }
-        }
-
-        false
     }
 }
 
