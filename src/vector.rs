@@ -5,13 +5,13 @@ use crate::{point::Point, tuple::Tuple};
 // TODO: Should probably use the "approx_eq" macro here...
 #[derive(PartialEq, Debug, Copy, Clone)]
 pub struct Vector {
-    x: f64,
-    y: f64,
-    z: f64,
+    x: f32,
+    y: f32,
+    z: f32,
 }
 
 impl Vector {
-    pub fn new(x: f64, y: f64, z: f64) -> Self {
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
         Vector { x, y, z }
     }
 
@@ -23,19 +23,19 @@ impl Vector {
 }
 
 impl Tuple for Vector {
-    fn get_x(&self) -> f64 {
+    fn get_x(&self) -> f32 {
         self.x
     }
 
-    fn get_y(&self) -> f64 {
+    fn get_y(&self) -> f32 {
         self.y
     }
 
-    fn get_z(&self) -> f64 {
+    fn get_z(&self) -> f32 {
         self.z
     }
 
-    fn get_w(&self) -> f64 {
+    fn get_w(&self) -> f32 {
         0.0
     }
 }
@@ -72,18 +72,18 @@ impl ops::Neg for Vector {
     }
 }
 
-impl ops::Mul<f64> for Vector {
+impl ops::Mul<f32> for Vector {
     type Output = Vector;
 
-    fn mul(self, rhs: f64) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self::Output {
         Vector::new(self.x * rhs, self.y * rhs, self.z * rhs)
     }
 }
 
-impl ops::Div<f64> for Vector {
+impl ops::Div<f32> for Vector {
     type Output = Vector;
 
-    fn div(self, rhs: f64) -> Self::Output {
+    fn div(self, rhs: f32) -> Self::Output {
         Vector::new(self.x / rhs, self.y / rhs, self.z / rhs)
     }
 }
@@ -96,13 +96,14 @@ pub fn cross(a: &Vector, b: &Vector) -> Vector {
     Vector::new(x, y, z)
 }
 
-pub fn dot(a: &Vector, b: &Vector) -> f64 {
+pub fn dot(a: &Vector, b: &Vector) -> f32 {
     a.get_x() * b.get_x() + a.get_y() * b.get_y() + a.get_z() * b.get_z()
 }
 
 #[cfg(test)]
 mod test {
-    use crate::point::Point;
+    use crate::close_enough::close_enough;
+use crate::point::Point;
 
     use super::*;
 
@@ -126,13 +127,13 @@ mod test {
         assert_eq!(
             normalized_vector,
             Vector::new(
-                1.0 / (14.0 as f64).sqrt(),
-                2.0 / (14.0 as f64).sqrt(),
-                3.0 / (14.0 as f64).sqrt()
+                1.0 / (14.0f32).sqrt(),
+                2.0 / (14.0f32).sqrt(),
+                3.0 / (14.0f32).sqrt()
             )
         );
 
-        assert_eq!(normalized_vector.get_magnitude(), 1.0);
+        assert!(close_enough(&normalized_vector.get_magnitude(), &1.0));
     }
 
     #[test]
@@ -141,7 +142,7 @@ mod test {
 
         let result = vector.get_magnitude();
 
-        assert_eq!(result, (14.0 as f64).sqrt());
+        assert_eq!(result, (14.0 as f32).sqrt());
     }
 
     #[test]

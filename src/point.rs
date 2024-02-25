@@ -6,36 +6,36 @@ use crate::tuple::Tuple;
 // TODO: Should probably use the "approx_eq" macro here...
 #[derive(PartialEq, Debug, Copy, Clone)]
 pub struct Point {
-    x: f64,
-    y: f64,
-    z: f64,
-    w: f64,
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
 }
 
 impl Point {
-    pub fn new(x: f64, y: f64, z: f64) -> Self {
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
         Point { x, y, z, w: 1.0 }
     }
 
-    pub fn new_with_w(x: f64, y: f64, z: f64, w: f64) -> Self {
+    pub fn new_with_w(x: f32, y: f32, z: f32, w: f32) -> Self {
         Point { x, y, z, w }
     }
 }
 
 impl Tuple for Point {
-    fn get_x(&self) -> f64 {
+    fn get_x(&self) -> f32 {
         self.x
     }
 
-    fn get_y(&self) -> f64 {
+    fn get_y(&self) -> f32 {
         self.y
     }
 
-    fn get_z(&self) -> f64 {
+    fn get_z(&self) -> f32 {
         self.z
     }
 
-    fn get_w(&self) -> f64 {
+    fn get_w(&self) -> f32 {
         0.0
     }
 }
@@ -72,18 +72,18 @@ impl ops::Neg for Point {
     }
 }
 
-impl ops::Mul<f64> for Point {
+impl ops::Mul<f32> for Point {
     type Output = Point;
 
-    fn mul(self, rhs: f64) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self::Output {
         Point::new_with_w(self.x * rhs, self.y * rhs, self.z * rhs, self.w * rhs)
     }
 }
 
-impl ops::Div<f64> for Point {
+impl ops::Div<f32> for Point {
     type Output = Point;
 
-    fn div(self, rhs: f64) -> Self::Output {
+    fn div(self, rhs: f32) -> Self::Output {
         Point::new_with_w(self.x / rhs, self.y / rhs, self.z / rhs, self.w / rhs)
     }
 }
