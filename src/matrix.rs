@@ -594,4 +594,31 @@ mod test {
         let result = matrix.invert().unwrap();
         assert_eq!(result, expected_result);
     }
+
+    #[test]
+    fn multiplying_a_product_by_its_inverse() {
+        let matrix_a = FourByFourMatrix {
+            values: [
+                [3.0, -9.0, 7.0, 3.0],
+                [3.0, -8.0, 2.0, -9.0],
+                [-4.0, 4.0, 4.0, 1.0],
+                [-6.0, -2.0, 0.0, 5.0],
+            ],
+        };
+
+        let matrix_b = FourByFourMatrix {
+            values: [
+                [8.0, 2.0, 2.0, 2.0],
+                [3.0, -1.0, 7.0, 0.0],
+                [7.0, 0.0, 5.0, 4.0],
+                [6.0, -2.0, 0.0, 5.0],
+            ],
+        };
+
+        let product = matrix_a * matrix_b;
+
+        let product_of_product_and_inverse = product * matrix_b.invert().unwrap();
+
+        assert_eq!(product_of_product_and_inverse, matrix_a);
+    }
 }
