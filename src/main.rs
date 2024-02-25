@@ -4,6 +4,7 @@ use std::fs::File;
 use std::io::prelude::*;
 
 mod canvas;
+mod close_enough;
 mod color;
 mod matrix;
 mod point;
@@ -21,8 +22,6 @@ use canvas::Canvas;
 use ppm::create_ppm_from_canvas;
 use prelude::*;
 use vector::Vector;
-
-const EPSILON: f32 = 0.00001;
 
 fn main() -> std::io::Result<()> {
     let velocity = Vector::new(1.0, 1.8, 0.0).normalize() * 11.25;
