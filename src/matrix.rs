@@ -100,7 +100,36 @@ impl FourByFourMatrix {
     }
 
     fn invert(&self) -> Result<FourByFourMatrix, &'static str> {
-        Err("Matrix cannot be inverted.")
+        let determinant = self.calculate_determinant();
+
+        if determinant == 0f32 {
+            return Err("Matrix cannot be inverted.");
+        }
+
+        let mut cofactor_matrix = FourByFourMatrix {
+            values: [[0.0; 4]; 4],
+        };
+
+        for row in 0..4 {
+            for column in 0..4 {
+                cofactor_matrix.values[row][column] = self.calculate_cofactor_at(row, column);
+            }
+        }
+
+        let transposed_cofactor_matrix = cofactor_matrix.transpose();
+
+        let mut inverted_matrix = FourByFourMatrix {
+            values: [[0.0; 4]; 4],
+        };
+
+        for row in 0..4 {
+            for column in 0..4 {
+                inverted_matrix.values[row][column] =
+                    transposed_cofactor_matrix.values[row][column] / determinant;
+            }
+        }
+
+        Ok(inverted_matrix)
     }
 }
 
@@ -553,5 +582,29 @@ mod test {
 
         let result = matrix.invert();
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn inverting_4_by_4_matrix() {
+        let matrix = FourByFourMatrix {
+            values: [
+                [-5.0, 2.0, 6.0, -8.0],
+                [1.0, -5.0, 1.0, 8.0],
+                [7.0, 7.0, -6.0, -7.0],
+                [1.0, -3.0, 7.0, 4.0],
+            ],
+        };
+
+        let expected_result = FourByFourMatrix {
+            values: [
+                [0.21805, 0.45113, 0.24060, -0.04511],
+                [-0.80827, -1.45677, -0.44361, 0.52068],
+                [-0.07895, -0.22368, -0.05263, 0.19737],
+                [-0.52256, -0.81391, -0.30075, 0.30639],
+            ],
+        };
+
+        let result = matrix.invert().unwrap();
+        assert_eq!(result, expected_result);
     }
 }
