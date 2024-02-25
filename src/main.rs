@@ -22,6 +22,8 @@ use ppm::create_ppm_from_canvas;
 use prelude::*;
 use vector::Vector;
 
+const EPSILON: f32 = 0.00001;
+
 fn main() -> std::io::Result<()> {
     let velocity = Vector::new(1.0, 1.8, 0.0).normalize() * 11.25;
     let mut projectile = Projectile::new(Point::new(0.0, 1.0, 0.0), velocity);
