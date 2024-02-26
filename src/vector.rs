@@ -103,7 +103,7 @@ pub fn dot(a: &Vector, b: &Vector) -> f32 {
 #[cfg(test)]
 mod test {
     use crate::close_enough::close_enough;
-use crate::point::Point;
+    use crate::point::Point;
 
     use super::*;
 
