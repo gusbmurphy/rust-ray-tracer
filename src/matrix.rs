@@ -2,11 +2,41 @@ use crate::close_enough::close_enough;
 use std::ops::Mul;
 
 #[derive(Debug, Clone, Copy)]
-struct FourByFourMatrix {
-    values: [[f32; 4]; 4],
+struct Matrix<const S: usize> {
+    values: [[f32; S]; S],
 }
 
-const IDENTITY_MATRIX: FourByFourMatrix = FourByFourMatrix {
+impl<const S: usize> Matrix<S> {
+    pub fn get_row(&self, row: usize) -> &[f32; S] {
+        &self.values[row]
+    }
+
+    pub fn get_column(&self, column: usize) -> [f32; S] {
+        let mut column_values = [0.0f32; S];
+
+        for row in 0..S {
+            column_values[row] = self.values[row][column];
+        }
+
+        column_values
+    }
+}
+
+impl<const S: usize> PartialEq for Matrix<S> {
+    fn eq(&self, other: &Self) -> bool {
+        for row in 0..S {
+            for column in 0..S {
+                if !close_enough(&self.values[row][column], &other.values[row][column]) {
+                    return false;
+                }
+            }
+        }
+
+        true
+    }
+}
+
+const IDENTITY_MATRIX: Matrix<4> = Matrix {
     values: [
         [1.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 0.0, 0.0],
@@ -15,22 +45,8 @@ const IDENTITY_MATRIX: FourByFourMatrix = FourByFourMatrix {
     ],
 };
 
-impl FourByFourMatrix {
-    pub fn get_row(&self, row: usize) -> &[f32; 4] {
-        &self.values[row]
-    }
-
-    pub fn get_column(&self, column: usize) -> [f32; 4] {
-        let mut column_values = [0.0f32; 4];
-
-        for row in 0..4 {
-            column_values[row] = self.values[row][column];
-        }
-
-        column_values
-    }
-
-    pub fn transpose(&self) -> FourByFourMatrix {
+impl Matrix<4> {
+    pub fn transpose(&self) -> Matrix<4> {
         let mut result_values = [[0.0f32; 4]; 4];
 
         for column in 0..4 {
@@ -39,12 +55,12 @@ impl FourByFourMatrix {
             }
         }
 
-        FourByFourMatrix {
+        Matrix {
             values: result_values,
         }
     }
 
-    pub fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> ThreeByThreeMatrix {
+    pub fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> Matrix<3> {
         const SUBMATRIX_SIZE: usize = 3;
         let mut values = [[0.0f32; SUBMATRIX_SIZE]; SUBMATRIX_SIZE];
 
@@ -65,7 +81,7 @@ impl FourByFourMatrix {
             }
         }
 
-        ThreeByThreeMatrix { values }
+        Matrix { values }
     }
 
     fn calculate_minor_at(&self, row: usize, column: usize) -> f32 {
@@ -98,14 +114,14 @@ impl FourByFourMatrix {
         determinant
     }
 
-    fn invert(&self) -> Result<FourByFourMatrix, &'static str> {
+    fn invert(&self) -> Result<Matrix<4>, &'static str> {
         let determinant = self.calculate_determinant();
 
         if determinant == 0f32 {
             return Err("Matrix cannot be inverted.");
         }
 
-        let mut cofactor_matrix = FourByFourMatrix {
+        let mut cofactor_matrix = Matrix {
             values: [[0.0; 4]; 4],
         };
 
@@ -117,7 +133,7 @@ impl FourByFourMatrix {
 
         let transposed_cofactor_matrix = cofactor_matrix.transpose();
 
-        let mut inverted_matrix = FourByFourMatrix {
+        let mut inverted_matrix = Matrix {
             values: [[0.0; 4]; 4],
         };
 
@@ -133,10 +149,10 @@ impl FourByFourMatrix {
 }
 
 // TODO: Handle multiplication of different sized Matrixes handle better.
-impl Mul<FourByFourMatrix> for FourByFourMatrix {
-    type Output = FourByFourMatrix;
+impl Mul<Matrix<4>> for Matrix<4> {
+    type Output = Matrix<4>;
 
-    fn mul(self, rhs: FourByFourMatrix) -> Self::Output {
+    fn mul(self, rhs: Matrix<4>) -> Self::Output {
         let size = self.values.len();
         let mut result_values = [[0.0; 4]; 4];
 
@@ -152,13 +168,13 @@ impl Mul<FourByFourMatrix> for FourByFourMatrix {
             }
         }
 
-        FourByFourMatrix {
+        Matrix {
             values: result_values,
         }
     }
 }
 
-impl Mul<[f32; 4]> for FourByFourMatrix {
+impl Mul<[f32; 4]> for Matrix<4> {
     type Output = [f32; 4];
 
     fn mul(self, rhs: [f32; 4]) -> Self::Output {
@@ -174,41 +190,8 @@ impl Mul<[f32; 4]> for FourByFourMatrix {
     }
 }
 
-impl PartialEq<FourByFourMatrix> for FourByFourMatrix {
-    fn eq(&self, other: &FourByFourMatrix) -> bool {
-        for row in 0..4 {
-            for column in 0..4 {
-                if !close_enough(&self.values[row][column], &other.values[row][column]) {
-                    return false;
-                }
-            }
-        }
-
-        true
-    }
-}
-
-#[derive(Debug, PartialEq)]
-struct ThreeByThreeMatrix {
-    values: [[f32; 3]; 3],
-}
-
-impl ThreeByThreeMatrix {
-    fn get_row(&self, row: usize) -> &[f32; 3] {
-        &self.values[row]
-    }
-
-    fn get_column(&self, column: usize) -> [f32; 3] {
-        let mut column_values = [0.0f32; 3];
-
-        for row in 0..3 {
-            column_values[row] = self.values[row][column];
-        }
-
-        column_values
-    }
-
-    fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> TwoByTwoMatrix {
+impl Matrix<3> {
+    fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> Matrix<2> {
         let mut values = [[0.0f32; 2]; 2];
 
         let mut column_shift = 0;
@@ -228,7 +211,7 @@ impl ThreeByThreeMatrix {
             }
         }
 
-        TwoByTwoMatrix { values }
+        Matrix { values }
     }
 
     fn calculate_minor_at(&self, row: usize, column: usize) -> f32 {
@@ -262,26 +245,7 @@ impl ThreeByThreeMatrix {
     }
 }
 
-#[derive(Debug, PartialEq)]
-struct TwoByTwoMatrix {
-    values: [[f32; 2]; 2],
-}
-
-impl TwoByTwoMatrix {
-    fn get_row(&self, row: usize) -> &[f32; 2] {
-        &self.values[row]
-    }
-
-    fn get_column(&self, column: usize) -> [f32; 2] {
-        let mut column_values = [0.0f32; 2];
-
-        for row in 0..2 {
-            column_values[row] = self.values[row][column];
-        }
-
-        column_values
-    }
-
+impl Matrix<2> {
     pub fn calculate_determinant(&self) -> f32 {
         self.values[0][0] * self.values[1][1] - self.values[0][1] * self.values[1][0]
     }
@@ -293,7 +257,7 @@ mod test {
 
     #[test]
     fn matrix_equality() {
-        let matrix1 = FourByFourMatrix {
+        let matrix1 = Matrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -302,7 +266,7 @@ mod test {
             ],
         };
 
-        let matrix2 = FourByFourMatrix {
+        let matrix2 = Matrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -316,7 +280,7 @@ mod test {
 
     #[test]
     fn matrix_non_equality() {
-        let matrix1 = FourByFourMatrix {
+        let matrix1 = Matrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -325,7 +289,7 @@ mod test {
             ],
         };
 
-        let matrix2 = FourByFourMatrix {
+        let matrix2 = Matrix {
             values: [
                 [9999.0, 2.0, 3.0, 4.0],
                 [5.5, 6.5, 7.5, 8.5],
@@ -339,7 +303,7 @@ mod test {
 
     #[test]
     fn matrix_multiplication() {
-        let matrix1 = FourByFourMatrix {
+        let matrix1 = Matrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [5.0, 6.0, 7.0, 8.0],
@@ -348,7 +312,7 @@ mod test {
             ],
         };
 
-        let matrix2 = FourByFourMatrix {
+        let matrix2 = Matrix {
             values: [
                 [-2.0, 1.0, 2.0, 3.0],
                 [3.0, 2.0, 1.0, -1.0],
@@ -358,7 +322,7 @@ mod test {
         };
 
         let result = matrix1 * matrix2;
-        let expected = FourByFourMatrix {
+        let expected = Matrix {
             values: [
                 [20.0, 22.0, 50.0, 48.0],
                 [44.0, 54.0, 114.0, 108.0],
@@ -379,7 +343,7 @@ mod test {
 
     #[test]
     fn matrix_multiplication_by_tuple() {
-        let matrix = FourByFourMatrix {
+        let matrix = Matrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [2.0, 4.0, 4.0, 2.0],
@@ -397,7 +361,7 @@ mod test {
 
     #[test]
     fn multiplication_by_identity_matrix_returns_original_matrix() {
-        let matrix = FourByFourMatrix {
+        let matrix = Matrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [2.0, 4.0, 4.0, 2.0],
@@ -413,7 +377,7 @@ mod test {
 
     #[test]
     fn matrix_transposition() {
-        let matrix = FourByFourMatrix {
+        let matrix = Matrix {
             values: [
                 [0.0, 9.0, 3.0, 0.0],
                 [9.0, 8.0, 0.0, 8.0],
@@ -423,7 +387,7 @@ mod test {
         };
 
         let transposed_matrix = matrix.transpose();
-        let expected_result = FourByFourMatrix {
+        let expected_result = Matrix {
             values: [
                 [0.0, 9.0, 1.0, 0.0],
                 [9.0, 8.0, 8.0, 0.0],
@@ -444,7 +408,7 @@ mod test {
 
     #[test]
     fn determinant_of_2_by_2_matrix() {
-        let matrix = TwoByTwoMatrix {
+        let matrix = Matrix {
             values: [[1.0, 5.0], [-3.0, 2.0]],
         };
 
@@ -455,12 +419,12 @@ mod test {
 
     #[test]
     fn getting_submatrix_of_3_by_3_matrix() {
-        let matrix = ThreeByThreeMatrix {
+        let matrix = Matrix {
             values: [[1.0, 5.0, 0.0], [-3.0, 2.0, 7.0], [0.0, 6.0, -3.0]],
         };
 
         let submatrix = matrix.get_submatrix(0, 2);
-        let expected = TwoByTwoMatrix {
+        let expected = Matrix {
             values: [[-3.0, 2.0], [0.0, 6.0]],
         };
 
@@ -469,7 +433,7 @@ mod test {
 
     #[test]
     fn getting_submatrix_of_4_by_4_matrix() {
-        let matrix = FourByFourMatrix {
+        let matrix = Matrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [9.0, -3.0, 7.0, 2.0],
@@ -480,7 +444,7 @@ mod test {
 
         let submatrix = matrix.get_submatrix(2, 1);
 
-        let expected = ThreeByThreeMatrix {
+        let expected = Matrix {
             values: [[1.0, 3.0, 4.0], [9.0, 7.0, 2.0], [-8.0, 1.0, 9.0]],
         };
 
@@ -489,7 +453,7 @@ mod test {
 
     #[test]
     fn calculating_minor_of_3_by_3_matrix() {
-        let matrix = ThreeByThreeMatrix {
+        let matrix = Matrix {
             values: [[3.0, 5.0, 0.0], [2.0, -1.0, -7.0], [6.0, -1.0, 5.0]],
         };
 
@@ -498,7 +462,7 @@ mod test {
 
     #[test]
     fn calculating_cofactor_of_3_by_3_matrix() {
-        let matrix = ThreeByThreeMatrix {
+        let matrix = Matrix {
             values: [[3.0, 5.0, 0.0], [2.0, -1.0, -7.0], [6.0, -1.0, 5.0]],
         };
 
@@ -508,7 +472,7 @@ mod test {
 
     #[test]
     fn getting_rows_and_columns_of_matrices() {
-        let four_matrix = FourByFourMatrix {
+        let four_matrix = Matrix {
             values: [
                 [1.0, 2.0, 3.0, 4.0],
                 [9.0, -3.0, 7.0, 2.0],
@@ -519,13 +483,13 @@ mod test {
         assert_eq!(four_matrix.get_row(2).to_owned(), [-32.0, 7.0, 10.0, -2.0]);
         assert_eq!(four_matrix.get_column(1), [2.0, -3.0, 7.0, 13.0]);
 
-        let three_matrix = ThreeByThreeMatrix {
+        let three_matrix = Matrix {
             values: [[3.0, 5.0, 0.0], [2.0, -1.0, -7.0], [6.0, -1.0, 5.0]],
         };
         assert_eq!(three_matrix.get_row(1).to_owned(), [2.0, -1.0, -7.0]);
         assert_eq!(three_matrix.get_column(0), [3.0, 2.0, 6.0]);
 
-        let two_matrix = TwoByTwoMatrix {
+        let two_matrix = Matrix {
             values: [[1.0, 5.0], [-3.0, 2.0]],
         };
         assert_eq!(two_matrix.get_row(1).to_owned(), [-3.0, 2.0]);
@@ -534,7 +498,7 @@ mod test {
 
     #[test]
     fn calculating_determinant_of_3_by_3_matrix() {
-        let matrix = ThreeByThreeMatrix {
+        let matrix = Matrix {
             values: [[1.0, 2.0, 6.0], [-5.0, 8.0, -4.0], [2.0, 6.0, 4.0]],
         };
 
@@ -543,7 +507,7 @@ mod test {
 
     #[test]
     fn calculating_determinant_of_4_by_4_matrix() {
-        let matrix = FourByFourMatrix {
+        let matrix = Matrix {
             values: [
                 [-2.0, -8.0, 3.0, 5.0],
                 [-3.0, 1.0, 7.0, 3.0],
@@ -558,7 +522,7 @@ mod test {
     #[test]
     fn inverting_non_invertable_matrix() {
         // A matrix whose determinant is 0 is not invertable.
-        let matrix = FourByFourMatrix {
+        let matrix = Matrix {
             values: [
                 [-4.0, 2.0, -2.0, -3.0],
                 [9.0, 6.0, 2.0, 6.0],
@@ -573,7 +537,7 @@ mod test {
 
     #[test]
     fn inverting_4_by_4_matrix() {
-        let matrix = FourByFourMatrix {
+        let matrix = Matrix {
             values: [
                 [-5.0, 2.0, 6.0, -8.0],
                 [1.0, -5.0, 1.0, 8.0],
@@ -582,7 +546,7 @@ mod test {
             ],
         };
 
-        let expected_result = FourByFourMatrix {
+        let expected_result = Matrix {
             values: [
                 [0.21805, 0.45113, 0.24060, -0.04511],
                 [-0.80827, -1.45677, -0.44361, 0.52068],
@@ -597,7 +561,7 @@ mod test {
 
     #[test]
     fn multiplying_a_product_by_its_inverse() {
-        let matrix_a = FourByFourMatrix {
+        let matrix_a = Matrix {
             values: [
                 [3.0, -9.0, 7.0, 3.0],
                 [3.0, -8.0, 2.0, -9.0],
@@ -606,7 +570,7 @@ mod test {
             ],
         };
 
-        let matrix_b = FourByFourMatrix {
+        let matrix_b = Matrix {
             values: [
                 [8.0, 2.0, 2.0, 2.0],
                 [3.0, -1.0, 7.0, 0.0],
