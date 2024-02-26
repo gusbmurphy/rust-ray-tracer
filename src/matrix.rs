@@ -20,6 +20,20 @@ impl<const S: usize> Matrix<S> {
 
         column_values
     }
+
+    pub fn transpose(&self) -> Matrix<S> {
+        let mut result_values = [[0.0f32; S]; S];
+
+        for column in 0..S {
+            for row in 0..S {
+                result_values[row][column] = self.values[column][row];
+            }
+        }
+
+        Matrix {
+            values: result_values,
+        }
+    }
 }
 
 impl<const S: usize> PartialEq for Matrix<S> {
@@ -46,20 +60,6 @@ const IDENTITY_MATRIX: Matrix<4> = Matrix {
 };
 
 impl Matrix<4> {
-    pub fn transpose(&self) -> Matrix<4> {
-        let mut result_values = [[0.0f32; 4]; 4];
-
-        for column in 0..4 {
-            for row in 0..4 {
-                result_values[row][column] = self.values[column][row];
-            }
-        }
-
-        Matrix {
-            values: result_values,
-        }
-    }
-
     pub fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> Matrix<3> {
         const SUBMATRIX_SIZE: usize = 3;
         let mut values = [[0.0f32; SUBMATRIX_SIZE]; SUBMATRIX_SIZE];
