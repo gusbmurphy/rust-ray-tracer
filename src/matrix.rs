@@ -148,19 +148,17 @@ impl Matrix<4> {
     }
 }
 
-// TODO: Handle multiplication of different sized Matrixes handle better.
-impl Mul<Matrix<4>> for Matrix<4> {
-    type Output = Matrix<4>;
+impl<const S: usize> Mul<Matrix<S>> for Matrix<S> {
+    type Output = Matrix<S>;
 
-    fn mul(self, rhs: Matrix<4>) -> Self::Output {
-        let size = self.values.len();
-        let mut result_values = [[0.0; 4]; 4];
+    fn mul(self, rhs: Matrix<S>) -> Self::Output {
+        let mut result_values = [[0.0; S]; S];
 
-        for column_index in 0..size {
-            for row_index in 0..size {
+        for column_index in 0..S {
+            for row_index in 0..S {
                 let mut value = 0.0;
 
-                for i in 0..size {
+                for i in 0..S {
                     value += self.get_row(row_index)[i] * rhs.get_column(column_index)[i];
                 }
 
@@ -174,14 +172,14 @@ impl Mul<Matrix<4>> for Matrix<4> {
     }
 }
 
-impl Mul<[f32; 4]> for Matrix<4> {
-    type Output = [f32; 4];
+impl<const S: usize> Mul<[f32; S]> for Matrix<S> {
+    type Output = [f32; S];
 
-    fn mul(self, rhs: [f32; 4]) -> Self::Output {
-        let mut result = [0.0f32; 4];
+    fn mul(self, rhs: [f32; S]) -> Self::Output {
+        let mut result = [0.0f32; S];
 
-        for row in 0..4 {
-            for column in 0..4 {
+        for row in 0..S {
+            for column in 0..S {
                 result[row] += self.get_row(row)[column] * rhs[column];
             }
         }
