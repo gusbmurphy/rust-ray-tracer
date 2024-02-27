@@ -1,9 +1,8 @@
 use std::ops;
 
-use crate::{point::Point, tuple::Tuple};
+use crate::{close_enough::close_enough, point::Point, tuple::Tuple};
 
-// TODO: Should probably use the "approx_eq" macro here...
-#[derive(PartialEq, Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Vector {
     x: f32,
     y: f32,
@@ -85,6 +84,14 @@ impl ops::Div<f32> for Vector {
 
     fn div(self, rhs: f32) -> Self::Output {
         Vector::new(self.x / rhs, self.y / rhs, self.z / rhs)
+    }
+}
+
+impl PartialEq<Vector> for Vector {
+    fn eq(&self, other: &Vector) -> bool {
+        close_enough(&self.x, &other.x)
+            && close_enough(&self.y, &other.y)
+            && close_enough(&self.z, &other.z)
     }
 }
 
