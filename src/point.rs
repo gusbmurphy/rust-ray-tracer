@@ -1,10 +1,7 @@
-use crate::vector::Vector;
+use crate::{close_enough::close_enough, tuple::Tuple, vector::Vector};
 use std::ops;
 
-use crate::tuple::Tuple;
-
-// TODO: Should probably use the "approx_eq" macro here...
-#[derive(PartialEq, Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Point {
     x: f32,
     y: f32,
@@ -37,6 +34,15 @@ impl Tuple for Point {
 
     fn get_w(&self) -> f32 {
         0.0
+    }
+}
+
+impl PartialEq<Point> for Point {
+    fn eq(&self, other: &Point) -> bool {
+        close_enough(&self.x, &other.x)
+            && close_enough(&self.y, &other.y)
+            && close_enough(&self.z, &other.z)
+            && close_enough(&self.w, &other.w)
     }
 }
 
