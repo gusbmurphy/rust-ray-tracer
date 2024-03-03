@@ -2,11 +2,15 @@ use crate::close_enough::close_enough;
 use std::ops::Mul;
 
 #[derive(Debug, Clone, Copy)]
-struct Matrix<const S: usize> {
+pub struct Matrix<const S: usize> {
     values: [[f32; S]; S],
 }
 
 impl<const S: usize> Matrix<S> {
+    pub fn new(values: [[f32; S]; S]) -> Self {
+        Matrix { values }
+    }
+
     pub fn get_row(&self, row: usize) -> &[f32; S] {
         &self.values[row]
     }
