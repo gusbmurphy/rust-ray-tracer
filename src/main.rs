@@ -10,6 +10,7 @@ mod matrix;
 mod point;
 mod ppm;
 mod projectile_tick;
+mod translation;
 mod tuple;
 mod vector;
 
