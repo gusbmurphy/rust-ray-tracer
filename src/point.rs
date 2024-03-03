@@ -33,7 +33,7 @@ impl Tuple for Point {
     }
 
     fn get_w(&self) -> f32 {
-        0.0
+        1.0
     }
 }
 
