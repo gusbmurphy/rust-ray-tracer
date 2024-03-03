@@ -21,6 +21,19 @@ impl Translation {
             matrix: Matrix::new(matrix_values),
         }
     }
+
+    pub fn invert(&self) -> Result<Translation, &'static str> {
+        let inversion_result = self.matrix.invert();
+
+        match inversion_result {
+            Ok(inverted_matrix) => {
+                Ok(Translation { matrix: inverted_matrix })
+            },
+            Err(error) => {
+                Err(error)
+            }
+        }
+    }
 }
 
 impl ops::Mul<Point> for Translation {
@@ -43,6 +56,18 @@ mod test {
 
         let result = translation * point;
         let expected = Point::new(2.0, 1.0, 7.0);
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn multiplying_point_by_the_inverse_of_a_translation() {
+        let translation = Translation::new(5.0, -3.0, 2.0);
+        let inverse = translation.invert().unwrap();
+        let point = Point::new(-3.0, 4.0, 5.0);
+
+        let result = inverse * point;
+        let expected = Point::new(-8.0, 7.0, 3.0);
 
         assert_eq!(result, expected);
     }

@@ -118,7 +118,7 @@ impl Matrix<4> {
         determinant
     }
 
-    fn invert(&self) -> Result<Matrix<4>, &'static str> {
+    pub fn invert(&self) -> Result<Matrix<4>, &'static str> {
         let determinant = self.calculate_determinant();
 
         if determinant == 0f32 {
