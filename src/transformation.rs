@@ -36,17 +36,19 @@ impl Transformation {
     }
 }
 
-impl ops::Mul<Point> for Transformation {
-    type Output = Point;
+impl<T: Tuple> ops::Mul<T> for Transformation {
+    type Output = T;
 
-    fn mul(self, p: Point) -> Self::Output {
-        let point_values = self.matrix * [p.get_x(), p.get_y(), p.get_z(), p.get_w()];
-        Point::new(point_values[0], point_values[1], point_values[2])
+    fn mul(self, rhs: T) -> Self::Output {
+        let point_values = self.matrix * [rhs.get_x(), rhs.get_y(), rhs.get_z(), rhs.get_w()];
+        T::new(point_values[0], point_values[1], point_values[2])
     }
 }
 
 #[cfg(test)]
 mod test {
+    use crate::vector::Vector;
+
     use super::*;
 
     #[test]
@@ -70,5 +72,15 @@ mod test {
         let expected = Point::new(-8.0, 7.0, 3.0);
 
         assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn translation_does_not_affect_vectors() {
+        let translation = Transformation::new_translation(5.0, -3.0, 2.0);
+        let vector = Vector::new(-3.0, 4.0, 5.0);
+
+        let result = translation * vector;
+
+        assert_eq!(result, vector);
     }
 }
