@@ -38,6 +38,10 @@ impl<const S: usize> Matrix<S> {
             values: result_values,
         }
     }
+
+    pub fn set_value(&self, at_col: usize, at_row: usize, value: f32) {
+        self.values[at_row][at_col] = value;
+    }
 }
 
 impl<const S: usize> PartialEq for Matrix<S> {
