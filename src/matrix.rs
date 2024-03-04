@@ -58,7 +58,7 @@ impl<const S: usize> PartialEq for Matrix<S> {
     }
 }
 
-const IDENTITY_MATRIX: Matrix<4> = Matrix {
+pub const IDENTITY_MATRIX: Matrix<4> = Matrix {
     values: [
         [1.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 0.0, 0.0],
