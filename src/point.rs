@@ -10,10 +10,6 @@ pub struct Point {
 }
 
 impl Point {
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Point { x, y, z, w: 1.0 }
-    }
-
     pub fn new_with_w(x: f32, y: f32, z: f32, w: f32) -> Self {
         Point { x, y, z, w }
     }
@@ -34,6 +30,10 @@ impl Tuple for Point {
 
     fn get_w(&self) -> f32 {
         1.0
+    }
+
+    fn new(x: f32, y: f32, z: f32) -> Self {
+        Point { x, y, z, w: 1.0 }
     }
 }
 

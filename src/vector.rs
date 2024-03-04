@@ -10,10 +10,6 @@ pub struct Vector {
 }
 
 impl Vector {
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Vector { x, y, z }
-    }
-
     pub fn normalize(&self) -> Self {
         let magnitude = self.get_magnitude();
 
@@ -36,6 +32,10 @@ impl Tuple for Vector {
 
     fn get_w(&self) -> f32 {
         0.0
+    }
+
+    fn new(x: f32, y: f32, z: f32) -> Self {
+        Vector { x, y, z }
     }
 }
 
