@@ -4,12 +4,12 @@ use crate::matrix::Matrix;
 use crate::point::Point;
 use crate::Tuple;
 
-struct Translation {
+struct Transformation {
     matrix: Matrix<4>,
 }
 
-impl Translation {
-    pub fn new(x: f32, y: f32, z: f32) -> Translation {
+impl Transformation {
+    pub fn new_translation(x: f32, y: f32, z: f32) -> Self {
         let matrix_values = [
             [1.0, 0.0, 0.0, x],
             [0.0, 1.0, 0.0, y],
@@ -17,17 +17,17 @@ impl Translation {
             [0.0, 0.0, 0.0, 1.0],
         ];
 
-        Translation {
+        Transformation {
             matrix: Matrix::new(matrix_values),
         }
     }
 
-    pub fn invert(&self) -> Result<Translation, &'static str> {
+    pub fn invert(&self) -> Result<Transformation, &'static str> {
         let inversion_result = self.matrix.invert();
 
         match inversion_result {
             Ok(inverted_matrix) => {
-                Ok(Translation { matrix: inverted_matrix })
+                Ok(Transformation { matrix: inverted_matrix })
             },
             Err(error) => {
                 Err(error)
@@ -36,7 +36,7 @@ impl Translation {
     }
 }
 
-impl ops::Mul<Point> for Translation {
+impl ops::Mul<Point> for Transformation {
     type Output = Point;
 
     fn mul(self, p: Point) -> Self::Output {
@@ -51,7 +51,7 @@ mod test {
 
     #[test]
     fn multiplying_point_by_a_translation() {
-        let translation = Translation::new(5.0, -3.0, 2.0);
+        let translation = Transformation::new_translation(5.0, -3.0, 2.0);
         let point = Point::new(-3.0, 4.0, 5.0);
 
         let result = translation * point;
@@ -62,7 +62,7 @@ mod test {
 
     #[test]
     fn multiplying_point_by_the_inverse_of_a_translation() {
-        let translation = Translation::new(5.0, -3.0, 2.0);
+        let translation = Transformation::new_translation(5.0, -3.0, 2.0);
         let inverse = translation.invert().unwrap();
         let point = Point::new(-3.0, 4.0, 5.0);
 
