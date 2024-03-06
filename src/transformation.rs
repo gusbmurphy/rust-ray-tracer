@@ -129,4 +129,15 @@ mod test {
 
         assert_eq!(result, expected);
     }
+
+    #[test]
+    fn reflection_is_scaling_by_a_negative_value() {
+        let scaling = Transformation::new_scaling(-1.0, 1.0, 1.0);
+        let point = Point::new(2.0, 3.0, 4.0);
+
+        let result = scaling * point;
+        let expected = Point::new(-2.0, 3.0, 4.0);
+
+        assert_eq!(result, expected);
+    }
 }
