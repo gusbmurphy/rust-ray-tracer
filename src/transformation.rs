@@ -105,4 +105,15 @@ mod test {
 
         assert_eq!(result, expected);
     }
+
+    #[test]
+    fn scaling_a_vector() {
+        let scaling = Transformation::new_scaling(2.0, 3.0, 4.0);
+        let vector = Vector::new(-4.0, 6.0, 8.0);
+        
+        let result = scaling * vector;
+        let expected = Vector::new(-8.0, 18.0, 32.0);
+
+        assert_eq!(result, expected);
+    }
 }
