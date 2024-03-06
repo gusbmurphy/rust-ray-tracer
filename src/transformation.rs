@@ -1,7 +1,6 @@
 use std::ops;
 
 use crate::matrix::Matrix;
-use crate::point::Point;
 use crate::Tuple;
 
 struct Transformation {
@@ -48,6 +47,7 @@ impl<T: Tuple> ops::Mul<T> for Transformation {
 #[cfg(test)]
 mod test {
     use crate::vector::Vector;
+    use crate::point::Point;
 
     use super::*;
 
