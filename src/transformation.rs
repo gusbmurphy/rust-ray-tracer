@@ -9,15 +9,14 @@ struct Transformation {
 
 impl Transformation {
     pub fn new_translation(x: f32, y: f32, z: f32) -> Self {
-        let matrix_values = [
-            [1.0, 0.0, 0.0, x],
-            [0.0, 1.0, 0.0, y],
-            [0.0, 0.0, 1.0, z],
-            [0.0, 0.0, 0.0, 1.0],
-        ];
+        let mut matrix = IDENTITY_MATRIX;
+
+        matrix.set_value(3, 0, x);
+        matrix.set_value(3, 1, y);
+        matrix.set_value(3, 2, z);
 
         Transformation {
-            matrix: Matrix::new(matrix_values),
+            matrix
         }
     }
 
