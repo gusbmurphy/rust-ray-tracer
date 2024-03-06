@@ -116,4 +116,17 @@ mod test {
 
         assert_eq!(result, expected);
     }
+
+    #[test]
+    fn multiplying_by_the_inverse_of_a_scaling() {
+        let scaling = Transformation::new_scaling(2.0, 3.0, 4.0);
+        let inversion = scaling.invert().unwrap();
+
+        let vector = Vector::new(-4.0, 6.0, 8.0);
+        
+        let result = inversion * vector;
+        let expected = Vector::new(-2.0, 2.0, 2.0);
+
+        assert_eq!(result, expected);
+    }
 }
