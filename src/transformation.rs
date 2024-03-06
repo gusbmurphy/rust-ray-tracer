@@ -1,6 +1,6 @@
 use std::ops;
 
-use crate::matrix::Matrix;
+use crate::matrix::{Matrix, IDENTITY_MATRIX};
 use crate::Tuple;
 
 struct Transformation {
@@ -18,6 +18,18 @@ impl Transformation {
 
         Transformation {
             matrix: Matrix::new(matrix_values),
+        }
+    }
+
+    pub fn new_scaling(x: f32, y: f32, z: f32) -> Self {
+        let mut matrix = IDENTITY_MATRIX;
+        
+        matrix.set_value(0, 0, x);
+        matrix.set_value(1, 1, y);
+        matrix.set_value(2, 2, z);
+
+        Transformation {
+            matrix
         }
     }
 
@@ -82,5 +94,16 @@ mod test {
         let result = translation * vector;
 
         assert_eq!(result, vector);
+    }
+
+    #[test]
+    fn scaling_a_point() {
+        let scaling = Transformation::new_scaling(2.0, 3.0, 4.0);
+        let point = Point::new(-4.0, 6.0, 8.0);
+        
+        let result = scaling * point;
+        let expected = Point::new(-8.0, 18.0, 32.0);
+
+        assert_eq!(result, expected);
     }
 }
