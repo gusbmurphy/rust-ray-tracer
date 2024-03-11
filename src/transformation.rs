@@ -102,6 +102,16 @@ impl<T: Tuple> ops::Mul<T> for Transformation {
     }
 }
 
+impl ops::Mul<Transformation> for Transformation {
+    type Output = Transformation;
+
+    fn mul(self, rhs: Transformation) -> Self::Output {
+        Transformation {
+            matrix: self.matrix * rhs.matrix,
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use std::f32::consts::PI;
