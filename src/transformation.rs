@@ -61,7 +61,14 @@ impl Transformation {
         Transformation { matrix }
     }
 
-    pub fn new_shearing(x_to_y: f32, x_to_z: f32, y_to_x: f32, y_to_z: f32, z_to_x: f32, z_to_y: f32) -> Self {
+    pub fn new_shearing(
+        x_to_y: f32,
+        x_to_z: f32,
+        y_to_x: f32,
+        y_to_z: f32,
+        z_to_x: f32,
+        z_to_y: f32,
+    ) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value(1, 0, x_to_y);
