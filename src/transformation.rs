@@ -61,6 +61,19 @@ impl Transformation {
         Transformation { matrix }
     }
 
+    pub fn new_shearing(x_to_y: f32, x_to_z: f32, y_to_x: f32, y_to_z: f32, z_to_x: f32, z_to_y: f32) -> Self {
+        let mut matrix = IDENTITY_MATRIX;
+
+        matrix.set_value(1, 0, x_to_y);
+        matrix.set_value(2, 0, x_to_z);
+        matrix.set_value(0, 1, y_to_x);
+        matrix.set_value(2, 1, y_to_z);
+        matrix.set_value(0, 2, z_to_x);
+        matrix.set_value(1, 2, z_to_y);
+
+        Transformation { matrix }
+    }
+
     pub fn invert(&self) -> Result<Transformation, &'static str> {
         let inversion_result = self.matrix.invert();
 
@@ -223,5 +236,53 @@ mod test {
             Point::new(-2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0, 0.0)
         );
         assert_eq!(full_quarter * point, Point::new(-1.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn shearing_transformation_moves_x_in_proportion_to_y() {
+        let point = Point::new(2.0, 3.0, 4.0);
+        let shearing = Transformation::new_shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+        assert_eq!(shearing * point, Point::new(5.0, 3.0, 4.0))
+    }
+
+    #[test]
+    fn shearing_transformation_moves_x_in_proportion_to_z() {
+        let point = Point::new(2.0, 3.0, 4.0);
+        let shearing = Transformation::new_shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+
+        assert_eq!(shearing * point, Point::new(6.0, 3.0, 4.0))
+    }
+
+    #[test]
+    fn shearing_transformation_moves_y_in_proportion_to_x() {
+        let point = Point::new(2.0, 3.0, 4.0);
+        let shearing = Transformation::new_shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+
+        assert_eq!(shearing * point, Point::new(2.0, 5.0, 4.0))
+    }
+
+    #[test]
+    fn shearing_transformation_moves_y_in_proportion_to_z() {
+        let point = Point::new(2.0, 3.0, 4.0);
+        let shearing = Transformation::new_shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+
+        assert_eq!(shearing * point, Point::new(2.0, 7.0, 4.0))
+    }
+
+    #[test]
+    fn shearing_transformation_moves_z_in_proportion_to_x() {
+        let point = Point::new(2.0, 3.0, 4.0);
+        let shearing = Transformation::new_shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+        assert_eq!(shearing * point, Point::new(2.0, 3.0, 6.0))
+    }
+
+    #[test]
+    fn shearing_transformation_moves_z_in_proportion_to_y() {
+        let point = Point::new(2.0, 3.0, 4.0);
+        let shearing = Transformation::new_shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+
+        assert_eq!(shearing * point, Point::new(2.0, 3.0, 7.0))
     }
 }
