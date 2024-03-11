@@ -302,4 +302,35 @@ mod test {
 
         assert_eq!(shearing * point, Point::new(2.0, 3.0, 7.0))
     }
+
+    #[test]
+    fn individual_transformations_are_applied_in_sequence() {
+        let point = Point::new(1.0, 0.0, 1.0);
+
+        let rotation = Transformation::new_x_rotation(PI / 2.0);
+        let scaling = Transformation::new_scaling(5.0, 5.0, 5.0);
+        let translation = Transformation::new_translation(10.0, 5.0, 7.0);
+
+        let point_after_rotation = rotation * point;
+        assert_eq!(point_after_rotation, Point::new(1.0, -1.0, 0.0));
+
+        let point_after_scaling = scaling * point_after_rotation;
+        assert_eq!(point_after_scaling, Point::new(5.0, -5.0, 0.0));
+
+        let point_after_translation = translation * point_after_scaling;
+        assert_eq!(point_after_translation, Point::new(15.0, 0.0, 7.0));
+    }
+
+    #[test]
+    fn chained_tranformations_must_be_applied_in_reverse_order() {
+        let point = Point::new(1.0, 0.0, 1.0);
+
+        let rotation = Transformation::new_x_rotation(PI / 2.0);
+        let scaling = Transformation::new_scaling(5.0, 5.0, 5.0);
+        let translation = Transformation::new_translation(10.0, 5.0, 7.0);
+
+        let combined_transformation = translation * scaling * rotation;
+
+        assert_eq!(combined_transformation * point, Point::new(15.0, 0.0, 7.0));
+    }
 }
