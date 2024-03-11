@@ -50,6 +50,17 @@ impl Transformation {
         Transformation { matrix }
     }
 
+    pub fn new_z_rotation(radians: f32) -> Self {
+        let mut matrix = IDENTITY_MATRIX;
+
+        matrix.set_value(0, 0, radians.cos());
+        matrix.set_value(1, 0, -radians.sin());
+        matrix.set_value(0, 1, radians.sin());
+        matrix.set_value(1, 1, radians.cos());
+
+        Transformation { matrix }
+    }
+
     pub fn invert(&self) -> Result<Transformation, &'static str> {
         let inversion_result = self.matrix.invert();
 
@@ -198,5 +209,19 @@ mod test {
             Point::new(2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0)
         );
         assert_eq!(full_quarter * point, Point::new(1.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn rotating_a_point_around_the_z_axis() {
+        let point = Point::new(0.0, 1.0, 0.0);
+
+        let half_quarter = Transformation::new_z_rotation(PI / 4.0);
+        let full_quarter = Transformation::new_z_rotation(PI / 2.0);
+
+        assert_eq!(
+            half_quarter * point,
+            Point::new(-2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0, 0.0)
+        );
+        assert_eq!(full_quarter * point, Point::new(-1.0, 0.0, 0.0));
     }
 }
