@@ -23,14 +23,12 @@ pub fn draw_projectile_example() -> std::io::Result<()> {
     while projectile.get_position().get_y() > 0.0 {
         let x = projectile.get_position().get_x();
         let y = projectile.get_position().get_y();
-        let z = projectile.get_position().get_z();
 
         canvas.write_pixel(
             x.round() as usize,
             (canvas_height as usize) - y.round() as usize,
             Color::new(1.0, 0.0, 0.0),
         );
-        println!("Projectile is at {:?}", (x, y, z));
         projectile = tick(&environment, projectile);
     }
 
