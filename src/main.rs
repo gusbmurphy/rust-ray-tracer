@@ -25,6 +25,10 @@ use prelude::*;
 use vector::Vector;
 
 fn main() -> std::io::Result<()> {
+    draw_projectile_example()
+}
+
+fn draw_projectile_example() -> std::io::Result<()> {
     let velocity = Vector::new(1.0, 1.8, 0.0).normalize() * 11.25;
     let mut projectile = Projectile::new(Point::new(0.0, 1.0, 0.0), velocity);
 
