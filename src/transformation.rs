@@ -3,7 +3,8 @@ use std::ops;
 use crate::matrix::{Matrix, IDENTITY_MATRIX};
 use crate::Tuple;
 
-struct Transformation {
+#[derive(Clone, Copy)]
+pub struct Transformation {
     matrix: Matrix<4>,
 }
 
