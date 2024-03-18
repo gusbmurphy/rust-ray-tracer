@@ -16,11 +16,11 @@ mod prelude {
     pub use crate::tuple::*;
 }
 
-use clock_example::draw_clock_example;
 use prelude::*;
 use projectile_example::draw_projectile_example;
+use clock_example::draw_clock_example;
 
 fn main() {
     draw_projectile_example();
-    draw_clock_example(1000, 100);
+    draw_clock_example(100, 25);
 }
