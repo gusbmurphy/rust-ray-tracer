@@ -7,7 +7,7 @@ mod prelude {
 }
 
 use crate::example::draw_clock_example_to_file;
-use crate::example::projectile_example::draw_projectile_example_to_file;
+use crate::example::draw_projectile_example_to_file;
 
 fn main() -> Result<(), std::io::Error> {
     let projectile_result = draw_projectile_example_to_file();
