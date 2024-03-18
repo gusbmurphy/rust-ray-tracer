@@ -1,10 +1,8 @@
 use crate::example::projectile_tick::*;
-use crate::point::*;
+use crate::prelude::*;
 use crate::render::canvas::*;
 use crate::render::color::*;
 use crate::render::ppm::*;
-use crate::tuple::*;
-use crate::vector::*;
 use std::fs::File;
 use std::io::prelude::*;
 

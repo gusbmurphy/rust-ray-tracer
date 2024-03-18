@@ -1,10 +1,7 @@
-use crate::point::*;
-use crate::render::canvas::*;
-use crate::render::color::*;
-use crate::render::ppm::*;
-use crate::transformation::*;
-use crate::tuple::*;
-use crate::vector::Vector;
+use crate::prelude::*;
+use crate::render::canvas::Canvas;
+use crate::render::color::Color;
+use crate::render::ppm::create_ppm_from_canvas;
 use std::f32::consts::PI;
 use std::fs::File;
 use std::io::prelude::*;

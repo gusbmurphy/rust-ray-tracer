@@ -1,4 +1,5 @@
-use crate::{close_enough::close_enough, tuple::Tuple, vector::Vector};
+use super::tuple::Tuple;
+use crate::prelude::*;
 use std::ops;
 
 #[derive(Debug, Copy, Clone)]
@@ -96,8 +97,6 @@ impl ops::Div<f32> for Point {
 
 #[cfg(test)]
 mod test {
-    use crate::vector::Vector;
-
     use super::*;
 
     #[test]

@@ -1,5 +1,5 @@
-use crate::render::color::Color;
 use crate::render::canvas::Canvas;
+use crate::render::color::Color;
 
 const MAX_PPM_COLOR_VALUE: u8 = 255;
 const MAX_PPM_LINE_LENGTH: u8 = 70;

@@ -1,4 +1,4 @@
-use crate::{point::Point, vector::Vector};
+use crate::prelude::*;
 
 pub struct Environment {
     gravity: Vector,

@@ -1,7 +1,7 @@
 use std::ops;
 
-use crate::matrix::{Matrix, IDENTITY_MATRIX};
-use crate::Tuple;
+use super::matrix::*;
+use super::tuple::Tuple;
 
 #[derive(Clone, Copy)]
 pub struct Transformation {
@@ -116,9 +116,6 @@ impl ops::Mul<Transformation> for Transformation {
 #[cfg(test)]
 mod test {
     use std::f32::consts::PI;
-
-    use crate::point::Point;
-    use crate::vector::Vector;
 
     use super::*;
 

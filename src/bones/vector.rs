@@ -1,6 +1,7 @@
 use std::ops;
 
-use crate::{close_enough::close_enough, point::Point, tuple::Tuple};
+use super::tuple::Tuple;
+use crate::prelude::*;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vector {
@@ -109,9 +110,6 @@ pub fn dot(a: &Vector, b: &Vector) -> f32 {
 
 #[cfg(test)]
 mod test {
-    use crate::close_enough::close_enough;
-    use crate::point::Point;
-
     use super::*;
 
     #[test]

@@ -1,4 +1,4 @@
-use crate::close_enough::close_enough;
+use crate::prelude::close_enough;
 use std::ops;
 
 #[derive(Debug, Copy, Clone)]
