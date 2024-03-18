@@ -6,7 +6,7 @@ mod prelude {
     pub use crate::bones::*;
 }
 
-use crate::example::clock_example::draw_clock_example_to_file;
+use crate::example::draw_clock_example_to_file;
 use crate::example::projectile_example::draw_projectile_example_to_file;
 
 fn main() -> Result<(), std::io::Error> {
