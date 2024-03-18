@@ -9,7 +9,7 @@ use std::f32::consts::PI;
 use std::fs::File;
 use std::io::prelude::*;
 
-pub fn draw_clock_example(canvas_size: u64, clock_radius: u64) -> std::io::Result<()> {
+pub fn draw_clock_example_to_file(canvas_size: u64, clock_radius: u64) -> std::io::Result<()> {
     let twelve_o_clock = Point::new(0.0, clock_radius as f32, 0.0);
 
     let mut points = Vec::new();

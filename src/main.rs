@@ -17,10 +17,16 @@ mod prelude {
 }
 
 use prelude::*;
-use projectile_example::draw_projectile_example;
-use clock_example::draw_clock_example;
+use projectile_example::draw_projectile_example_to_file;
+use clock_example::draw_clock_example_to_file;
 
-fn main() {
-    draw_projectile_example();
-    draw_clock_example(100, 25);
+fn main() -> Result<(), std::io::Error> {
+    let projectile_result = draw_projectile_example_to_file();
+    let clock_result = draw_clock_example_to_file(100, 25);
+
+    if projectile_result.is_ok() {
+        return clock_result;
+    } else {
+        return projectile_result;
+    }
 }
