@@ -1,12 +1,9 @@
-mod canvas;
-mod clock_example;
 mod close_enough;
 mod color;
 mod matrix;
 mod point;
-mod ppm;
-mod projectile_example;
-mod projectile_tick;
+mod render;
+mod example;
 mod transformation;
 mod tuple;
 mod vector;
@@ -16,9 +13,9 @@ mod prelude {
     pub use crate::tuple::*;
 }
 
+use crate::example::clock_example::draw_clock_example_to_file;
+use crate::example::projectile_example::draw_projectile_example_to_file;
 use prelude::*;
-use projectile_example::draw_projectile_example_to_file;
-use clock_example::draw_clock_example_to_file;
 
 fn main() -> Result<(), std::io::Error> {
     let projectile_result = draw_projectile_example_to_file();

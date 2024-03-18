@@ -1,4 +1,4 @@
-use crate::canvas::Canvas;
+use crate::render::Canvas;
 use crate::color::Color;
 
 const MAX_PPM_COLOR_VALUE: u8 = 255;

@@ -1,7 +1,7 @@
-use crate::canvas::*;
+use crate::render::canvas::*;
 use crate::color::*;
 use crate::point::*;
-use crate::ppm::*;
+use crate::render::ppm::*;
 use crate::transformation::*;
 use crate::tuple::*;
 use crate::vector::Vector;
