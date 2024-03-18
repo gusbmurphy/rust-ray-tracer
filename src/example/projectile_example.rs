@@ -1,7 +1,7 @@
 use crate::example::projectile_tick::*;
-use crate::render::canvas::*;
-use crate::color::*;
 use crate::point::*;
+use crate::render::canvas::*;
+use crate::render::color::*;
 use crate::render::ppm::*;
 use crate::tuple::*;
 use crate::vector::*;

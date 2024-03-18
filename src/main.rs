@@ -1,9 +1,8 @@
 mod close_enough;
-mod color;
+mod example;
 mod matrix;
 mod point;
 mod render;
-mod example;
 mod transformation;
 mod tuple;
 mod vector;

@@ -1,4 +1,4 @@
-use crate::color::Color;
+use crate::render::color::Color;
 
 pub struct Canvas {
     width: u64,

@@ -1,4 +1,3 @@
-pub mod ppm;
 pub mod canvas;
-
-pub use canvas::Canvas;
+pub mod color;
+pub mod ppm;

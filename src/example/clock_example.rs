@@ -1,6 +1,6 @@
-use crate::render::canvas::*;
-use crate::color::*;
 use crate::point::*;
+use crate::render::canvas::*;
+use crate::render::color::*;
 use crate::render::ppm::*;
 use crate::transformation::*;
 use crate::tuple::*;
