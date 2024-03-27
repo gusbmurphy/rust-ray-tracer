@@ -9,7 +9,7 @@ mod prelude {
 use std::fs::File;
 use std::io::prelude::*;
 use crate::example::draw_clock_example_ppm;
-use crate::example::draw_projectile_example_to_file;
+use crate::example::draw_projectile_example_ppm;
 
 fn main() -> Result<(), std::io::Error> {
     let projectile_result = draw_projectile_example_to_file();
@@ -26,6 +26,15 @@ fn draw_clock_example_to_file() -> std::io::Result<()> {
     let ppm_data = draw_clock_example_ppm(100, 25);
 
     let mut file = File::create("clock.ppm")?;
+    file.write_all(ppm_data.as_bytes())?;
+
+    Ok(())
+}
+
+fn draw_projectile_example_to_file() -> std::io::Result<()> {
+    let ppm_data = draw_projectile_example_ppm();
+
+    let mut file = File::create("projectile.ppm")?;
     file.write_all(ppm_data.as_bytes())?;
 
     Ok(())

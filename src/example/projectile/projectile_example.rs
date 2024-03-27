@@ -5,10 +5,8 @@ use crate::prelude::*;
 use crate::render::canvas::Canvas;
 use crate::render::color::*;
 use crate::render::ppm::*;
-use std::fs::File;
-use std::io::prelude::*;
 
-pub fn draw_projectile_example_to_file() -> std::io::Result<()> {
+pub fn draw_projectile_example_ppm() -> String {
     let velocity = Vector::new(1.0, 1.8, 0.0).normalize() * 11.25;
     let mut projectile = Projectile::new(Point::new(0.0, 1.0, 0.0), velocity);
 
@@ -32,9 +30,5 @@ pub fn draw_projectile_example_to_file() -> std::io::Result<()> {
         projectile = tick(&environment, projectile);
     }
 
-    let ppm_data = create_ppm_from_canvas(canvas);
-    let mut file = File::create("projectile.ppm")?;
-    file.write_all(ppm_data.as_bytes())?;
-
-    Ok(())
+    create_ppm_from_canvas(canvas)
 }
