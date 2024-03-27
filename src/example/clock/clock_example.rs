@@ -3,10 +3,8 @@ use crate::render::canvas::Canvas;
 use crate::render::color::Color;
 use crate::render::ppm::create_ppm_from_canvas;
 use std::f32::consts::PI;
-use std::fs::File;
-use std::io::prelude::*;
 
-pub fn draw_clock_example_to_file(canvas_size: u64, clock_radius: u64) -> std::io::Result<()> {
+pub fn draw_clock_example_ppm(canvas_size: u64, clock_radius: u64) -> String {
     let twelve_o_clock = Point::new(0.0, clock_radius as f32, 0.0);
 
     let mut points = Vec::new();
@@ -40,9 +38,5 @@ pub fn draw_clock_example_to_file(canvas_size: u64, clock_radius: u64) -> std::i
         );
     }
 
-    let ppm_data = create_ppm_from_canvas(canvas);
-    let mut file = File::create("clock.ppm")?;
-    file.write_all(ppm_data.as_bytes())?;
-
-    Ok(())
+    create_ppm_from_canvas(canvas)
 }
