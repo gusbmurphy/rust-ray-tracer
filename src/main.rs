@@ -6,10 +6,10 @@ mod prelude {
     pub use crate::bones::*;
 }
 
-use std::fs::File;
-use std::io::prelude::*;
 use crate::example::draw_clock_example_ppm;
 use crate::example::draw_projectile_example_ppm;
+use std::fs::File;
+use std::io::prelude::*;
 
 fn main() -> Result<(), std::io::Error> {
     let projectile_result = draw_projectile_example_to_file();
