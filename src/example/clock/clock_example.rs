@@ -40,3 +40,14 @@ pub fn draw_clock_example_ppm(canvas_size: u64, clock_radius: u64) -> String {
 
     create_ppm_from_canvas(canvas)
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn snapshot() {
+        let result = draw_clock_example_ppm(100, 25);
+        insta::assert_yaml_snapshot!(result);
+    }
+}
