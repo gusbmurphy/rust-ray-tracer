@@ -70,4 +70,24 @@ mod test {
 
         assert_eq!(intersections, None);
     }
+
+    #[test]
+    fn ray_originating_inside_of_a_sphere() {
+        let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+
+        let intersections = ray.intersections_with(sphere);
+
+        assert_eq!(intersections, Some([-1.0, 1.0]));
+    }
+
+    #[test]
+    fn ray_ahead_of_a_sphere() {
+        let ray = Ray::new(Point::new(0.0, 0.0, 5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+
+        let intersections = ray.intersections_with(sphere);
+
+        assert_eq!(intersections, Some([-6.0, -4.0]));
+    }
 }
