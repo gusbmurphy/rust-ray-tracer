@@ -60,4 +60,14 @@ mod test {
 
         assert_eq!(intersections, Some([4.0, 6.0]));
     }
+
+    #[test]
+    fn ray_missing_a_sphere() {
+        let ray = Ray::new(Point::new(0.0, 2.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+
+        let intersections = ray.intersections_with(sphere);
+
+        assert_eq!(intersections, None);
+    }
 }
