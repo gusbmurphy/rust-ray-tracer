@@ -2,6 +2,7 @@ mod close_enough;
 mod matrix;
 mod point;
 mod ray;
+mod sphere;
 mod transformation;
 mod tuple;
 mod vector;

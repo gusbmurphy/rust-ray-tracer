@@ -12,4 +12,8 @@ impl Sphere {
             radius: 1.0
         }
     }
+
+    pub fn get_center(&self) -> Point {
+        self.center
+    }
 }
