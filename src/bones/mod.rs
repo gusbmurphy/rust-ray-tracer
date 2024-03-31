@@ -1,4 +1,5 @@
 mod close_enough;
+mod intersection;
 mod matrix;
 mod point;
 mod ray;
