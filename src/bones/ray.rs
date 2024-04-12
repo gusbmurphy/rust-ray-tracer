@@ -1,6 +1,7 @@
 use crate::bones::sphere::Sphere;
 use crate::prelude::*;
 
+use super::intersection::Intersection;
 use super::vector::dot;
 
 pub struct Ray {
@@ -17,7 +18,13 @@ impl Ray {
         self.origin + self.direction * time
     }
 
-    pub fn intersections_with(&self, sphere: Sphere) -> Option<[f32; 2]> {
+    pub fn intersections_with<'a, 'b>(
+        &'a self,
+        sphere: &'b Sphere,
+    ) -> Option<[Intersection<Sphere>; 2]>
+    where
+        'b: 'a,
+    {
         let vector_from_sphere_to_ray = self.origin - sphere.get_center();
 
         let a = dot(&self.direction, &self.direction);
@@ -33,7 +40,7 @@ impl Ray {
         let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
-        return Some([t1, t2]);
+        return Some([Intersection::new(t1, sphere), Intersection::new(t2, sphere)]);
     }
 }
 
@@ -56,9 +63,20 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
 
-        let intersections = ray.intersections_with(sphere);
+        let intersections = ray.intersections_with(&sphere);
 
-        assert_eq!(intersections, Some([4.0, 6.0]));
+        for intersection in intersections.unwrap() {
+            assert_eq!(*intersection.get_intersected(), sphere);
+        }
+
+        intersections
+            .unwrap()
+            .iter()
+            .any(|intersection| intersection.get_t() == 4.0);
+        intersections
+            .unwrap()
+            .iter()
+            .any(|intersection| intersection.get_t() == 6.0);
     }
 
     #[test]
@@ -66,7 +84,7 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 2.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
 
-        let intersections = ray.intersections_with(sphere);
+        let intersections = ray.intersections_with(&sphere);
 
         assert_eq!(intersections, None);
     }
@@ -76,9 +94,20 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
 
-        let intersections = ray.intersections_with(sphere);
+        let intersections = ray.intersections_with(&sphere);
 
-        assert_eq!(intersections, Some([-1.0, 1.0]));
+        for intersection in intersections.unwrap() {
+            assert_eq!(*intersection.get_intersected(), sphere);
+        }
+
+        intersections
+            .unwrap()
+            .iter()
+            .any(|intersection| intersection.get_t() == -1.0);
+        intersections
+            .unwrap()
+            .iter()
+            .any(|intersection| intersection.get_t() == 1.0);
     }
 
     #[test]
@@ -86,8 +115,19 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, 5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
 
-        let intersections = ray.intersections_with(sphere);
+        let intersections = ray.intersections_with(&sphere);
 
-        assert_eq!(intersections, Some([-6.0, -4.0]));
+        for intersection in intersections.as_ref().unwrap() {
+            assert_eq!(*intersection.get_intersected(), sphere);
+        }
+
+        intersections
+            .unwrap()
+            .iter()
+            .any(|intersection| intersection.get_t() == -6.0);
+        intersections
+            .unwrap()
+            .iter()
+            .any(|intersection| intersection.get_t() == -4.0);
     }
 }

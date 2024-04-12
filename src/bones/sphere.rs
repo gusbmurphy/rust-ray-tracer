@@ -1,5 +1,8 @@
 use crate::prelude::*;
 
+use super::intersection::Intersectable;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Sphere {
     center: Point,
     radius: f32,
@@ -17,3 +20,5 @@ impl Sphere {
         self.center
     }
 }
+
+impl Intersectable for Sphere {}
