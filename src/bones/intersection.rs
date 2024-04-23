@@ -31,15 +31,22 @@ pub fn determine_hit<'a, const S: usize, T>(
 where
     T: Intersectable,
 {
-    let mut lowest_t_intersection: &Intersection<T> = intersections.first().unwrap();
+    let mut lowest_t_intersection: Option<&Intersection<T>> = None;
 
     for intersection in intersections {
-        if intersection.get_t() < lowest_t_intersection.get_t() {
-            lowest_t_intersection = intersection.borrow();
+        if intersection.get_t() > -1f32 {
+            match lowest_t_intersection {
+                None => lowest_t_intersection = Some(intersection),
+                Some(lowest_t) => {
+                    if intersection.get_t() < lowest_t.get_t() {
+                        lowest_t_intersection = Some(intersection.borrow());
+                    }
+                }
+            }
         }
     }
 
-    return Some(lowest_t_intersection);
+    return lowest_t_intersection;
 }
 
 #[cfg(test)]
@@ -58,5 +65,17 @@ mod test {
         let result = determine_hit([&i1, &i2]).unwrap();
 
         assert_eq!(result.to_owned(), i1);
+    }
+
+    #[test]
+    fn the_lowest_positive_t_is_the_hit_when_a_negative_is_present() {
+        let interesected_sphere = Sphere::new();
+
+        let i1 = Intersection::new(-1.0, &interesected_sphere);
+        let i2 = Intersection::new(2.0, &interesected_sphere);
+
+        let result = determine_hit([&i1, &i2]).unwrap();
+
+        assert_eq!(result.to_owned(), i2);
     }
 }
