@@ -4,6 +4,7 @@ use crate::prelude::*;
 use super::intersection::Intersection;
 use super::vector::dot;
 
+#[derive(PartialEq, Debug)]
 pub struct Ray {
     origin: Point,
     direction: Vector,
