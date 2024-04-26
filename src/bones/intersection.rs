@@ -73,8 +73,9 @@ mod test {
 
         let i1 = Intersection::new(-1.0, &interesected_sphere);
         let i2 = Intersection::new(2.0, &interesected_sphere);
+        let i3 = Intersection::new(10.0, &interesected_sphere);
 
-        let result = determine_hit([&i1, &i2]).unwrap();
+        let result = determine_hit([&i1, &i2, &i3]).unwrap();
 
         assert_eq!(result.to_owned(), i2);
     }
