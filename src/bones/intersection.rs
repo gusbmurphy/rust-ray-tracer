@@ -78,4 +78,16 @@ mod test {
 
         assert_eq!(result.to_owned(), i2);
     }
+
+    #[test]
+    fn there_is_no_hit_if_every_t_is_negative() {
+        let interesected_sphere = Sphere::new();
+
+        let i1 = Intersection::new(-1.0, &interesected_sphere);
+        let i2 = Intersection::new(-2.0, &interesected_sphere);
+
+        let result = determine_hit([&i1, &i2]);
+
+        assert!(result.is_none())
+    }
 }
