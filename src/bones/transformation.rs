@@ -1,6 +1,7 @@
 use std::ops;
 
 use super::matrix::*;
+use super::ray::Ray;
 use super::tuple::Tuple;
 
 #[derive(Clone, Copy)]
@@ -103,6 +104,15 @@ impl<T: Tuple> ops::Mul<T> for Transformation {
     }
 }
 
+impl ops::Mul<Ray> for Transformation {
+    type Output = Ray;
+
+    fn mul(self, rhs: Ray) -> Self::Output {
+        let new_origin = self * rhs.get_origin().to_owned();
+        Ray::new(new_origin, rhs.get_direction().to_owned())
+    }
+}
+
 impl ops::Mul<Transformation> for Transformation {
     type Output = Transformation;
 
@@ -116,6 +126,8 @@ impl ops::Mul<Transformation> for Transformation {
 #[cfg(test)]
 mod test {
     use std::f32::consts::PI;
+
+    use crate::bones::ray::Ray;
 
     use super::*;
 
@@ -299,6 +311,19 @@ mod test {
         let shearing = Transformation::new_shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
 
         assert_eq!(shearing * point, Point::new(2.0, 3.0, 7.0))
+    }
+
+    #[test]
+    fn a_ray_is_translatable() {
+        let point = Point::new(1.0, 2.0, 3.0);
+        let vector = Vector::new(0.0, 1.0, 0.0);
+        let ray = Ray::new(point, vector);
+
+        let translation = Transformation::new_translation(3.0, 4.0, 5.0);
+
+        let result = translation * ray;
+
+        assert_eq!(result, Ray::new(Point::new(4.0, 6.0, 8.0), Vector::new(0.0, 1.0, 0.0)))
     }
 
     #[test]
