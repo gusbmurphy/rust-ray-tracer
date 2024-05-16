@@ -15,6 +15,14 @@ impl Ray {
         Ray { origin, direction }
     }
 
+    pub fn get_origin(&self) -> &Point {
+        &self.origin
+    }
+
+    pub fn get_direction(&self) -> &Vector {
+        &self.direction
+    }
+
     pub fn get_position(&self, time: f32) -> Point {
         self.origin + self.direction * time
     }
