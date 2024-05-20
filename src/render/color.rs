@@ -26,6 +26,36 @@ impl Color {
     }
 }
 
+pub const RED: Color = Color {
+    r: 255f32,
+    g: 0f32,
+    b: 0f32,
+};
+
+pub const GREEN: Color = Color {
+    r: 0f32,
+    g: 255f32,
+    b: 0f32,
+};
+
+pub const BLUE: Color = Color {
+    r: 0f32,
+    g: 0f32,
+    b: 255f32,
+};
+
+pub const WHITE: Color = Color {
+    r: 255f32,
+    b: 255f32,
+    g: 255f32,
+};
+
+pub const BLACK: Color = Color {
+    r: 0f32,
+    b: 0f32,
+    g: 0f32,
+};
+
 impl PartialEq for Color {
     fn eq(&self, other: &Self) -> bool {
         close_enough(&self.r, &other.r)
