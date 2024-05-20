@@ -1,10 +1,6 @@
 use crate::prelude::*;
 
-use super::{
-    intersection::Intersectable,
-    matrix::IDENTITY_MATRIX,
-    transformation::Transformation
-};
+use super::{intersection::Intersectable, matrix::IDENTITY_MATRIX, transformation::Transformation};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Sphere {
@@ -56,15 +52,12 @@ mod test {
 
         sphere.set_transform(translation);
 
-        assert!(translation == sphere.get_transform().to_owned() );
+        assert!(translation == sphere.get_transform().to_owned());
     }
 
     #[test]
     fn intersecting_a_scaled_sphere_with_a_ray() {
-        let ray = Ray::new(
-            Point::new(0.0, 0.0, -5.0),
-            Vector::new(0.0, 0.0, 1.0)
-        );
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         let mut sphere = Sphere::new();
         sphere.set_transform(Transformation::new_scaling(2.0, 2.0, 2.0));
@@ -78,10 +71,7 @@ mod test {
 
     #[test]
     fn intersecting_a_translated_sphere_with_a_ray() {
-        let ray = Ray::new(
-            Point::new(0.0, 0.0, -5.0),
-            Vector::new(0.0, 0.0, 1.0)
-        );
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         let mut sphere = Sphere::new();
         sphere.set_transform(Transformation::new_translation(5.0, 0.0, 0.0));
