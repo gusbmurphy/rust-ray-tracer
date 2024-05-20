@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 use super::{
     intersection::Intersectable,
-    matrix::{Matrix, IDENTITY_MATRIX},
+    matrix::IDENTITY_MATRIX,
     transformation::Transformation
 };
 
@@ -10,7 +10,7 @@ use super::{
 pub struct Sphere {
     center: Point,
     radius: f32,
-    transform: Matrix<4>,
+    transform: Transformation,
 }
 
 impl Sphere {
@@ -18,7 +18,7 @@ impl Sphere {
         Sphere {
             center: Point::new(0.0, 0.0, 0.0),
             radius: 1.0,
-            transform: IDENTITY_MATRIX,
+            transform: Transformation::new(IDENTITY_MATRIX),
         }
     }
 
@@ -26,12 +26,12 @@ impl Sphere {
         self.center
     }
 
-    pub fn get_transform(&self) -> &Matrix<4> {
+    pub fn get_transform(&self) -> &Transformation {
         &self.transform
     }
 
     pub fn set_transform(&mut self, transformation: Transformation) {
-        self.transform = transformation.get_matrix().to_owned();
+        self.transform = transformation;
     }
 }
 
@@ -39,6 +39,8 @@ impl Intersectable for Sphere {}
 
 #[cfg(test)]
 mod test {
+    use crate::bones::ray::Ray;
+
     use super::*;
 
     #[test]
@@ -55,5 +57,37 @@ mod test {
         sphere.set_transform(translation);
 
         assert!(translation == sphere.get_transform().to_owned() );
+    }
+
+    #[test]
+    fn intersecting_a_scaled_sphere_with_a_ray() {
+        let ray = Ray::new(
+            Point::new(0.0, 0.0, -5.0),
+            Vector::new(0.0, 0.0, 1.0)
+        );
+
+        let mut sphere = Sphere::new();
+        sphere.set_transform(Transformation::new_scaling(2.0, 2.0, 2.0));
+
+        let intersections = ray.intersections_with(&sphere).unwrap();
+
+        assert_eq!(intersections.len(), 2);
+        assert_eq!(intersections[0].get_t(), 3.0);
+        assert_eq!(intersections[1].get_t(), 7.0);
+    }
+
+    #[test]
+    fn intersecting_a_translated_sphere_with_a_ray() {
+        let ray = Ray::new(
+            Point::new(0.0, 0.0, -5.0),
+            Vector::new(0.0, 0.0, 1.0)
+        );
+
+        let mut sphere = Sphere::new();
+        sphere.set_transform(Transformation::new_translation(5.0, 0.0, 0.0));
+
+        let intersections = ray.intersections_with(&sphere);
+
+        assert!(intersections.is_none());
     }
 }

@@ -34,10 +34,11 @@ impl Ray {
     where
         'b: 'a,
     {
-        let vector_from_sphere_to_ray = self.origin - sphere.get_center();
+        let adjusted_ray = sphere.get_transform().invert().unwrap() * self;
+        let vector_from_sphere_to_ray = *adjusted_ray.get_origin() - sphere.get_center();
 
-        let a = dot(&self.direction, &self.direction);
-        let b = 2f32 * dot(&self.direction, &vector_from_sphere_to_ray);
+        let a = dot(adjusted_ray.get_direction(), adjusted_ray.get_direction());
+        let b = 2f32 * dot(adjusted_ray.get_direction(), &vector_from_sphere_to_ray);
         let c = dot(&vector_from_sphere_to_ray, &vector_from_sphere_to_ray) - 1f32;
 
         let discriminant = b.powi(2) - 4f32 * a * c;
