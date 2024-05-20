@@ -1,6 +1,9 @@
-use crate::{prelude::{ppm::create_ppm_from_canvas, *}, render::canvas::Canvas};
+use crate::{
+    prelude::{ppm::create_ppm_from_canvas, *},
+    render::canvas::Canvas,
+};
 
-pub fn draw_clock_example_ppm() -> String {
+pub fn draw_sphere_example_ppm() -> String {
     let ray_origin = Point::new(0.0, 0.0, 3.0);
 
     let mut sphere = Sphere::new();
