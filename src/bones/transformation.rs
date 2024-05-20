@@ -324,7 +324,10 @@ mod test {
 
         let result = translation * ray;
 
-        assert_eq!(result, Ray::new(Point::new(4.0, 6.0, 8.0), Vector::new(0.0, 1.0, 0.0)))
+        assert_eq!(
+            result,
+            Ray::new(Point::new(4.0, 6.0, 8.0), Vector::new(0.0, 1.0, 0.0))
+        )
     }
 
     #[test]
@@ -337,7 +340,10 @@ mod test {
 
         let result = scaling * ray;
 
-        assert_eq!(result, Ray::new(Point::new(2.0, 6.0, 12.0), Vector::new(0.0, 3.0, 0.0)))
+        assert_eq!(
+            result,
+            Ray::new(Point::new(2.0, 6.0, 12.0), Vector::new(0.0, 3.0, 0.0))
+        )
     }
 
     #[test]
