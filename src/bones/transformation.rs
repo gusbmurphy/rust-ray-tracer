@@ -10,7 +10,7 @@ pub struct Transformation {
 }
 
 impl Transformation {
-    pub fn new_transformation(matrix: Matrix<4>) -> Self {
+    pub fn new(matrix: Matrix<4>) -> Self {
         Transformation { matrix }
     }
 
