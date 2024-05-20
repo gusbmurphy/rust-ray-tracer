@@ -4,7 +4,7 @@ use super::matrix::*;
 use super::ray::Ray;
 use super::tuple::Tuple;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Transformation {
     matrix: Matrix<4>,
 }
