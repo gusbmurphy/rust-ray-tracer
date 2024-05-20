@@ -4,6 +4,7 @@ mod render;
 
 mod prelude {
     pub use crate::bones::*;
+    pub use crate::render::*;
 }
 
 use crate::example::draw_clock_example_ppm;
