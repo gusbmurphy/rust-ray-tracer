@@ -93,6 +93,10 @@ impl Transformation {
             Err(error) => Err(error),
         }
     }
+
+    pub fn get_matrix(&self) -> &Matrix<4> {
+        &self.matrix
+    }
 }
 
 impl<T: Tuple> ops::Mul<T> for Transformation {
