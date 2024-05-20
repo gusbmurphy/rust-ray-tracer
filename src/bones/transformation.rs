@@ -109,7 +109,8 @@ impl ops::Mul<Ray> for Transformation {
 
     fn mul(self, rhs: Ray) -> Self::Output {
         let new_origin = self * rhs.get_origin().to_owned();
-        Ray::new(new_origin, rhs.get_direction().to_owned())
+        let new_direction = self * rhs.get_direction().to_owned();
+        Ray::new(new_origin, new_direction)
     }
 }
 
@@ -324,6 +325,19 @@ mod test {
         let result = translation * ray;
 
         assert_eq!(result, Ray::new(Point::new(4.0, 6.0, 8.0), Vector::new(0.0, 1.0, 0.0)))
+    }
+
+    #[test]
+    fn a_ray_is_scalable() {
+        let point = Point::new(1.0, 2.0, 3.0);
+        let vector = Vector::new(0.0, 1.0, 0.0);
+        let ray = Ray::new(point, vector);
+
+        let scaling = Transformation::new_scaling(2.0, 3.0, 4.0);
+
+        let result = scaling * ray;
+
+        assert_eq!(result, Ray::new(Point::new(2.0, 6.0, 12.0), Vector::new(0.0, 3.0, 0.0)))
     }
 
     #[test]
