@@ -112,10 +112,10 @@ impl<T: Tuple> ops::Mul<T> for Transformation {
     }
 }
 
-impl ops::Mul<Ray> for Transformation {
+impl ops::Mul<&Ray> for Transformation {
     type Output = Ray;
 
-    fn mul(self, rhs: Ray) -> Self::Output {
+    fn mul(self, rhs: &Ray) -> Self::Output {
         let new_origin = self * rhs.get_origin().to_owned();
         let new_direction = self * rhs.get_direction().to_owned();
         Ray::new(new_origin, new_direction)
@@ -336,7 +336,7 @@ mod test {
 
         let translation = Transformation::new_translation(3.0, 4.0, 5.0);
 
-        let result = translation * ray;
+        let result = translation * &ray;
 
         assert_eq!(
             result,
@@ -352,7 +352,7 @@ mod test {
 
         let scaling = Transformation::new_scaling(2.0, 3.0, 4.0);
 
-        let result = scaling * ray;
+        let result = scaling * &ray;
 
         assert_eq!(
             result,
