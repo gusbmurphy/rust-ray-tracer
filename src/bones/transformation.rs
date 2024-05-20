@@ -135,7 +135,7 @@ impl ops::Mul<Transformation> for Transformation {
 impl PartialEq<Matrix<4>> for Transformation {
     fn eq(&self, other: &Matrix<4>) -> bool {
         self.matrix == other.to_owned()
-    }    
+    }
 }
 
 #[cfg(test)]
