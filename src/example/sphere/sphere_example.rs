@@ -21,7 +21,7 @@ pub fn draw_sphere_example_ppm() -> String {
 
             let color = if intersections.is_some() { RED } else { BLACK };
 
-            canvas.write_pixel(x as usize, y as usize, color);
+            canvas.write_pixel(x as usize - 1, y as usize - 1, color);
         }
     }
 
