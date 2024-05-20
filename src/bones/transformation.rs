@@ -10,6 +10,10 @@ pub struct Transformation {
 }
 
 impl Transformation {
+    pub fn new_transformation(matrix: Matrix<4>) -> Self {
+        Transformation { matrix }
+    }
+
     pub fn new_translation(x: f32, y: f32, z: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
