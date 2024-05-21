@@ -1,12 +1,12 @@
 use crate::prelude::*;
 
-use super::{intersection::Intersectable, matrix::IDENTITY_MATRIX, transformation::Transformation};
+use super::{intersection::Intersectable, matrix::IDENTITY_MATRIX, transform::Transform};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Sphere {
     center: Point,
     radius: f32,
-    transform: Transformation,
+    transform: Transform,
 }
 
 impl Sphere {
@@ -14,7 +14,7 @@ impl Sphere {
         Sphere {
             center: Point::new(0.0, 0.0, 0.0),
             radius: 1.0,
-            transform: Transformation::new(IDENTITY_MATRIX),
+            transform: Transform::new(IDENTITY_MATRIX),
         }
     }
 
@@ -22,11 +22,11 @@ impl Sphere {
         self.center
     }
 
-    pub fn get_transform(&self) -> &Transformation {
+    pub fn get_transform(&self) -> &Transform {
         &self.transform
     }
 
-    pub fn set_transform(&mut self, transformation: Transformation) {
+    pub fn set_transform(&mut self, transformation: Transform) {
         self.transform = transformation;
     }
 }
@@ -48,7 +48,7 @@ mod test {
     #[test]
     fn changing_sphere_transform() {
         let mut sphere = Sphere::new();
-        let translation = Transformation::new_translation(2.0, 2.0, 4.0);
+        let translation = Transform::new_translation(2.0, 2.0, 4.0);
 
         sphere.set_transform(translation);
 
@@ -60,7 +60,7 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         let mut sphere = Sphere::new();
-        sphere.set_transform(Transformation::new_scaling(2.0, 2.0, 2.0));
+        sphere.set_transform(Transform::new_scaling(2.0, 2.0, 2.0));
 
         let intersections = ray.intersections_with(&sphere).unwrap();
 
@@ -74,7 +74,7 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         let mut sphere = Sphere::new();
-        sphere.set_transform(Transformation::new_translation(5.0, 0.0, 0.0));
+        sphere.set_transform(Transform::new_translation(5.0, 0.0, 0.0));
 
         let intersections = ray.intersections_with(&sphere);
 

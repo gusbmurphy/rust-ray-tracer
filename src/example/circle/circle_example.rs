@@ -3,7 +3,7 @@ use crate::{
     render::canvas::Canvas,
 };
 
-pub fn draw_circle_example_ppm(transform: Option<Transformation>) -> String {
+pub fn draw_circle_example_ppm(transform: Option<Transform>) -> String {
     let ray_origin = Point::new(0.0, 0.0, 3.0);
 
     let mut sphere = Sphere::new();
@@ -52,20 +52,20 @@ mod test {
 
     #[test]
     fn shrunk_on_y() {
-        let result = draw_circle_example_ppm(Some(Transformation::new_scaling(1.0, 0.5, 1.0)));
+        let result = draw_circle_example_ppm(Some(Transform::new_scaling(1.0, 0.5, 1.0)));
         insta::assert_yaml_snapshot!(result);
     }
 
     #[test]
     fn shrunk_on_x() {
-        let result = draw_circle_example_ppm(Some(Transformation::new_scaling(0.5, 1.0, 1.0)));
+        let result = draw_circle_example_ppm(Some(Transform::new_scaling(0.5, 1.0, 1.0)));
         insta::assert_yaml_snapshot!(result);
     }
 
     #[test]
     fn shrunk_and_rotated() {
         let transform =
-            Transformation::new_z_rotation(PI / 4.0) * Transformation::new_scaling(0.5, 1.0, 1.0);
+            Transform::new_z_rotation(PI / 4.0) * Transform::new_scaling(0.5, 1.0, 1.0);
         let result = draw_circle_example_ppm(Some(transform));
 
         insta::assert_yaml_snapshot!(result);
@@ -73,8 +73,8 @@ mod test {
 
     #[test]
     fn shrunk_and_skewed() {
-        let transform = Transformation::new_shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-            * Transformation::new_scaling(0.5, 1.0, 1.0);
+        let transform = Transform::new_shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+            * Transform::new_scaling(0.5, 1.0, 1.0);
         let result = draw_circle_example_ppm(Some(transform));
 
         insta::assert_yaml_snapshot!(result);

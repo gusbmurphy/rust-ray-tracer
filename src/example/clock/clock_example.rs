@@ -10,7 +10,7 @@ pub fn draw_clock_example_ppm(canvas_size: u64, clock_radius: u64) -> String {
     let mut points = Vec::new();
     points.push(twelve_o_clock);
 
-    let twelth_rotation = Transformation::new_z_rotation(PI / 6.0);
+    let twelth_rotation = Transform::new_z_rotation(PI / 6.0);
 
     for i in 1..12 {
         let last_point = points[i - 1];
