@@ -9,7 +9,7 @@ mod prelude {
 
 use crate::example::draw_clock_example_ppm;
 use crate::example::draw_projectile_example_ppm;
-use crate::example::draw_sphere_example_ppm;
+use crate::example::draw_circle_example_ppm;
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -48,7 +48,7 @@ fn draw_projectile_example_to_file() -> std::io::Result<()> {
 }
 
 fn draw_sphere_example_to_file() -> std::io::Result<()> {
-    let ppm_data = draw_sphere_example_ppm();
+    let ppm_data = draw_circle_example_ppm();
 
     let mut file = File::create("sphere.ppm")?;
     file.write_all(ppm_data.as_bytes())?;

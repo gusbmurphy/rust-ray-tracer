@@ -3,7 +3,7 @@ use crate::{
     render::canvas::Canvas,
 };
 
-pub fn draw_sphere_example_ppm() -> String {
+pub fn draw_circle_example_ppm() -> String {
     let ray_origin = Point::new(0.0, 0.0, 3.0);
 
     let sphere = Sphere::new();

@@ -1,7 +1,7 @@
 mod clock;
 mod projectile;
-mod sphere;
+mod circle;
 
 pub use clock::draw_clock_example_ppm;
 pub use projectile::draw_projectile_example_ppm;
-pub use sphere::draw_sphere_example_ppm;
+pub use circle::draw_circle_example_ppm;
