@@ -64,8 +64,7 @@ mod test {
 
     #[test]
     fn shrunk_and_rotated() {
-        let transform =
-            Transform::new_z_rotation(PI / 4.0) * Transform::new_scaling(0.5, 1.0, 1.0);
+        let transform = Transform::new_z_rotation(PI / 4.0) * Transform::new_scaling(0.5, 1.0, 1.0);
         let result = draw_circle_example_ppm(Some(transform));
 
         insta::assert_yaml_snapshot!(result);
