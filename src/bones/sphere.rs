@@ -29,6 +29,10 @@ impl Sphere {
     pub fn set_transform(&mut self, transformation: Transform) {
         self.transform = transformation;
     }
+
+    pub fn normal_at(&self, point: Point) -> Vector {
+        (point - self.center).normalize()
+    }
 }
 
 impl Intersectable for Sphere {}
@@ -79,5 +83,56 @@ mod test {
         let intersections = ray.intersections_with(&sphere);
 
         assert!(intersections.is_none());
+    }
+
+    #[test]
+    fn getting_normal_on_x_axis() {
+        let sphere = Sphere::new();
+        let normal = sphere.normal_at(Point::new(1.0, 0.0, 0.0));
+
+        assert_eq!(normal, Vector::new(1.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn getting_normal_on_y_axis() {
+        let sphere = Sphere::new();
+        let normal = sphere.normal_at(Point::new(0.0, 1.0, 0.0));
+
+        assert_eq!(normal, Vector::new(0.0, 1.0, 0.0));
+    }
+
+    #[test]
+    fn getting_normal_on_z_axis() {
+        let sphere = Sphere::new();
+        let normal = sphere.normal_at(Point::new(0.0, 0.0, 1.0));
+
+        assert_eq!(normal, Vector::new(0.0, 0.0, 1.0));
+    }
+
+    #[test]
+    fn getting_normal_at_a_nonaxial_point() {
+        let sphere = Sphere::new();
+        let normal = sphere.normal_at(Point::new(
+            3.0f32.sqrt() / 3.0,
+            3.0f32.sqrt() / 3.0,
+            3.0f32.sqrt() / 3.0,
+        ));
+
+        assert_eq!(
+            normal,
+            Vector::new(
+                3.0f32.sqrt() / 3.0,
+                3.0f32.sqrt() / 3.0,
+                3.0f32.sqrt() / 3.0,
+            )
+        );
+    }
+
+    #[test]
+    fn the_normal_is_a_normalized_vector() {
+        let sphere = Sphere::new();
+        let normal = sphere.normal_at(Point::new(0.0, 0.0, 1.0));
+
+        assert_eq!(normal, normal.normalize());
     }
 }
