@@ -3,10 +3,14 @@ use crate::{
     render::canvas::Canvas,
 };
 
-pub fn draw_circle_example_ppm() -> String {
+pub fn draw_circle_example_ppm(transform: Option<Transformation>) -> String {
     let ray_origin = Point::new(0.0, 0.0, 3.0);
 
-    let sphere = Sphere::new();
+    let mut sphere = Sphere::new();
+
+    if let Some(t) = transform {
+        sphere.set_transform(t);
+    }
 
     const WALL_Z: f32 = -6.0;
     const WALL_WIDTH: f32 = 6.0;
@@ -18,7 +22,8 @@ pub fn draw_circle_example_ppm() -> String {
         let wall_x: f32 = (canvas_x as f32 / CANVAS_SIZE as f32) * WALL_WIDTH - (WALL_WIDTH * 0.5);
 
         for canvas_y in 0..CANVAS_SIZE {
-            let wall_y: f32 = (canvas_y as f32 / CANVAS_SIZE as f32) * WALL_WIDTH - (WALL_WIDTH * 0.5);
+            let wall_y: f32 =
+                (canvas_y as f32 / CANVAS_SIZE as f32) * WALL_WIDTH - (WALL_WIDTH * 0.5);
 
             let ray = Ray::new(ray_origin, Vector::new(wall_x, wall_y, WALL_Z));
 
@@ -35,11 +40,43 @@ pub fn draw_circle_example_ppm() -> String {
 
 #[cfg(test)]
 mod test {
+    use std::f32::consts::PI;
+
     use super::*;
 
     #[test]
-    fn snapshot() {
-        let result = draw_circle_example_ppm();
+    fn circle_with_no_transform() {
+        let result = draw_circle_example_ppm(None);
+        insta::assert_yaml_snapshot!(result);
+    }
+
+    #[test]
+    fn shrunk_on_y() {
+        let result = draw_circle_example_ppm(Some(Transformation::new_scaling(1.0, 0.5, 1.0)));
+        insta::assert_yaml_snapshot!(result);
+    }
+
+    #[test]
+    fn shrunk_on_x() {
+        let result = draw_circle_example_ppm(Some(Transformation::new_scaling(0.5, 1.0, 1.0)));
+        insta::assert_yaml_snapshot!(result);
+    }
+
+    #[test]
+    fn shrunk_and_rotated() {
+        let transform =
+            Transformation::new_z_rotation(PI / 4.0) * Transformation::new_scaling(0.5, 1.0, 1.0);
+        let result = draw_circle_example_ppm(Some(transform));
+
+        insta::assert_yaml_snapshot!(result);
+    }
+
+    #[test]
+    fn shrunk_and_skewed() {
+        let transform = Transformation::new_shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+            * Transformation::new_scaling(0.5, 1.0, 1.0);
+        let result = draw_circle_example_ppm(Some(transform));
+
         insta::assert_yaml_snapshot!(result);
     }
 }
