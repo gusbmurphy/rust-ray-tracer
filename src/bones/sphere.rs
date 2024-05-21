@@ -39,6 +39,8 @@ impl Intersectable for Sphere {}
 
 #[cfg(test)]
 mod test {
+    use std::f32::consts::PI;
+
     use crate::bones::ray::Ray;
 
     use super::*;
@@ -134,5 +136,27 @@ mod test {
         let normal = sphere.normal_at(Point::new(0.0, 0.0, 1.0));
 
         assert_eq!(normal, normal.normalize());
+    }
+
+    #[test]
+    fn computing_normal_on_a_translated_sphere() {
+        let mut sphere = Sphere::new();
+        sphere.set_transform(Transform::new_translation(0.0, 1.0, 0.0));
+
+        let normal = sphere.normal_at(Point::new(0.0, 1.70711, -0.70711));
+
+        assert_eq!(normal, Vector::new(0.0, 0.70711, -0.70711));
+    }
+
+    #[test]
+    fn computing_normal_on_a_scaled_and_rotated_sphere() {
+        let mut sphere = Sphere::new();
+        sphere.set_transform(
+            Transform::new_scaling(1.0, 0.5, 1.0) * Transform::new_z_rotation(PI / 5.0),
+        );
+
+        let normal = sphere.normal_at(Point::new(0.0, 2f32.sqrt() / 2.0, -2f32.sqrt() / 2.0));
+
+        assert_eq!(normal, Vector::new(0.0, 0.97014, -0.24254));
     }
 }
