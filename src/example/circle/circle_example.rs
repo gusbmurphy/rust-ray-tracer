@@ -32,3 +32,14 @@ pub fn draw_circle_example_ppm() -> String {
 
     return create_ppm_from_canvas(canvas);
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn snapshot() {
+        let result = draw_circle_example_ppm();
+        insta::assert_yaml_snapshot!(result);
+    }
+}
