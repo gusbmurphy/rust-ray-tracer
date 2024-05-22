@@ -11,4 +11,8 @@ pub trait Tuple {
             as f32)
             .sqrt()
     }
+
+    fn to_array(&self) -> [f32; 4] {
+        [self.get_x(), self.get_y(), self.get_z(), self.get_w()]
+    }
 }
