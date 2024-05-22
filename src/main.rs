@@ -5,6 +5,7 @@ mod render;
 
 mod prelude {
     pub use crate::bones::*;
+    pub use crate::physical::*;
     pub use crate::render::*;
 }
 

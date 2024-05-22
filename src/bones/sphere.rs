@@ -7,6 +7,7 @@ pub struct Sphere {
     center: Point,
     radius: f32,
     transform: Transform,
+    material: Material,
 }
 
 impl Sphere {
@@ -15,6 +16,7 @@ impl Sphere {
             center: Point::new(0.0, 0.0, 0.0),
             radius: 1.0,
             transform: Transform::new(IDENTITY_MATRIX),
+            material: Material::new(),
         }
     }
 
@@ -56,6 +58,12 @@ mod test {
     fn default_sphere_transform() {
         let sphere = Sphere::new();
         assert_eq!(sphere.get_transform().to_owned(), IDENTITY_MATRIX);
+    }
+
+    #[test]
+    fn a_sphere_has_a_default_material() {
+        let sphere = Sphere::new();
+        assert_eq!(sphere.material, Material::new())
     }
 
     #[test]
