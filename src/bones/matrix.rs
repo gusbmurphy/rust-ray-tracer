@@ -122,6 +122,9 @@ impl Matrix<4> {
         determinant
     }
 
+    // TODO: The fact that this returns a Result kind of complicates things,
+    // I wonder if there's a way that we can just avoid having Matrices with
+    // determinants of 0 all together? Is there any use for them?
     pub fn invert(&self) -> Result<Matrix<4>, &'static str> {
         let determinant = self.calculate_determinant();
 
