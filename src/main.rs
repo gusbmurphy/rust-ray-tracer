@@ -1,5 +1,6 @@
 mod bones;
 mod example;
+mod physical;
 mod render;
 
 mod prelude {
