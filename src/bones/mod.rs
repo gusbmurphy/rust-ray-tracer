@@ -14,4 +14,4 @@ pub use ray::Ray;
 pub use sphere::Sphere;
 pub use transform::Transform;
 pub use tuple::Tuple;
-pub use vector::Vector;
+pub use vector::*;

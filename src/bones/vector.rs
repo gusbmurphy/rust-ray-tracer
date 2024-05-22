@@ -17,7 +17,7 @@ impl Vector {
         Vector::new(self.x / magnitude, self.y / magnitude, self.z / magnitude)
     }
 
-    fn reflect_around(&self, reflection_vector: &Vector) -> Vector {
+    pub fn reflect_around(&self, reflection_vector: &Vector) -> Vector {
         self.to_owned() - reflection_vector.to_owned() * 2.0 * dot(self, reflection_vector)
     }
 }

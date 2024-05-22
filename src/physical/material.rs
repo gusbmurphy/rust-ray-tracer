@@ -19,6 +19,26 @@ impl Material {
             shininess: 200.0,
         }
     }
+
+    pub fn get_color(&self) -> Color {
+        self.color
+    }
+
+    pub fn get_ambient(&self) -> f32 {
+        self.ambient
+    }
+
+    pub fn get_diffuse(&self) -> f32 {
+        self.diffuse
+    }
+
+    pub fn get_specular(&self) -> f32 {
+        self.specular
+    }
+
+    pub fn get_shininess(&self) -> f32 {
+        self.shininess
+    }
 }
 
 #[cfg(test)]
