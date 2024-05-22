@@ -16,6 +16,10 @@ impl Vector {
 
         Vector::new(self.x / magnitude, self.y / magnitude, self.z / magnitude)
     }
+
+    fn reflect_around(&self, reflection_vector: &Vector) -> Vector {
+        self.to_owned() - reflection_vector.to_owned() * 2.0 * dot(self, reflection_vector)
+    }
 }
 
 impl Tuple for Vector {
@@ -212,5 +216,15 @@ mod test {
         let result = dot(&a, &b);
 
         assert_eq!(result, 20.0);
+    }
+
+    #[test]
+    fn reflecting_a_vector_at_45_degrees() {
+        let vector = Vector::new(1.0, -1.0, 0.0);
+        let normal = Vector::new(0.0, 1.0, 0.0);
+
+        let reflection = vector.reflect_around(&normal);
+
+        assert_eq!(reflection, Vector::new(1.0, 1.0, 0.0));
     }
 }
