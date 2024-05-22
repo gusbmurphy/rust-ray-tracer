@@ -30,8 +30,15 @@ impl Sphere {
         self.transform = transformation;
     }
 
-    pub fn normal_at(&self, point: Point) -> Vector {
-        (point - self.center).normalize()
+    pub fn normal_at(&self, world_space_point: Point) -> Vector {
+        let transform_inverse = self.transform.invert().unwrap();
+        let object_space_point = transform_inverse * world_space_point;
+
+        let object_space_normal = object_space_point - Point::new(0.0, 0.0, 0.0);
+
+        let world_space_normal = transform_inverse.get_matrix().transpose() * object_space_normal;
+
+        return world_space_normal.normalize();
     }
 }
 
