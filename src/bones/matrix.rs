@@ -199,6 +199,15 @@ impl<const S: usize> Mul<[f32; S]> for Matrix<S> {
     }
 }
 
+impl Mul<Vector> for Matrix<4> {
+    type Output = Vector;
+
+    fn mul(self, rhs: Vector) -> Self::Output {
+        let result_array = self * rhs.to_array();
+        return Vector::new(result_array[0], result_array[1], result_array[2]);
+    }
+}
+
 impl Matrix<3> {
     fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> Matrix<2> {
         let mut values = [[0.0f32; 2]; 2];
