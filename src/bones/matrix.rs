@@ -183,6 +183,8 @@ impl<const S: usize> Mul<Matrix<S>> for Matrix<S> {
     }
 }
 
+// TODO: It seems like there are places where we use arrays of values in 
+// place of the Tuple struct, there's probably a way to be more consistent.
 impl<const S: usize> Mul<[f32; S]> for Matrix<S> {
     type Output = [f32; S];
 
