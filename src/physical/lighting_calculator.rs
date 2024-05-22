@@ -8,6 +8,14 @@ pub struct LightingCalculator {
 }
 
 impl LightingCalculator {
+    pub fn new(eye_vector: Vector, normal_vector: Vector, light: PointLight) -> Self {
+        LightingCalculator {
+            eye_vector,
+            normal_vector,
+            light
+        }
+    }
+
     pub fn get_color_for_material_at(&self, material: Material, position: Point) -> Color {
         let effective_color = material.get_color() * self.light.get_intensity();
 
