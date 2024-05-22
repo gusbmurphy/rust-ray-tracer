@@ -227,4 +227,14 @@ mod test {
 
         assert_eq!(reflection, Vector::new(1.0, 1.0, 0.0));
     }
+
+    #[test]
+    fn reflecting_vector_off_a_slanted_surface() {
+        let vector = Vector::new(0.0, -1.0, 0.0);
+        let normal = Vector::new(2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0, 0.0);
+
+        let reflection = vector.reflect_around(&normal);
+
+        assert_eq!(reflection, Vector::new(1.0, 0.0, 0.0));
+    }
 }
