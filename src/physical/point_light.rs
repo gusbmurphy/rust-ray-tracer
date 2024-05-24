@@ -8,7 +8,10 @@ pub struct PointLight {
 
 impl PointLight {
     pub fn new(intensity: Color, position: Point) -> Self {
-        PointLight { intensity, position }
+        PointLight {
+            intensity,
+            position,
+        }
     }
 
     pub fn get_intensity(&self) -> Color {
