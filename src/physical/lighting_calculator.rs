@@ -12,7 +12,7 @@ impl LightingCalculator {
         LightingCalculator {
             eye_vector,
             normal_vector,
-            light
+            light,
         }
     }
 
@@ -41,7 +41,8 @@ impl LightingCalculator {
                 specular_contribution = BLACK;
             } else {
                 let specular_factor = reflection_dot_eye.powf(material.get_shininess());
-                specular_contribution = self.light.get_intensity() * material.get_specular() * specular_factor;
+                specular_contribution =
+                    self.light.get_intensity() * material.get_specular() * specular_factor;
             }
         }
 
