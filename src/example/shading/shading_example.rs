@@ -53,3 +53,14 @@ pub fn draw_shading_example_ppm(transform: Option<Transform>) -> String {
 
     return create_ppm_from_canvas(canvas);
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn snapshot() {
+        let result = draw_shading_example_ppm(None);
+        insta::assert_yaml_snapshot!(result);
+    }
+}
