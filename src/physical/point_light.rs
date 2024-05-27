@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct PointLight {
     intensity: Color,
     position: Point,
