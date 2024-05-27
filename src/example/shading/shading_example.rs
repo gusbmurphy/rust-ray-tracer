@@ -32,20 +32,21 @@ pub fn draw_shading_example_ppm(transform: Option<Transform>) -> String {
 
             let intersections = ray.intersections_with(&sphere);
 
-            let color = if intersections.is_some() { 
+            let color = if intersections.is_some() {
                 let hit_t = intersections.unwrap()[0];
                 let hit_point = ray.get_position(hit_t.get_t());
 
                 let lighting_calculator = LightingCalculator::new(
                     -ray.get_direction().to_owned(),
                     sphere.normal_at(hit_point),
-                    light
+                    light,
                 );
 
-                lighting_calculator.get_color_for_material_at(
-                    sphere.get_material().to_owned(), hit_point
-                )
-            } else { BLACK };
+                lighting_calculator
+                    .get_color_for_material_at(sphere.get_material().to_owned(), hit_point)
+            } else {
+                BLACK
+            };
 
             canvas.write_pixel(canvas_x as usize, canvas_y as usize, color);
         }

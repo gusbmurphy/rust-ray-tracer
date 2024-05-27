@@ -1,4 +1,3 @@
-use crate::bones::sphere::Sphere;
 use crate::prelude::*;
 
 use super::intersection::Intersection;

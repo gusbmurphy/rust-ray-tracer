@@ -23,7 +23,7 @@ impl Material {
     pub fn get_color(&self) -> Color {
         self.color
     }
-    
+
     pub fn set_color(&mut self, color: Color) {
         self.color = color;
     }
@@ -31,7 +31,7 @@ impl Material {
     pub fn get_ambient(&self) -> f32 {
         self.ambient
     }
-    
+
     pub fn set_ambient(&mut self, ambient: f32) {
         self.ambient = ambient;
     }

@@ -142,7 +142,7 @@ impl PartialEq<Matrix<4>> for Transform {
 mod test {
     use std::f32::consts::PI;
 
-    use crate::bones::ray::Ray;
+    use crate::math::ray::Ray;
 
     use super::*;
 

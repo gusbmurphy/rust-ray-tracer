@@ -1,10 +1,10 @@
-mod bones;
 mod example;
+mod math;
 mod physical;
 mod render;
 
 mod prelude {
-    pub use crate::bones::*;
+    pub use crate::math::*;
     pub use crate::physical::*;
     pub use crate::render::*;
 }

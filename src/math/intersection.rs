@@ -51,9 +51,8 @@ where
 
 #[cfg(test)]
 mod test {
-    use crate::bones::sphere::Sphere;
-
     use super::*;
+    use crate::prelude::Sphere;
 
     #[test]
     fn the_lowest_positive_t_among_positives_is_the_hit() {
