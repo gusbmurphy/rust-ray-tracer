@@ -34,6 +34,21 @@ impl World {
             objects: Vec::from([first_sphere, second_sphere]),
         }
     }
+
+    pub fn get_intersections_for<'a, 'b>(&'a self, ray: &'b Ray) -> Vec<Intersection<Sphere>>
+    where
+        'b: 'a,
+    {
+        let mut intersections = Vec::new();
+
+        for object in self.objects.as_slice() {
+            if let Some(actual_intersections) = ray.intersections_with(&object) {
+                intersections.extend(Vec::from(actual_intersections));
+            }
+        }
+
+        intersections
+    }
 }
 
 #[cfg(test)]
@@ -70,5 +85,20 @@ mod test {
         assert!(default_spheres.iter().any(|sphere| {
             sphere.get_transform().to_owned() == Transform::new_scaling(0.5, 0.5, 0.5)
         }));
+    }
+
+    #[test]
+    fn intersecting_a_ray_with_a_world() {
+        let world = World::get_default();
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+
+        let intersections: Vec<Intersection<Sphere>> = world.get_intersections_for(&ray);
+
+        assert_eq!(intersections.len(), 4);
+
+        assert!(intersections.iter().any(|i| i.get_t() == 4.0));
+        assert!(intersections.iter().any(|i| i.get_t() == 4.5));
+        assert!(intersections.iter().any(|i| i.get_t() == 5.5));
+        assert!(intersections.iter().any(|i| i.get_t() == 6.0));
     }
 }
