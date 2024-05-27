@@ -47,6 +47,8 @@ impl World {
             }
         }
 
+        intersections.sort_by(|a, b| a.get_t().total_cmp(&b.get_t()));
+
         intersections
     }
 }
@@ -88,7 +90,7 @@ mod test {
     }
 
     #[test]
-    fn intersecting_a_ray_with_a_world() {
+    fn intersecting_a_ray_with_a_world_gets_all_hits_sorted_in_ascending_order() {
         let world = World::get_default();
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
@@ -96,9 +98,9 @@ mod test {
 
         assert_eq!(intersections.len(), 4);
 
-        assert!(intersections.iter().any(|i| i.get_t() == 4.0));
-        assert!(intersections.iter().any(|i| i.get_t() == 4.5));
-        assert!(intersections.iter().any(|i| i.get_t() == 5.5));
-        assert!(intersections.iter().any(|i| i.get_t() == 6.0));
+        assert_eq!(intersections[0].get_t(), 4.0);
+        assert_eq!(intersections[1].get_t(), 4.5);
+        assert_eq!(intersections[2].get_t(), 5.5);
+        assert_eq!(intersections[3].get_t(), 6.0);
     }
 }
