@@ -1,6 +1,7 @@
 mod lighting_calculator;
 mod material;
 mod point_light;
+mod world;
 
 pub use lighting_calculator::*;
 pub use material::*;

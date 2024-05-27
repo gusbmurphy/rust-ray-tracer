@@ -9,6 +9,7 @@ mod tuple;
 mod vector;
 
 pub use close_enough::close_enough;
+pub use intersection::*;
 pub use point::Point;
 pub use ray::Ray;
 pub use sphere::Sphere;
