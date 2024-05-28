@@ -42,7 +42,13 @@ where
     }
 
     pub fn get_normal_vector(&self) -> Vector {
-        self.intersection.get_intersected().normal_at(self.get_hit_point())
+        let normal = self.intersection.get_intersected().normal_at(self.get_hit_point());
+
+        if self.is_inside() { normal } else { -normal }
+    }
+
+    pub fn is_inside(&self) -> bool {
+        dot(&self.get_eye_vector(), &self.get_normal_vector()) < 0f32
     }
 }
 
@@ -102,6 +108,30 @@ mod test {
 
         let computation = Precomputation::new(&intersection, &ray);
 
+        assert_eq!(computation.get_normal_vector(), Vector::new(0.0, 0.0, -1.0));
+    }
+
+    #[test]
+    fn the_computation_correctly_says_that_we_are_outside_of_the_shape() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+        let intersection = Intersection::new(4.0, &sphere);
+
+        let computation = Precomputation::new(&intersection, &ray);
+
+        assert_eq!(computation.is_inside(), false);
+    }
+
+    #[test]
+    fn when_the_intersection_is_inside_the_vectors_are_correctly_calculated() {
+        let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+        let intersection = Intersection::new(1.0, &sphere);
+
+        let computation = Precomputation::new(&intersection, &ray);
+
+        assert_eq!(computation.is_inside(), true);
+        assert_eq!(computation.get_hit_point(), Point::new(0.0, 0.0, 1.0));
         assert_eq!(computation.get_normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 }
