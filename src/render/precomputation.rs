@@ -40,6 +40,10 @@ where
     pub fn get_eye_vector(&self) -> Vector {
         -self.ray.get_direction().to_owned()
     }
+
+    pub fn get_normal_vector(&self) -> Vector {
+        self.intersection.get_intersected().normal_at(self.get_hit_point())
+    }
 }
 
 #[cfg(test)]
@@ -88,5 +92,16 @@ mod test {
         let computation = Precomputation::new(&intersection, &ray);
 
         assert_eq!(computation.get_eye_vector(), Vector::new(0.0, 0.0, -1.0));
+    }
+
+    #[test]
+    fn normal_vector_is_based_on_the_hit_point_and_the_object() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+        let intersection = Intersection::new(4.0, &sphere);
+
+        let computation = Precomputation::new(&intersection, &ray);
+
+        assert_eq!(computation.get_normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 }
