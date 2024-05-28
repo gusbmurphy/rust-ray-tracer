@@ -9,6 +9,9 @@ where
     ray: &'r Ray,
 }
 
+// TODO: It feels to me like maybe all of this can live just on
+// the Intersection? Like why is it ever helpful to have an
+// intersection with no Ray associated with it?
 impl<'i, 'r, 'o, O> Precomputation<'i, 'r, 'o, O>
 where
     O: Intersectable + 'o,
