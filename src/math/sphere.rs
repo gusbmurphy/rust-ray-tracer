@@ -39,8 +39,10 @@ impl Sphere {
     pub fn set_material(&mut self, material: Material) {
         self.material = material;
     }
+}
 
-    pub fn normal_at(&self, world_space_point: Point) -> Vector {
+impl Intersectable for Sphere {
+    fn normal_at(&self, world_space_point: Point) -> Vector {
         let transform_inverse = self.transform.invert().unwrap();
         let object_space_point = transform_inverse * world_space_point;
 
@@ -51,8 +53,6 @@ impl Sphere {
         return world_space_normal.normalize();
     }
 }
-
-impl Intersectable for Sphere {}
 
 #[cfg(test)]
 mod test {

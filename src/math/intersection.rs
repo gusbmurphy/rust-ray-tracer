@@ -1,4 +1,5 @@
 use std::borrow::Borrow;
+use crate::prelude::*;
 
 #[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Intersection<'a, T> {
@@ -23,7 +24,9 @@ where
     }
 }
 
-pub trait Intersectable {}
+pub trait Intersectable {
+    fn normal_at(&self, world_space_point: Point) -> Vector;
+}
 
 pub fn determine_hit<'a, const S: usize, T>(
     intersections: [&'a Intersection<'a, T>; S],
