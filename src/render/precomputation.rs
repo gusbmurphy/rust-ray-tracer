@@ -24,6 +24,10 @@ where
     pub fn get_t(&self) -> f32 {
         self.intersection.get_t()
     }
+
+    pub fn get_object(&self) -> &O {
+        self.intersection.get_intersected()
+    }
 }
 
 #[cfg(test)]
@@ -39,5 +43,16 @@ mod test {
         let computation = Precomputation::new(&intersection, &ray);
 
         assert_eq!(computation.get_t(), 4.0);
+    }
+
+    #[test]
+    fn the_object_is_correctly_given_based_on_intersection() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -0.5), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+        let intersection = Intersection::new(4.0, &sphere);
+
+        let computation = Precomputation::new(&intersection, &ray);
+
+        assert_eq!(computation.get_object().to_owned(), sphere);
     }
 }
