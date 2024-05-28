@@ -31,6 +31,11 @@ where
     pub fn get_object(&self) -> &O {
         self.intersection.get_intersected()
     }
+
+    pub fn get_hit_point(&self) -> Point {
+        let t = self.intersection.get_t();
+        return self.ray.get_position(t);
+    }
 }
 
 #[cfg(test)]
@@ -57,5 +62,16 @@ mod test {
         let computation = Precomputation::new(&intersection, &ray);
 
         assert_eq!(computation.get_object().to_owned(), sphere);
+    }
+
+    #[test]
+    fn hit_point_is_correct() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+        let intersection = Intersection::new(4.0, &sphere);
+
+        let computation = Precomputation::new(&intersection, &ray);
+
+        assert_eq!(computation.get_hit_point(), Point::new(0.0, 0.0, -1.0));
     }
 }
