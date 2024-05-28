@@ -14,7 +14,7 @@ where
         Intersection { time, object }
     }
 
-    pub fn get_intersected(self) -> &'a T {
+    pub fn get_intersected(&self) -> &'a T {
         self.object
     }
 
