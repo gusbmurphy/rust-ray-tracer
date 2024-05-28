@@ -36,6 +36,10 @@ where
         let t = self.intersection.get_t();
         return self.ray.get_position(t);
     }
+
+    pub fn get_eye_vector(&self) -> Vector {
+        -self.ray.get_direction().to_owned()
+    }
 }
 
 #[cfg(test)]
@@ -73,5 +77,16 @@ mod test {
         let computation = Precomputation::new(&intersection, &ray);
 
         assert_eq!(computation.get_hit_point(), Point::new(0.0, 0.0, -1.0));
+    }
+
+    #[test]
+    fn eye_vector_is_the_opposite_of_the_given_ray() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+        let intersection = Intersection::new(4.0, &sphere);
+
+        let computation = Precomputation::new(&intersection, &ray);
+
+        assert_eq!(computation.get_eye_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 }
