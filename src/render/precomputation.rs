@@ -39,7 +39,7 @@ mod test {
 
     #[test]
     fn time_is_correctly_given_based_on_intersection() {
-        let ray = Ray::new(Point::new(0.0, 0.0, -0.5), Vector::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere);
 
@@ -50,7 +50,7 @@ mod test {
 
     #[test]
     fn the_object_is_correctly_given_based_on_intersection() {
-        let ray = Ray::new(Point::new(0.0, 0.0, -0.5), Vector::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere);
 
