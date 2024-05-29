@@ -145,6 +145,8 @@ mod test {
 
         assert_eq!(computation.is_inside(), true);
         assert_eq!(computation.get_hit_point(), Point::new(0.0, 0.0, 1.0));
+
+        // And the normal is inverted...
         assert_eq!(computation.get_normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 }
