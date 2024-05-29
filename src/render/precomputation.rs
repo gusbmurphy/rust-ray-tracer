@@ -7,6 +7,8 @@ where
 {
     intersection: &'i Intersection<'o, O>,
     ray: &'r Ray,
+    base_normal_vector: Vector,
+    hit_point: Point,
 }
 
 // TODO: It feels to me like maybe all of this can live just on
@@ -18,10 +20,20 @@ where
     'o: 'i,
 {
     pub fn new(intersection: &'i Intersection<'o, O>, ray: &'r Ray) -> Self {
+        let hit_point = Precomputation::calculate_hit_point(intersection, ray);
+        let base_normal_vector = intersection.get_intersected().normal_at(hit_point);
+
         Precomputation {
             intersection,
-            ray
+            ray,
+            base_normal_vector,
+            hit_point,
         }
+    }
+
+    fn calculate_hit_point(intersection: &'i Intersection<'o, O>, ray: &'r Ray) -> Point {
+        let t = intersection.get_t();
+        return ray.get_position(t);
     }
 
     pub fn get_t(&self) -> f32 {
@@ -33,8 +45,7 @@ where
     }
 
     pub fn get_hit_point(&self) -> Point {
-        let t = self.intersection.get_t();
-        return self.ray.get_position(t);
+        self.hit_point
     }
 
     pub fn get_eye_vector(&self) -> Vector {
@@ -42,13 +53,15 @@ where
     }
 
     pub fn get_normal_vector(&self) -> Vector {
-        let normal = self.intersection.get_intersected().normal_at(self.get_hit_point());
-
-        if self.is_inside() { normal } else { -normal }
+        if self.is_inside() {
+            -self.base_normal_vector
+        } else {
+            self.base_normal_vector
+        }
     }
 
     pub fn is_inside(&self) -> bool {
-        dot(&self.get_eye_vector(), &self.get_normal_vector()) < 0f32
+        dot(&self.get_eye_vector(), &self.base_normal_vector) < 0f32
     }
 }
 

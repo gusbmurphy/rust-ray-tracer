@@ -1,5 +1,5 @@
-use std::borrow::Borrow;
 use crate::prelude::*;
+use std::borrow::Borrow;
 
 #[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Intersection<'a, T> {
