@@ -51,6 +51,10 @@ impl World {
 
         intersections
     }
+
+    pub fn get_object(&self, index: usize) -> Option<&Sphere> {
+        self.objects.get(index)
+    }
 }
 
 #[cfg(test)]
@@ -102,5 +106,31 @@ mod test {
         assert_eq!(intersections[1].get_t(), 4.5);
         assert_eq!(intersections[2].get_t(), 5.5);
         assert_eq!(intersections[3].get_t(), 6.0);
+    }
+
+    #[test]
+    fn getting_an_object_returns_the_first_one() {
+        let world = World::get_default();
+
+        let found_object = world.get_object(0).unwrap();
+
+        let mut expected_material = Material::new();
+        expected_material.set_color(Color::new(0.8, 1.0, 0.6));
+        expected_material.set_specular(0.2);
+        expected_material.set_diffuse(0.7);
+
+        let mut expected_object = Sphere::new();
+        expected_object.set_material(expected_material);
+
+        assert_eq!(found_object.to_owned(), expected_object);
+    }
+
+    #[test]
+    fn getting_an_object_returns_nothing_for_a_wild_index() {
+        let world = World::get_default();
+
+        let result = world.get_object(4234);
+
+        assert_eq!(result, None);
     }
 }
