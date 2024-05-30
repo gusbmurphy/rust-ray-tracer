@@ -59,6 +59,10 @@ impl World {
     pub fn get_light(&self) -> &Option<PointLight> {
         &self.light
     }
+
+    pub fn set_light(&mut self, light: PointLight) {
+        self.light = Some(light);
+    }
 }
 
 #[cfg(test)]
