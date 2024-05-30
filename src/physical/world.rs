@@ -63,6 +63,10 @@ impl World {
     pub fn set_light(&mut self, light: PointLight) {
         self.light = Some(light);
     }
+
+    pub fn color_for_ray(&self, ray: Ray) -> Color {
+        BLACK
+    }
 }
 
 #[cfg(test)]
@@ -140,5 +144,15 @@ mod test {
         let result = world.get_object(4234);
 
         assert_eq!(result, None);
+    }
+
+    #[test]
+    fn color_when_ray_misses_everything() {
+        let world = World::get_default();
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 1.0, 0.0));
+
+        let result = world.color_for_ray(ray);
+
+        assert_eq!(result, BLACK);
     }
 }
