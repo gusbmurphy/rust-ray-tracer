@@ -55,6 +55,10 @@ impl World {
     pub fn get_object(&self, index: usize) -> Option<&Sphere> {
         self.objects.get(index)
     }
+
+    pub fn get_light(&self) -> &Option<PointLight> {
+        &self.light
+    }
 }
 
 #[cfg(test)]
