@@ -65,7 +65,12 @@ impl World {
     }
 
     pub fn color_for_ray(&self, ray: Ray) -> Color {
-        BLACK
+        if let Some(intersection) = self.get_intersections_for(&ray).first() {
+            let precomputation = Precomputation::new(intersection, &ray);
+            return shade_hit(self, &precomputation);
+        }
+
+        return BLACK;
     }
 }
 
@@ -154,5 +159,15 @@ mod test {
         let result = world.color_for_ray(ray);
 
         assert_eq!(result, BLACK);
+    }
+
+    #[test]
+    fn color_for_a_hit() {
+        let world = World::get_default();
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+
+        let result = world.color_for_ray(ray);
+
+        assert_eq!(result, Color::new(0.38066, 0.47583, 0.2855));
     }
 }
