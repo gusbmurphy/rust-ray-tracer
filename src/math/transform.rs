@@ -14,8 +14,22 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn new_view(from: Point, to: Point, up: Vector) -> Self {
-        Transform { matrix: IDENTITY_MATRIX }
+    pub fn new_view(from: Point, to: Point, approximate_up: Vector) -> Self {
+        let forward = (to - from).normalize();
+        let left = cross(&forward, &approximate_up.normalize());
+        let true_up = cross(&left, &forward);
+
+        let orientation = Transform::new(Matrix::new([
+            [left.get_x(), left.get_y(), left.get_z(), 0.0],
+            [true_up.get_x(), true_up.get_y(), true_up.get_z(), 0.0],
+            [-forward.get_x(), -forward.get_y(), -forward.get_z(), 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]));
+
+        let orientation_moved_into_place =
+            orientation * Transform::new_translation(-from.get_x(), -from.get_y(), -from.get_z());
+
+        return orientation_moved_into_place;
     }
 
     pub fn new_translation(x: f32, y: f32, z: f32) -> Self {
@@ -404,5 +418,45 @@ mod test {
         let view_transform = Transform::new_view(center, point_to_look_at, up);
 
         assert_eq!(view_transform, IDENTITY_MATRIX);
+    }
+
+    #[test]
+    fn a_view_transformation_looking_in_the_positive_z_direction_is_a_reflection() {
+        let center = Point::new(0.0, 0.0, 0.0);
+        let point_to_look_at = Point::new(0.0, 0.0, 1.0);
+        let up = Vector::new(0.0, 1.0, 0.0);
+
+        let view_transform = Transform::new_view(center, point_to_look_at, up);
+
+        assert_eq!(view_transform, Transform::new_scaling(-1.0, 1.0, -1.0));
+    }
+
+    #[test]
+    fn a_view_transformation_is_the_same_as_a_translation_in_the_opposite_direction() {
+        let center = Point::new(0.0, 0.0, 8.0);
+        let point_to_look_at = Point::new(0.0, 0.0, 0.0);
+        let up = Vector::new(0.0, 1.0, 0.0);
+
+        let view_transform = Transform::new_view(center, point_to_look_at, up);
+
+        assert_eq!(view_transform, Transform::new_translation(0.0, 0.0, -8.0));
+    }
+
+    #[test]
+    fn some_arbitrary_view_transformation_is_constructed_correctly() {
+        let center = Point::new(1.0, 3.0, 2.0);
+        let point_to_look_at = Point::new(4.0, -2.0, 8.0);
+        let up = Vector::new(1.0, 1.0, 0.0);
+
+        let view_transform = Transform::new_view(center, point_to_look_at, up);
+
+        let expected_matrix = Matrix::new([
+            [-0.50709, 0.50709, 0.67612, -2.36643],
+            [0.76772, 0.60609, 0.12122, -2.82843],
+            [-0.35857, 0.59761, -0.71714, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]);
+
+        assert_eq!(view_transform, expected_matrix);
     }
 }
