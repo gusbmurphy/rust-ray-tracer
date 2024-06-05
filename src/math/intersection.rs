@@ -27,9 +27,7 @@ pub trait Intersectable {
     fn normal_at(&self, world_space_point: Point) -> Vector;
 }
 
-pub fn determine_hit<'a, T>(
-    intersections: Vec<Intersection<'a, T>>,
-) -> Option<Intersection<'a, T>>
+pub fn determine_hit<'a, T>(intersections: Vec<Intersection<'a, T>>) -> Option<Intersection<'a, T>>
 where
     T: Intersectable,
 {
