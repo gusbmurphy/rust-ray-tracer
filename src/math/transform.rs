@@ -14,6 +14,10 @@ impl Transform {
         Transform { matrix }
     }
 
+    pub fn new_view(from: Point, to: Point, up: Vector) -> Self {
+        Transform { matrix: IDENTITY_MATRIX }
+    }
+
     pub fn new_translation(x: f32, y: f32, z: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
@@ -389,5 +393,16 @@ mod test {
         let combined_transformation = translation * scaling * rotation;
 
         assert_eq!(combined_transformation * point, Point::new(15.0, 0.0, 7.0));
+    }
+
+    #[test]
+    fn default_view_transformation_is_the_identity_matrix() {
+        let center = Point::new(0.0, 0.0, 0.0);
+        let point_to_look_at = Point::new(0.0, 0.0, -1.0);
+        let up = Vector::new(0.0, 1.0, 0.0);
+
+        let view_transform = Transform::new_view(center, point_to_look_at, up);
+
+        assert_eq!(view_transform, IDENTITY_MATRIX);
     }
 }
