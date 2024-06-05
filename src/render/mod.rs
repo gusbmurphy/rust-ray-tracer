@@ -7,5 +7,5 @@ mod shade_hit;
 pub use canvas::*;
 pub use color::*;
 pub use ppm::*;
-pub use shade_hit::*;
 pub use precomputation::*;
+pub use shade_hit::*;
