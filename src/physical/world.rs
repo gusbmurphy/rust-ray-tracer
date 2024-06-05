@@ -65,8 +65,11 @@ impl World {
     }
 
     pub fn color_for_ray(&self, ray: Ray) -> Color {
-        if let Some(intersection) = self.get_intersections_for(&ray).first() {
-            let precomputation = Precomputation::new(intersection, &ray);
+        let intersections = self.get_intersections_for(&ray);
+        let hit_intersection = determine_hit(intersections);
+
+        if let Some(hit) = hit_intersection {
+            let precomputation = Precomputation::new(&hit, &ray);
             return shade_hit(self, &precomputation);
         }
 
@@ -162,12 +165,40 @@ mod test {
     }
 
     #[test]
-    fn color_for_a_hit() {
+    fn color_for_a_ray_that_hits() {
         let world = World::get_default();
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         let result = world.color_for_ray(ray);
 
         assert_eq!(result, Color::new(0.38066, 0.47583, 0.2855));
+    }
+
+    #[test]
+    fn color_for_a_ray_that_hits_but_originates_inside_a_different_object() {
+        let mut world = World::get_default();
+        let spheres = world.objects.as_slice();
+
+        let mut modified_spheres: Vec<Sphere> = Vec::new();
+
+        // Setting the ambient value of each sphere's material to 1...
+        for sphere in spheres {
+            let mut material = sphere.get_material().to_owned();
+            material.set_ambient(1.0);
+
+            let mut modified_sphere = sphere.clone();
+            modified_sphere.set_material(material);
+
+            modified_spheres.push(modified_sphere);
+        }
+
+        world.objects = modified_spheres;
+
+        let ray = Ray::new(Point::new(0.0, 0.0, 0.75), Vector::new(0.0, 0.0, -1.0));
+
+        let result = world.color_for_ray(ray);
+
+        // Since the ambient is 1, the returned color will be the hit sphere's color
+        assert_eq!(result, Color::new(0.8, 1.0, 0.6));
     }
 }
