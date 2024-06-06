@@ -14,5 +14,6 @@ pub use point::Point;
 pub use ray::Ray;
 pub use sphere::Sphere;
 pub use transform::Transform;
+pub use matrix::IDENTITY_MATRIX;
 pub use tuple::Tuple;
 pub use vector::*;
