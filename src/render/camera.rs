@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-struct Camera {
+pub struct Camera {
     horizontal_size: u64,
     vertical_size: u64,
     field_of_view: f32,

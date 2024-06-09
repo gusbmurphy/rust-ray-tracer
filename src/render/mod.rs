@@ -5,6 +5,7 @@ pub mod ppm;
 mod precomputation;
 mod shade_hit;
 
+pub use camera::Camera;
 pub use canvas::*;
 pub use color::*;
 pub use ppm::*;
