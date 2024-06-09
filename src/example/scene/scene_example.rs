@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use core::f32::consts::PI;
 
-pub fn draw_circle_scene_ppm() -> String {
+pub fn draw_scene_ppm() -> String {
     let mut world = World::new();
 
     let mut floor_material = Material::new();
