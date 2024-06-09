@@ -7,7 +7,7 @@ pub struct Point {
     x: f32,
     y: f32,
     z: f32,
-    w: f32,
+    w: f32, // TODO: Can we get rid of this "w" property?
 }
 
 impl Point {
