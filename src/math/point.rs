@@ -14,7 +14,7 @@ pub const ORIGIN: Point = Point {
     x: 0.0,
     y: 0.0,
     z: 0.0,
-    w: 0.0,
+    w: 1.0,
 };
 
 impl Point {
