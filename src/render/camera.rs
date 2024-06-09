@@ -34,7 +34,7 @@ impl Camera {
     pub fn get_pixel_size(&self) -> f32 {
         (self.get_half_width() * 2.0) / (self.horizontal_size as f32)
     }
-    
+
     pub fn get_ray_for_pixel(&self, pixel_x: u32, pixel_y: u32) -> Ray {
         let x_offset = (pixel_x as f32 + 0.5) * self.get_pixel_size();
         let y_offset = (pixel_y as f32 + 0.5) * self.get_pixel_size();
@@ -45,7 +45,7 @@ impl Camera {
         let origin = self.transform.invert().unwrap() * ORIGIN;
 
         let pixel_position = self.transform.invert().unwrap() * Point::new(world_x, world_y, -1.0);
-        let direction =  (pixel_position - origin).normalize();
+        let direction = (pixel_position - origin).normalize();
 
         Ray::new(origin, direction)
     }
@@ -123,7 +123,10 @@ mod test {
         let ray: Ray = camera.get_ray_for_pixel(0, 0);
 
         assert_eq!(ray.get_origin().to_owned(), ORIGIN);
-        assert_eq!(ray.get_direction().to_owned(), Vector::new(0.66519, 0.33259, -0.66851));
+        assert_eq!(
+            ray.get_direction().to_owned(),
+            Vector::new(0.66519, 0.33259, -0.66851)
+        );
     }
 
     #[test]
