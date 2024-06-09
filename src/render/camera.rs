@@ -1,14 +1,14 @@
 use crate::prelude::*;
 
 struct Camera {
-    horizontal_size: u32,
-    vertical_size: u32,
+    horizontal_size: u64,
+    vertical_size: u64,
     field_of_view: f32,
     transform: Transform,
 }
 
 impl Camera {
-    pub fn new(horizontal_size: u32, vertical_size: u32, field_of_view: f32) -> Self {
+    pub fn new(horizontal_size: u64, vertical_size: u64, field_of_view: f32) -> Self {
         Camera {
             horizontal_size,
             vertical_size,
@@ -18,8 +18,8 @@ impl Camera {
     }
 
     pub fn new_with_transform(
-        horizontal_size: u32,
-        vertical_size: u32,
+        horizontal_size: u64,
+        vertical_size: u64,
         field_of_view: f32,
         transform: Transform,
     ) -> Self {
@@ -31,11 +31,25 @@ impl Camera {
         }
     }
 
+    pub fn render(&self, world: World) -> Canvas {
+        let mut canvas = Canvas::new(self.horizontal_size, self.vertical_size);
+
+        for pixel_x in 0..self.horizontal_size {
+            for pixel_y in 0..self.vertical_size {
+                let ray = self.get_ray_for_pixel(pixel_x, pixel_y);
+                let color = world.color_for_ray(ray);
+                canvas.write_pixel(pixel_x as usize, pixel_y as usize, color);
+            }
+        }
+
+        return canvas;
+    }
+
     pub fn get_pixel_size(&self) -> f32 {
         (self.get_half_width() * 2.0) / (self.horizontal_size as f32)
     }
 
-    pub fn get_ray_for_pixel(&self, pixel_x: u32, pixel_y: u32) -> Ray {
+    pub fn get_ray_for_pixel(&self, pixel_x: u64, pixel_y: u64) -> Ray {
         let x_offset = (pixel_x as f32 + 0.5) * self.get_pixel_size();
         let y_offset = (pixel_y as f32 + 0.5) * self.get_pixel_size();
 
@@ -142,5 +156,20 @@ mod test {
             ray.get_direction().to_owned(),
             Vector::new(2.0f32.sqrt() / 2.0, 0.0, -2.0f32.sqrt() / 2.0)
         );
+    }
+
+    #[test]
+    fn rendering_a_world_has_the_correct_pixel_in_the_center() {
+        let world = World::get_default();
+        let camera_transform = Transform::new_view(
+            Point::new(0.0, 0.0, -5.0),
+            ORIGIN,
+            Vector::new(0.0, 1.0, 0.0),
+        );
+        let camera = Camera::new_with_transform(11, 11, PI / 2.0, camera_transform);
+
+        let canvas: Canvas = camera.render(world);
+
+        assert_eq!(canvas.get_pixel_at(5, 5), Color::new(0.38066, 0.47583, 0.2855));
     }
 }
