@@ -112,7 +112,7 @@ mod test {
 
         let ray: Ray = camera.get_ray_for_pixel(100, 50);
 
-        assert_eq!(ray.get_origin().to_owned(), Point::new(0.0, 0.0, 0.0));
+        assert_eq!(ray.get_origin().to_owned(), ORIGIN);
         assert_eq!(ray.get_direction().to_owned(), Vector::new(0.0, 0.0, -1.0));
     }
 
@@ -122,7 +122,7 @@ mod test {
 
         let ray: Ray = camera.get_ray_for_pixel(0, 0);
 
-        assert_eq!(ray.get_origin().to_owned(), Point::new(0.0, 0.0, 0.0));
+        assert_eq!(ray.get_origin().to_owned(), ORIGIN);
         assert_eq!(ray.get_direction().to_owned(), Vector::new(0.66519, 0.33259, -0.66851));
     }
 
