@@ -75,6 +75,10 @@ impl World {
 
         return BLACK;
     }
+
+    pub fn add_sphere(&mut self, sphere: Sphere) {
+        self.objects.push(sphere);
+    }
 }
 
 #[cfg(test)]
