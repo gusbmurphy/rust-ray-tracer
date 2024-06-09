@@ -1,6 +1,7 @@
 mod circle;
 mod clock;
 mod projectile;
+mod scene;
 mod shading;
 
 pub use circle::draw_circle_example_ppm;
