@@ -10,6 +10,13 @@ pub struct Point {
     w: f32, // TODO: Can we get rid of this "w" property?
 }
 
+pub const ORIGIN: Point = Point {
+    x: 0.0,
+    y: 0.0,
+    z: 0.0,
+    w: 0.0
+};
+
 impl Point {
     pub fn new_with_w(x: f32, y: f32, z: f32, w: f32) -> Self {
         Point { x, y, z, w }
