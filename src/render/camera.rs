@@ -36,7 +36,18 @@ impl Camera {
     }
     
     pub fn get_ray_for_pixel(&self, pixel_x: u32, pixel_y: u32) -> Ray {
-        todo!()
+        let x_offset = (pixel_x as f32 + 0.5) * self.get_pixel_size();
+        let y_offset = (pixel_y as f32 + 0.5) * self.get_pixel_size();
+
+        let world_x = self.get_half_width() - x_offset;
+        let world_y = self.get_half_height() - y_offset;
+
+        let origin = self.transform.invert().unwrap() * ORIGIN;
+
+        let pixel_position = self.transform.invert().unwrap() * Point::new(world_x, world_y, -1.0);
+        let direction =  (pixel_position - origin).normalize();
+
+        Ray::new(origin, direction)
     }
 
     fn get_half_view(&self) -> f32 {
