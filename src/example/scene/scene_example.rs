@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use core::f32::consts::PI;
 
-pub fn draw_scene_ppm() -> String {
+pub fn draw_scene_ppm(horizontal_size: u64, vertical_size: u64) -> String {
     let mut world = World::new();
 
     let mut floor_material = Material::new();
@@ -23,7 +23,8 @@ pub fn draw_scene_ppm() -> String {
         Point::new(0.0, 1.0, 0.0),
         Vector::new(0.0, 1.0, 0.0),
     );
-    let camera = Camera::new_with_transform(100, 50, PI/3.0, camera_transform);
+    let camera =
+        Camera::new_with_transform(horizontal_size, vertical_size, PI / 3.0, camera_transform);
 
     create_ppm_from_canvas(camera.render(world))
 }
@@ -108,4 +109,15 @@ fn create_left_sphere() -> Sphere {
     sphere.set_material(material);
 
     sphere
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn snapshot() {
+        let result = draw_scene_ppm(100, 50);
+        insta::assert_yaml_snapshot!(result);
+    }
 }

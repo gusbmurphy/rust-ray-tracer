@@ -9,6 +9,7 @@ mod prelude {
     pub use crate::render::*;
 }
 
+use example::draw_scene_ppm;
 use example::draw_shading_example_ppm;
 
 use crate::example::draw_circle_example_ppm;
@@ -23,6 +24,7 @@ fn main() -> Result<(), std::io::Error> {
     let clock_result = draw_clock_example_to_file();
     let sphere_result = draw_sphere_example_to_file();
     let shading_result = draw_shading_example_to_file();
+    let scene_result = draw_scene_example_to_file();
 
     if shading_result.is_ok() {
         if sphere_result.is_ok() {
@@ -71,6 +73,15 @@ fn draw_shading_example_to_file() -> std::io::Result<()> {
     let ppm_data = draw_shading_example_ppm(None);
 
     let mut file = File::create("shading.ppm")?;
+    file.write_all(ppm_data.as_bytes())?;
+
+    Ok(())
+}
+
+fn draw_scene_example_to_file() -> std::io::Result<()> {
+    let ppm_data = draw_scene_ppm(1000, 500);
+
+    let mut file = File::create("scene.ppm")?;
     file.write_all(ppm_data.as_bytes())?;
 
     Ok(())
