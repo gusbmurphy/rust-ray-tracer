@@ -1,10 +1,10 @@
 mod example;
-mod math;
+mod geometry;
 mod physical;
 mod render;
 
 mod prelude {
-    pub use crate::math::*;
+    pub use crate::geometry::*;
     pub use crate::physical::*;
     pub use crate::render::*;
 }

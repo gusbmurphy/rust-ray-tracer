@@ -158,11 +158,8 @@ impl PartialEq<Matrix<4>> for Transform {
 
 #[cfg(test)]
 mod test {
-    use std::f32::consts::PI;
-
-    use crate::math::ray::Ray;
-
     use super::*;
+    use std::f32::consts::PI;
 
     #[test]
     fn multiplying_point_by_a_translation() {

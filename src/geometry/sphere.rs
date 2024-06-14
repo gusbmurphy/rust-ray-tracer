@@ -56,11 +56,8 @@ impl Intersectable for Sphere {
 
 #[cfg(test)]
 mod test {
-    use std::f32::consts::PI;
-
-    use crate::math::ray::Ray;
-
     use super::*;
+    use std::f32::consts::PI;
 
     #[test]
     fn default_sphere_transform() {
