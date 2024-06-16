@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 pub struct World {
-    light: Option<PointLight>,
+    light: Option<PointLight>, // I think this needs to be non-optional
     objects: Vec<Sphere>,
 }
 
