@@ -16,7 +16,12 @@ impl LightingCalculator {
         }
     }
 
-    pub fn get_color_for_material_at(&self, material: Material, position: Point, in_shadow: bool) -> Color {
+    pub fn get_color_for_material_at(
+        &self,
+        material: Material,
+        position: Point,
+        in_shadow: bool,
+    ) -> Color {
         let effective_color = material.get_color() * self.light.get_intensity();
 
         let light_vector = (self.light.get_position() - position).normalize();
@@ -32,18 +37,7 @@ impl LightingCalculator {
             specular_contribution = BLACK;
         } else {
             diffuse_contribution = effective_color * material.get_diffuse() * light_dot_normal;
-
-            let reflection_vector = (-light_vector).reflect_around(&self.normal_vector);
-            let reflection_dot_eye = dot(&reflection_vector, &self.eye_vector);
-
-            if reflection_dot_eye < 0.0 {
-                // This means the light reflects away from the eye...
-                specular_contribution = BLACK;
-            } else {
-                let specular_factor = reflection_dot_eye.powf(material.get_shininess());
-                specular_contribution =
-                    self.light.get_intensity() * material.get_specular() * specular_factor;
-            }
+            specular_contribution = self.calculate_specular_contribution(light_vector, material);
         }
 
         let ambient_contribution = effective_color * material.get_ambient();
@@ -53,6 +47,19 @@ impl LightingCalculator {
         }
 
         return ambient_contribution + diffuse_contribution + specular_contribution;
+    }
+
+    fn calculate_specular_contribution(&self, light_vector: Vector, material: Material) -> Color {
+        let reflection_vector = (-light_vector).reflect_around(&self.normal_vector);
+        let reflection_dot_eye = dot(&reflection_vector, &self.eye_vector);
+
+        if reflection_dot_eye < 0.0 {
+            // This means the light reflects away from the eye...
+            return BLACK;
+        } else {
+            let specular_factor = reflection_dot_eye.powf(material.get_shininess());
+            return self.light.get_intensity() * material.get_specular() * specular_factor;
+        }
     }
 }
 
