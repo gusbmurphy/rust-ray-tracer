@@ -11,7 +11,7 @@ pub fn shade_hit(world: &World, precomputation: &Precomputation<Sphere>) -> Colo
     return lighting_calculator.get_color_for_material_at(
         *precomputation.get_object().get_material(),
         precomputation.get_hit_point(),
-        false
+        false,
     );
 }
 

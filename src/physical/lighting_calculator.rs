@@ -48,6 +48,10 @@ impl LightingCalculator {
 
         let ambient_contribution = effective_color * material.get_ambient();
 
+        if in_shadow {
+            return ambient_contribution;
+        }
+
         return ambient_contribution + diffuse_contribution + specular_contribution;
     }
 }
