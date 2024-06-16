@@ -81,6 +81,20 @@ impl World {
     }
 
     pub fn is_point_shadowed(&self, point: &Point) -> bool {
+        let point_to_light_vector = self.light.unwrap().get_position() - point.to_owned();
+        let point_to_light_ray = Ray::new(point.to_owned(), point_to_light_vector.normalize());
+
+        let intersections = self.get_intersections_for(&point_to_light_ray);
+
+        let possible_hit = determine_hit(intersections);
+
+        if let Some(hit) = possible_hit {
+            let distance_from_point_to_light = point_to_light_vector.get_magnitude();
+            if hit.get_t() < distance_from_point_to_light {
+                return true;
+            }
+        }
+
         return false;
     }
 }
@@ -214,6 +228,30 @@ mod test {
     fn there_is_no_shadow_when_nothing_is_collinear_with_point_and_light() {
         let world = World::get_default();
         let point = Point::new(0.0, 10.0, 0.0);
+        let result = world.is_point_shadowed(&point);
+        assert_eq!(result, false);
+    }
+
+    #[test]
+    fn a_point_on_the_opposite_side_of_an_object_to_a_sphere_is_shadowed() {
+        let world = World::get_default();
+        let point = Point::new(10.0, -10.0, 10.0);
+        let result = world.is_point_shadowed(&point);
+        assert_eq!(result, true);
+    }
+
+    #[test]
+    fn when_the_light_is_between_the_object_and_point_there_is_no_shadow() {
+        let world = World::get_default();
+        let point = Point::new(-20.0, 20.0, -20.0);
+        let result = world.is_point_shadowed(&point);
+        assert_eq!(result, false);
+    }
+
+    #[test]
+    fn when_the_point_is_between_the_object_and_light_there_is_no_shadow() {
+        let world = World::get_default();
+        let point = Point::new(-2.0, 2.0, -2.0);
         let result = world.is_point_shadowed(&point);
         assert_eq!(result, false);
     }
