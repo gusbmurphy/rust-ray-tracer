@@ -1,3 +1,5 @@
+use std::f32::EPSILON;
+
 use crate::prelude::*;
 
 pub struct Precomputation<'i, 'r, 'o, O>
@@ -63,10 +65,16 @@ where
     pub fn is_inside(&self) -> bool {
         dot(&self.get_eye_vector(), &self.base_normal_vector) < 0f32
     }
+
+    pub fn get_adjusted_hit_point(&self) -> Point {
+        self.hit_point + self.get_normal_vector() * EPSILON
+    }
 }
 
 #[cfg(test)]
 mod test {
+    use std::f32::EPSILON;
+
     use super::*;
 
     #[test]
@@ -148,5 +156,20 @@ mod test {
 
         // And the normal is inverted...
         assert_eq!(computation.get_normal_vector(), Vector::new(0.0, 0.0, -1.0));
+    }
+
+    #[test]
+    fn the_hit_should_offset_the_point() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+
+        let mut sphere = Sphere::new();
+        sphere.set_transform(Transform::new_translation(0.0, 0.0, 1.0));
+
+        let intersection = Intersection::new(5.0, &sphere);
+
+        let computation = Precomputation::new(&intersection, &ray);
+
+        assert!(computation.get_adjusted_hit_point().get_z() < -EPSILON / 2.0);
+        assert!(computation.get_hit_point().get_z() > computation.get_adjusted_hit_point().get_z());
     }
 }
