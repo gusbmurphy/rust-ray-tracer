@@ -16,7 +16,7 @@ impl LightingCalculator {
         }
     }
 
-    pub fn get_color_for_material_at(&self, material: Material, position: Point) -> Color {
+    pub fn get_color_for_material_at(&self, material: Material, position: Point, in_shadow: bool) -> Color {
         let effective_color = material.get_color() * self.light.get_intensity();
 
         let light_vector = (self.light.get_position() - position).normalize();
@@ -67,7 +67,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point);
+        let result = calculator.get_color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(1.9, 1.9, 1.9));
     }
@@ -83,7 +83,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point);
+        let result = calculator.get_color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(1.0, 1.0, 1.0));
     }
@@ -99,7 +99,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 10.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point);
+        let result = calculator.get_color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(0.7364, 0.7364, 0.7364));
     }
@@ -115,7 +115,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 10.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point);
+        let result = calculator.get_color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(1.63638, 1.63638, 1.63638));
     }
@@ -131,7 +131,23 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, 10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point);
+        let result = calculator.get_color_for_material_at(material, point, false);
+
+        assert_eq!(result, Color::new(0.1, 0.1, 0.1));
+    }
+
+    #[test]
+    fn when_the_surface_is_in_a_shadow_we_only_use_the_ambient_component() {
+        let material = Material::new();
+        let point = Point::new(0.0, 0.0, 0.0);
+
+        let calculator = LightingCalculator {
+            eye_vector: Vector::new(0.0, 0.0, -1.0),
+            normal_vector: Vector::new(0.0, 0.0, -1.0),
+            light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, -10.0)),
+        };
+
+        let result = calculator.get_color_for_material_at(material, point, true);
 
         assert_eq!(result, Color::new(0.1, 0.1, 0.1));
     }

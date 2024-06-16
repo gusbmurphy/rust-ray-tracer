@@ -43,7 +43,7 @@ pub fn draw_shading_example_ppm(transform: Option<Transform>) -> String {
                 );
 
                 lighting_calculator
-                    .get_color_for_material_at(sphere.get_material().to_owned(), hit_point)
+                    .get_color_for_material_at(sphere.get_material().to_owned(), hit_point, false)
             } else {
                 BLACK
             };
