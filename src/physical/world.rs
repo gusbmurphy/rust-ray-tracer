@@ -79,6 +79,10 @@ impl World {
     pub fn add_sphere(&mut self, sphere: Sphere) {
         self.objects.push(sphere);
     }
+
+    pub fn is_point_shadowed(&self, point: &Point) -> bool {
+        return false;
+    }
 }
 
 #[cfg(test)]
@@ -204,5 +208,13 @@ mod test {
 
         // Since the ambient is 1, the returned color will be the hit sphere's color
         assert_eq!(result, Color::new(0.8, 1.0, 0.6));
+    }
+
+    #[test]
+    fn there_is_no_shadow_when_nothing_is_collinear_with_point_and_light() {
+        let world = World::get_default();
+        let point = Point::new(0.0, 10.0, 0.0);
+        let result = world.is_point_shadowed(&point);
+        assert_eq!(result, false);
     }
 }
