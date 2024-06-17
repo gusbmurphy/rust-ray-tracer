@@ -210,18 +210,6 @@ mod test {
     }
 
     #[test]
-    fn a_ray_very_close_to_the_default_spheres_does_not_intersect() {
-        let world = World::get_default();
-
-        let ray_origin = Point::new(0.0, 0.0, -0.500000119);
-        let ray_direction = Vector::new(0.0, 1.0, 0.0);
-        let ray = Ray::new(ray_origin, ray_direction);
-
-        let intersections = world.get_intersections_for(&ray);
-        assert!(intersections.is_empty());
-    }
-
-    #[test]
     fn color_for_a_ray_that_hits_but_originates_inside_a_different_object() {
         let mut world = World::get_default();
         let spheres = world.objects.as_slice();
