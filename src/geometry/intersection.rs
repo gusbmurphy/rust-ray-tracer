@@ -102,4 +102,18 @@ mod test {
 
         assert!(result.is_none())
     }
+
+    #[test]
+    fn the_hit_is_always_the_lowest_nonnegative_intersection() {
+        let interesected_sphere = Sphere::new();
+
+        let i1 = Intersection::new(5.0, &interesected_sphere);
+        let i2 = Intersection::new(7.0, &interesected_sphere);
+        let i3 = Intersection::new(-3.0, &interesected_sphere);
+        let i4 = Intersection::new(2.0, &interesected_sphere);
+
+        let result = determine_hit(vec![i1, i2, i3, i4]).unwrap();
+
+        assert_eq!(result.to_owned(), i4)
+    }
 }
