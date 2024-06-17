@@ -73,8 +73,6 @@ where
 
 #[cfg(test)]
 mod test {
-    use std::f32::EPSILON;
-
     use super::*;
 
     #[test]
