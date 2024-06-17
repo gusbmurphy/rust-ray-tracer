@@ -197,6 +197,31 @@ mod test {
     }
 
     #[test]
+    fn this_hit_in_the_default_should_not_be_in_a_shadow_when_adjusted() {
+        let world = World::get_default();
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+
+        // The intersection will happen with the outermost sphere...
+        let intersection = Intersection::new(4.5, world.get_object(0).unwrap());
+        let computation = Precomputation::new(&intersection, &ray);
+
+        let is_point_shadowed = world.is_point_shadowed(&computation.get_adjusted_hit_point());
+        assert_eq!(is_point_shadowed, false);
+    }
+
+    #[test]
+    fn a_ray_very_close_to_the_default_spheres_does_not_intersect() {
+        let world = World::get_default();
+
+        let ray_origin = Point::new(0.0, 0.0, -0.500000119);
+        let ray_direction = Vector::new(0.0, 1.0, 0.0);
+        let ray = Ray::new(ray_origin, ray_direction);
+
+        let intersections = world.get_intersections_for(&ray);
+        assert!(intersections.is_empty());
+    }
+
+    #[test]
     fn color_for_a_ray_that_hits_but_originates_inside_a_different_object() {
         let mut world = World::get_default();
         let spheres = world.objects.as_slice();
