@@ -159,17 +159,26 @@ mod test {
     }
 
     #[test]
-    fn the_hit_should_offset_the_point() {
+    fn the_adjusted_hit_is_just_slightly_closer_to_the_origin_of_the_ray_than_the_actual_hit() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         let mut sphere = Sphere::new();
         sphere.set_transform(Transform::new_translation(0.0, 0.0, 1.0));
 
+        // The actual hit is right at the origin since the sphere is translated 1.0 in the positive
+        // Z, and only has a radius of 1.0.
+        let actual_hit = ORIGIN;
+
         let intersection = Intersection::new(5.0, &sphere);
-
         let computation = Precomputation::new(&intersection, &ray);
+        let adjusted_hit = computation.get_adjusted_hit_point();
 
-        assert!(computation.get_adjusted_hit_point().get_z() < -EPSILON / 2.0);
-        assert!(computation.get_hit_point().get_z() > computation.get_adjusted_hit_point().get_z());
+        // The actual hit and the adjusted one should have the same X and Y values...
+        assert_eq!(adjusted_hit.get_x(), actual_hit.get_x());
+        assert_eq!(adjusted_hit.get_y(), actual_hit.get_y());
+
+        // ...but the Z value of the adjusted one should be less than the actual one because the
+        // origin is in the negative Z direction...
+        assert!(adjusted_hit.get_z() < actual_hit.get_z());
     }
 }
