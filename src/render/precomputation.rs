@@ -1,5 +1,3 @@
-use std::f32::EPSILON;
-
 use crate::prelude::*;
 
 pub struct Precomputation<'i, 'r, 'o, O>

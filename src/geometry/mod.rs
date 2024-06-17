@@ -8,7 +8,7 @@ mod transform;
 mod tuple;
 mod vector;
 
-pub use close_enough::close_enough;
+pub use close_enough::*;
 pub use intersection::*;
 pub use matrix::IDENTITY_MATRIX;
 pub use point::*;
