@@ -8,10 +8,13 @@ pub fn shade_hit(world: &World, precomputation: &Precomputation<Sphere>) -> Colo
         world.get_light().to_owned().unwrap(),
     );
 
+    let adjusted_hit = precomputation.get_adjusted_hit_point();
+    let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
+
     return lighting_calculator.get_color_for_material_at(
         *precomputation.get_object().get_material(),
-        precomputation.get_hit_point(),
-        false,
+        adjusted_hit,
+        hit_is_in_shadow,
     );
 }
 

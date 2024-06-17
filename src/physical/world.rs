@@ -229,12 +229,13 @@ mod test {
 
         world.objects = modified_spheres;
 
+        // This ray originates inside of the outermost sphere, and is pointed at the inner one.
         let ray = Ray::new(Point::new(0.0, 0.0, 0.75), Vector::new(0.0, 0.0, -1.0));
 
         let result = world.color_for_ray(ray);
 
-        // Since the ambient is 1, the returned color will be the hit sphere's color
-        assert_eq!(result, Color::new(0.8, 1.0, 0.6));
+        // Since the ambient is 1, the color will just be the color of that inner sphere.
+        assert_eq!(result, Color::new(1.0, 1.0, 1.0));
     }
 
     #[test]
@@ -281,10 +282,10 @@ mod test {
         world.add_sphere(sphere_one);
 
         let mut sphere_two = Sphere::new();
-        sphere_two.set_transform(Transform::new_translation(0.0, 0.0, 10.0));
+        sphere_two.set_transform(Transform::new_translation(0.0, 0.0, -5.0));
         world.add_sphere(sphere_two);
 
-        let ray = Ray::new(Point::new(0.0, 0.0, 5.0), Vector::new(0.0, 0.0, 1.0));
+        let ray = Ray::new(Point::new(0.0, 0.0, -3.0), Vector::new(0.0, 0.0, 1.0));
 
         let result = world.color_for_ray(ray);
 
