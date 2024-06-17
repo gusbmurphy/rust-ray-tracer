@@ -181,4 +181,26 @@ mod test {
         // origin is in the negative Z direction...
         assert!(adjusted_hit.get_z() < actual_hit.get_z());
     }
+
+    #[test]
+    fn an_adjusted_hit_is_not_shadowed_by_the_object_it_hit() {
+        // Given a world with a single sphere just off the origin and a light facing it...
+        let mut world = World::new();
+
+        let light = PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, -5.0));
+        world.set_light(light);
+
+        let mut sphere = Sphere::new();
+        sphere.set_transform(Transform::new_translation(0.0, 0.0, 1.0));
+
+        // ...and a ray that hits the sphere at the origin...
+        let ray = Ray::new(Point::new(0.0, 0.0, -3.0), Vector::new(0.0, 0.0, 1.0));
+        let intersection = Intersection::new(3.0, &sphere);
+
+        // ...then that hit (when adjusted) should not be shadowed.
+        let computation = Precomputation::new(&intersection, &ray);
+        let adjusted_hit = computation.get_adjusted_hit_point();
+
+        assert_eq!(world.is_point_shadowed(&adjusted_hit), false);
+    }
 }
