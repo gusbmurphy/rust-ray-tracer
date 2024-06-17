@@ -255,4 +255,26 @@ mod test {
         let result = world.is_point_shadowed(&point);
         assert_eq!(result, false);
     }
+
+    #[test]
+    fn getting_the_color_for_a_shaded_hit() {
+        let mut world = World::new();
+        world.set_light(PointLight::new(
+            Color::new(1.0, 1.0, 1.0),
+            Point::new(0.0, 0.0, -10.0),
+        ));
+
+        let sphere_one = Sphere::new();
+        world.add_sphere(sphere_one);
+
+        let mut sphere_two = Sphere::new();
+        sphere_two.set_transform(Transform::new_translation(0.0, 0.0, 10.0));
+        world.add_sphere(sphere_two);
+
+        let ray = Ray::new(Point::new(0.0, 0.0, 5.0), Vector::new(0.0, 0.0, 1.0));
+
+        let result = world.color_for_ray(ray);
+
+        assert_eq!(result, Color::new(0.1, 0.1, 0.1));
+    }
 }
