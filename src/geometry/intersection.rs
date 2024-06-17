@@ -34,7 +34,7 @@ where
     let mut lowest_t_intersection: Option<Intersection<T>> = None;
 
     for intersection in intersections {
-        if intersection.get_t() > -1f32 {
+        if intersection.get_t() > 0f32 {
             match lowest_t_intersection {
                 None => lowest_t_intersection = Some(intersection),
                 Some(ref lowest_t) => {
@@ -85,6 +85,18 @@ mod test {
 
         let i1 = Intersection::new(-1.0, &interesected_sphere);
         let i2 = Intersection::new(-2.0, &interesected_sphere);
+
+        let result = determine_hit(vec![i1, i2]);
+
+        assert!(result.is_none())
+    }
+
+    #[test]
+    fn let_me_say_it_again_there_is_no_hit_if_every_t_is_negative() {
+        let interesected_sphere = Sphere::new();
+
+        let i1 = Intersection::new(-1.07378995, &interesected_sphere);
+        let i2 = Intersection::new(-2.38418579E-7, &interesected_sphere);
 
         let result = determine_hit(vec![i1, i2]);
 
