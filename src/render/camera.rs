@@ -37,7 +37,15 @@ impl Camera {
         for pixel_x in 0..self.horizontal_size {
             for pixel_y in 0..self.vertical_size {
                 let ray = self.get_ray_for_pixel(pixel_x, pixel_y);
-                let color = world.color_for_ray(ray);
+                let possible_hit = ray.cast_into(&world);
+
+                let mut color = BLACK;
+
+                if let Some(hit) = possible_hit {
+                    let precomputation = Precomputation::new(&hit, &ray);
+                    color = shade_hit(&world, &precomputation);
+                }
+
                 canvas.write_pixel(pixel_x as usize, pixel_y as usize, color);
             }
         }
