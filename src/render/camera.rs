@@ -46,15 +46,15 @@ impl Camera {
     }
 
     pub fn get_pixel_size(&self) -> f32 {
-        (self.get_half_width() * 2.0) / (self.horizontal_size as f32)
+        (self.half_width() * 2.0) / (self.horizontal_size as f32)
     }
 
     pub fn get_ray_for_pixel(&self, pixel_x: u64, pixel_y: u64) -> Ray {
         let x_offset = (pixel_x as f32 + 0.5) * self.get_pixel_size();
         let y_offset = (pixel_y as f32 + 0.5) * self.get_pixel_size();
 
-        let world_x = self.get_half_width() - x_offset;
-        let world_y = self.get_half_height() - y_offset;
+        let world_x = self.half_width() - x_offset;
+        let world_y = self.half_height() - y_offset;
 
         let origin = self.transform.invert().unwrap() * ORIGIN;
 
@@ -64,31 +64,31 @@ impl Camera {
         Ray::new(origin, direction)
     }
 
-    fn get_half_view(&self) -> f32 {
+    fn half_view(&self) -> f32 {
         (self.field_of_view / 2.0).tan()
     }
 
-    fn get_half_width(&self) -> f32 {
-        let aspect = self.get_aspect();
+    fn half_width(&self) -> f32 {
+        let aspect = self.aspect();
 
         if aspect >= 1.0 {
-            return self.get_half_view();
+            return self.half_view();
         }
 
-        return self.get_half_view() * aspect;
+        return self.half_view() * aspect;
     }
 
-    fn get_half_height(&self) -> f32 {
-        let aspect: f32 = self.get_aspect();
+    fn half_height(&self) -> f32 {
+        let aspect: f32 = self.aspect();
 
         if aspect >= 1.0 {
-            return self.get_half_view() / aspect;
+            return self.half_view() / aspect;
         }
 
-        return self.get_half_view();
+        return self.half_view();
     }
 
-    fn get_aspect(&self) -> f32 {
+    fn aspect(&self) -> f32 {
         (self.horizontal_size as f32) / (self.vertical_size as f32)
     }
 }
