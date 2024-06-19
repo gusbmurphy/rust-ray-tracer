@@ -32,11 +32,11 @@ where
     }
 
     fn calculate_hit_point(intersection: &'i Intersection<'o, O>, ray: &'r Ray) -> Point {
-        let t = intersection.get_t();
+        let t = *intersection.get_t();
         return ray.get_position(t);
     }
 
-    pub fn get_t(&self) -> f32 {
+    pub fn get_t(&self) -> &f32 {
         self.intersection.get_t()
     }
 
@@ -81,7 +81,7 @@ mod test {
 
         let computation = Precomputation::new(&intersection, &ray);
 
-        assert_eq!(computation.get_t(), 4.0);
+        assert_eq!(*computation.get_t(), 4.0);
     }
 
     #[test]

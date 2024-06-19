@@ -81,11 +81,11 @@ mod test {
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| intersection.get_t() == 4.0);
+            .any(|intersection| *intersection.get_t() == 4.0);
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| intersection.get_t() == 6.0);
+            .any(|intersection| *intersection.get_t() == 6.0);
     }
 
     #[test]
@@ -112,11 +112,11 @@ mod test {
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| intersection.get_t() == -1.0);
+            .any(|intersection| *intersection.get_t() == -1.0);
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| intersection.get_t() == 1.0);
+            .any(|intersection| *intersection.get_t() == 1.0);
     }
 
     #[test]
@@ -133,10 +133,10 @@ mod test {
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| intersection.get_t() == -6.0);
+            .any(|intersection| *intersection.get_t() == -6.0);
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| intersection.get_t() == -4.0);
+            .any(|intersection| *intersection.get_t() == -4.0);
     }
 }

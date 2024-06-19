@@ -91,8 +91,8 @@ mod test {
         let intersections = ray.intersections_with(&sphere).unwrap();
 
         assert_eq!(intersections.len(), 2);
-        assert_eq!(intersections[0].get_t(), 3.0);
-        assert_eq!(intersections[1].get_t(), 7.0);
+        assert_eq!(*intersections[0].get_t(), 3.0);
+        assert_eq!(*intersections[1].get_t(), 7.0);
     }
 
     #[test]

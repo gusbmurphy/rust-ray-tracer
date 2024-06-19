@@ -34,7 +34,7 @@ pub fn draw_shading_example_ppm(transform: Option<Transform>) -> String {
 
             let color = if intersections.is_some() {
                 let hit_t = intersections.unwrap()[0];
-                let hit_point = ray.get_position(hit_t.get_t());
+                let hit_point = ray.get_position(*hit_t.get_t());
 
                 let lighting_calculator = LightingCalculator::new(
                     -ray.get_direction().to_owned(),

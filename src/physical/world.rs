@@ -90,7 +90,7 @@ impl World {
 
         if let Some(hit) = possible_hit {
             let distance_from_point_to_light = point_to_light_vector.get_magnitude();
-            if hit.get_t() < distance_from_point_to_light {
+            if *hit.get_t() < distance_from_point_to_light {
                 return true;
             }
         }
@@ -144,10 +144,10 @@ mod test {
 
         assert_eq!(intersections.len(), 4);
 
-        assert_eq!(intersections[0].get_t(), 4.0);
-        assert_eq!(intersections[1].get_t(), 4.5);
-        assert_eq!(intersections[2].get_t(), 5.5);
-        assert_eq!(intersections[3].get_t(), 6.0);
+        assert_eq!(*intersections[0].get_t(), 4.0);
+        assert_eq!(*intersections[1].get_t(), 4.5);
+        assert_eq!(*intersections[2].get_t(), 5.5);
+        assert_eq!(*intersections[3].get_t(), 6.0);
     }
 
     #[test]
