@@ -20,8 +20,8 @@ impl Sphere {
         }
     }
 
-    pub fn get_center(&self) -> Point {
-        self.center
+    pub fn get_center(&self) -> &Point {
+        &self.center
     }
 
     pub fn get_transform(&self) -> &Transform {
