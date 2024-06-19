@@ -14,11 +14,11 @@ where
         Intersection { time, object }
     }
 
-    pub fn get_intersected(&self) -> &'a T {
+    pub fn intersected_object(&self) -> &'a T {
         self.object
     }
 
-    pub fn get_t(&self) -> &f32 {
+    pub fn t(&self) -> &f32 {
         &self.time
     }
 }
@@ -34,11 +34,11 @@ where
     let mut lowest_t_intersection: Option<Intersection<T>> = None;
 
     for intersection in intersections {
-        if *intersection.get_t() > 0f32 {
+        if *intersection.t() > 0f32 {
             match lowest_t_intersection {
                 None => lowest_t_intersection = Some(intersection),
                 Some(ref lowest_t) => {
-                    if intersection.get_t() < lowest_t.get_t() {
+                    if intersection.t() < lowest_t.t() {
                         lowest_t_intersection = Some(intersection);
                     }
                 }

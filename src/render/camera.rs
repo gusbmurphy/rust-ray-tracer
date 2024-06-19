@@ -126,8 +126,8 @@ mod test {
 
         let ray: Ray = camera.get_ray_for_pixel(100, 50);
 
-        assert_eq!(ray.get_origin().to_owned(), ORIGIN);
-        assert_eq!(ray.get_direction().to_owned(), Vector::new(0.0, 0.0, -1.0));
+        assert_eq!(ray.origin().to_owned(), ORIGIN);
+        assert_eq!(ray.direction().to_owned(), Vector::new(0.0, 0.0, -1.0));
     }
 
     #[test]
@@ -136,9 +136,9 @@ mod test {
 
         let ray: Ray = camera.get_ray_for_pixel(0, 0);
 
-        assert_eq!(ray.get_origin().to_owned(), ORIGIN);
+        assert_eq!(ray.origin().to_owned(), ORIGIN);
         assert_eq!(
-            ray.get_direction().to_owned(),
+            ray.direction().to_owned(),
             Vector::new(0.66519, 0.33259, -0.66851)
         );
     }
@@ -151,16 +151,16 @@ mod test {
 
         let ray: Ray = camera.get_ray_for_pixel(100, 50);
 
-        assert_eq!(ray.get_origin().to_owned(), Point::new(0.0, 2.0, -5.0));
+        assert_eq!(ray.origin().to_owned(), Point::new(0.0, 2.0, -5.0));
         assert_eq!(
-            ray.get_direction().to_owned(),
+            ray.direction().to_owned(),
             Vector::new(2.0f32.sqrt() / 2.0, 0.0, -2.0f32.sqrt() / 2.0)
         );
     }
 
     #[test]
     fn rendering_a_world_has_the_correct_pixel_in_the_center() {
-        let world = World::get_default();
+        let world = World::create_default();
         let camera_transform = Transform::new_view(
             Point::new(0.0, 0.0, -5.0),
             ORIGIN,
@@ -171,7 +171,7 @@ mod test {
         let canvas: Canvas = camera.render(world);
 
         assert_eq!(
-            *canvas.get_pixel_at(5, 5),
+            *canvas.pixel_at(5, 5),
             Color::new(0.38066, 0.47583, 0.2855)
         );
     }

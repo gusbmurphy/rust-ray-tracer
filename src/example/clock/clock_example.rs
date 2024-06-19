@@ -32,8 +32,8 @@ pub fn draw_clock_example_ppm(canvas_size: u64, clock_radius: u64) -> String {
 
     for point in translated_points {
         canvas.write_pixel(
-            point.get_x().round() as usize,
-            point.get_y().round() as usize,
+            point.x().round() as usize,
+            point.y().round() as usize,
             Color::new(1.0, 1.0, 1.0),
         );
     }

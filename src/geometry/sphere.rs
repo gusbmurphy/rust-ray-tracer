@@ -20,11 +20,11 @@ impl Sphere {
         }
     }
 
-    pub fn get_center(&self) -> &Point {
+    pub fn center(&self) -> &Point {
         &self.center
     }
 
-    pub fn get_transform(&self) -> &Transform {
+    pub fn transform(&self) -> &Transform {
         &self.transform
     }
 
@@ -32,7 +32,7 @@ impl Sphere {
         self.transform = transformation;
     }
 
-    pub fn get_material(&self) -> &Material {
+    pub fn material(&self) -> &Material {
         &self.material
     }
 
@@ -48,7 +48,7 @@ impl Intersectable for Sphere {
 
         let object_space_normal = object_space_point - Point::new(0.0, 0.0, 0.0);
 
-        let world_space_normal = transform_inverse.get_matrix().transpose() * object_space_normal;
+        let world_space_normal = transform_inverse.matrix().transpose() * object_space_normal;
 
         return world_space_normal.normalize();
     }
@@ -62,7 +62,7 @@ mod test {
     #[test]
     fn default_sphere_transform() {
         let sphere = Sphere::new();
-        assert_eq!(sphere.get_transform().to_owned(), IDENTITY_MATRIX);
+        assert_eq!(sphere.transform().to_owned(), IDENTITY_MATRIX);
     }
 
     #[test]
@@ -78,7 +78,7 @@ mod test {
 
         sphere.set_transform(translation);
 
-        assert!(translation == sphere.get_transform().to_owned());
+        assert!(translation == sphere.transform().to_owned());
     }
 
     #[test]
@@ -91,8 +91,8 @@ mod test {
         let intersections = ray.intersections_with(&sphere).unwrap();
 
         assert_eq!(intersections.len(), 2);
-        assert_eq!(*intersections[0].get_t(), 3.0);
-        assert_eq!(*intersections[1].get_t(), 7.0);
+        assert_eq!(*intersections[0].t(), 3.0);
+        assert_eq!(*intersections[1].t(), 7.0);
     }
 
     #[test]

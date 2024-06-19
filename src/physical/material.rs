@@ -20,7 +20,7 @@ impl Material {
         }
     }
 
-    pub fn get_color(&self) -> &Color {
+    pub fn color(&self) -> &Color {
         &self.color
     }
 
@@ -28,7 +28,7 @@ impl Material {
         self.color = color;
     }
 
-    pub fn get_ambient(&self) -> f32 {
+    pub fn ambient(&self) -> f32 {
         self.ambient
     }
 
@@ -36,7 +36,7 @@ impl Material {
         self.ambient = ambient;
     }
 
-    pub fn get_diffuse(&self) -> &f32 {
+    pub fn diffuse(&self) -> &f32 {
         &self.diffuse
     }
 
@@ -44,7 +44,7 @@ impl Material {
         self.diffuse = diffuse;
     }
 
-    pub fn get_specular(&self) -> &f32 {
+    pub fn specular(&self) -> &f32 {
         &self.specular
     }
 
@@ -52,7 +52,7 @@ impl Material {
         self.specular = specular;
     }
 
-    pub fn get_shininess(&self) -> &f32 {
+    pub fn shininess(&self) -> &f32 {
         &self.shininess
     }
 

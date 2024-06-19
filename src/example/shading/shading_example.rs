@@ -34,16 +34,16 @@ pub fn draw_shading_example_ppm(transform: Option<Transform>) -> String {
 
             let color = if intersections.is_some() {
                 let hit_t = intersections.unwrap()[0];
-                let hit_point = ray.get_position(*hit_t.get_t());
+                let hit_point = ray.position_at(*hit_t.t());
 
                 let lighting_calculator = LightingCalculator::new(
-                    -ray.get_direction().to_owned(),
+                    -ray.direction().to_owned(),
                     sphere.normal_at(hit_point),
                     light,
                 );
 
-                lighting_calculator.get_color_for_material_at(
-                    sphere.get_material().to_owned(),
+                lighting_calculator.color_for_material_at(
+                    sphere.material().to_owned(),
                     hit_point,
                     false,
                 )

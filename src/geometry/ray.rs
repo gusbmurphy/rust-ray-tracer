@@ -14,15 +14,15 @@ impl Ray {
         Ray { origin, direction }
     }
 
-    pub fn get_origin(&self) -> &Point {
+    pub fn origin(&self) -> &Point {
         &self.origin
     }
 
-    pub fn get_direction(&self) -> &Vector {
+    pub fn direction(&self) -> &Vector {
         &self.direction
     }
 
-    pub fn get_position(&self, time: f32) -> Point {
+    pub fn position_at(&self, time: f32) -> Point {
         self.origin + self.direction * time
     }
 
@@ -33,11 +33,11 @@ impl Ray {
     where
         'b: 'a,
     {
-        let adjusted_ray = sphere.get_transform().invert().unwrap() * self;
-        let vector_from_sphere_to_ray = *adjusted_ray.get_origin() - *sphere.get_center();
+        let adjusted_ray = sphere.transform().invert().unwrap() * self;
+        let vector_from_sphere_to_ray = *adjusted_ray.origin() - *sphere.center();
 
-        let a = dot(adjusted_ray.get_direction(), adjusted_ray.get_direction());
-        let b = 2f32 * dot(adjusted_ray.get_direction(), &vector_from_sphere_to_ray);
+        let a = dot(adjusted_ray.direction(), adjusted_ray.direction());
+        let b = 2f32 * dot(adjusted_ray.direction(), &vector_from_sphere_to_ray);
         let c = dot(&vector_from_sphere_to_ray, &vector_from_sphere_to_ray) - 1f32;
 
         let discriminant = b.powi(2) - 4f32 * a * c;
@@ -61,10 +61,10 @@ mod test {
     fn getting_positions_on_ray() {
         let ray = Ray::new(Point::new(2.0, 3.0, 4.0), Vector::new(1.0, 0.0, 0.0));
 
-        assert_eq!(ray.get_position(0.0), Point::new(2.0, 3.0, 4.0));
-        assert_eq!(ray.get_position(1.0), Point::new(3.0, 3.0, 4.0));
-        assert_eq!(ray.get_position(-1.0), Point::new(1.0, 3.0, 4.0));
-        assert_eq!(ray.get_position(2.5), Point::new(4.5, 3.0, 4.0));
+        assert_eq!(ray.position_at(0.0), Point::new(2.0, 3.0, 4.0));
+        assert_eq!(ray.position_at(1.0), Point::new(3.0, 3.0, 4.0));
+        assert_eq!(ray.position_at(-1.0), Point::new(1.0, 3.0, 4.0));
+        assert_eq!(ray.position_at(2.5), Point::new(4.5, 3.0, 4.0));
     }
 
     #[test]
@@ -75,17 +75,17 @@ mod test {
         let intersections = ray.intersections_with(&sphere);
 
         for intersection in intersections.unwrap() {
-            assert_eq!(*intersection.get_intersected(), sphere);
+            assert_eq!(*intersection.intersected_object(), sphere);
         }
 
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| *intersection.get_t() == 4.0);
+            .any(|intersection| *intersection.t() == 4.0);
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| *intersection.get_t() == 6.0);
+            .any(|intersection| *intersection.t() == 6.0);
     }
 
     #[test]
@@ -106,17 +106,17 @@ mod test {
         let intersections = ray.intersections_with(&sphere);
 
         for intersection in intersections.unwrap() {
-            assert_eq!(*intersection.get_intersected(), sphere);
+            assert_eq!(*intersection.intersected_object(), sphere);
         }
 
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| *intersection.get_t() == -1.0);
+            .any(|intersection| *intersection.t() == -1.0);
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| *intersection.get_t() == 1.0);
+            .any(|intersection| *intersection.t() == 1.0);
     }
 
     #[test]
@@ -127,16 +127,16 @@ mod test {
         let intersections = ray.intersections_with(&sphere);
 
         for intersection in intersections.as_ref().unwrap() {
-            assert_eq!(*intersection.get_intersected(), sphere);
+            assert_eq!(*intersection.intersected_object(), sphere);
         }
 
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| *intersection.get_t() == -6.0);
+            .any(|intersection| *intersection.t() == -6.0);
         intersections
             .unwrap()
             .iter()
-            .any(|intersection| *intersection.get_t() == -4.0);
+            .any(|intersection| *intersection.t() == -4.0);
     }
 }

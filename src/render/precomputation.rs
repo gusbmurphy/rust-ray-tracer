@@ -21,7 +21,7 @@ where
 {
     pub fn new(intersection: &'i Intersection<'o, O>, ray: &'r Ray) -> Self {
         let hit_point = Precomputation::calculate_hit_point(intersection, ray);
-        let base_normal_vector = intersection.get_intersected().normal_at(hit_point);
+        let base_normal_vector = intersection.intersected_object().normal_at(hit_point);
 
         Precomputation {
             intersection,
@@ -32,27 +32,27 @@ where
     }
 
     fn calculate_hit_point(intersection: &'i Intersection<'o, O>, ray: &'r Ray) -> Point {
-        let t = *intersection.get_t();
-        return ray.get_position(t);
+        let t = *intersection.t();
+        return ray.position_at(t);
     }
 
-    pub fn get_t(&self) -> &f32 {
-        self.intersection.get_t()
+    pub fn t(&self) -> &f32 {
+        self.intersection.t()
     }
 
-    pub fn get_object(&self) -> &O {
-        self.intersection.get_intersected()
+    pub fn intersected_object(&self) -> &O {
+        self.intersection.intersected_object()
     }
 
-    pub fn get_hit_point(&self) -> &Point {
+    pub fn hit_point(&self) -> &Point {
         &self.hit_point
     }
 
-    pub fn get_eye_vector(&self) -> Vector {
-        -self.ray.get_direction().to_owned()
+    pub fn eye_vector(&self) -> Vector {
+        -self.ray.direction().to_owned()
     }
 
-    pub fn get_normal_vector(&self) -> Vector {
+    pub fn normal_vector(&self) -> Vector {
         if self.is_inside() {
             -self.base_normal_vector
         } else {
@@ -61,11 +61,11 @@ where
     }
 
     pub fn is_inside(&self) -> bool {
-        dot(&self.get_eye_vector(), &self.base_normal_vector) < 0f32
+        dot(&self.eye_vector(), &self.base_normal_vector) < 0f32
     }
 
-    pub fn get_adjusted_hit_point(&self) -> Point {
-        self.hit_point + self.get_normal_vector() * EPSILON
+    pub fn adjusted_hit_point(&self) -> Point {
+        self.hit_point + self.normal_vector() * EPSILON
     }
 }
 
@@ -81,7 +81,7 @@ mod test {
 
         let computation = Precomputation::new(&intersection, &ray);
 
-        assert_eq!(*computation.get_t(), 4.0);
+        assert_eq!(*computation.t(), 4.0);
     }
 
     #[test]
@@ -92,7 +92,7 @@ mod test {
 
         let computation = Precomputation::new(&intersection, &ray);
 
-        assert_eq!(computation.get_object().to_owned(), sphere);
+        assert_eq!(computation.intersected_object().to_owned(), sphere);
     }
 
     #[test]
@@ -103,7 +103,7 @@ mod test {
 
         let computation = Precomputation::new(&intersection, &ray);
 
-        assert_eq!(*computation.get_hit_point(), Point::new(0.0, 0.0, -1.0));
+        assert_eq!(*computation.hit_point(), Point::new(0.0, 0.0, -1.0));
     }
 
     #[test]
@@ -114,7 +114,7 @@ mod test {
 
         let computation = Precomputation::new(&intersection, &ray);
 
-        assert_eq!(computation.get_eye_vector(), Vector::new(0.0, 0.0, -1.0));
+        assert_eq!(computation.eye_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 
     #[test]
@@ -125,7 +125,7 @@ mod test {
 
         let computation = Precomputation::new(&intersection, &ray);
 
-        assert_eq!(computation.get_normal_vector(), Vector::new(0.0, 0.0, -1.0));
+        assert_eq!(computation.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 
     #[test]
@@ -148,10 +148,10 @@ mod test {
         let computation = Precomputation::new(&intersection, &ray);
 
         assert_eq!(computation.is_inside(), true);
-        assert_eq!(*computation.get_hit_point(), Point::new(0.0, 0.0, 1.0));
+        assert_eq!(*computation.hit_point(), Point::new(0.0, 0.0, 1.0));
 
         // And the normal is inverted...
-        assert_eq!(computation.get_normal_vector(), Vector::new(0.0, 0.0, -1.0));
+        assert_eq!(computation.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 
     #[test]
@@ -167,15 +167,15 @@ mod test {
 
         let intersection = Intersection::new(5.0, &sphere);
         let computation = Precomputation::new(&intersection, &ray);
-        let adjusted_hit = computation.get_adjusted_hit_point();
+        let adjusted_hit = computation.adjusted_hit_point();
 
         // The actual hit and the adjusted one should have the same X and Y values...
-        assert_eq!(adjusted_hit.get_x(), actual_hit.get_x());
-        assert_eq!(adjusted_hit.get_y(), actual_hit.get_y());
+        assert_eq!(adjusted_hit.x(), actual_hit.x());
+        assert_eq!(adjusted_hit.y(), actual_hit.y());
 
         // ...but the Z value of the adjusted one should be less than the actual one because the
         // origin is in the negative Z direction...
-        assert!(adjusted_hit.get_z() < actual_hit.get_z());
+        assert!(adjusted_hit.z() < actual_hit.z());
     }
 
     #[test]
@@ -195,7 +195,7 @@ mod test {
 
         // ...then that hit (when adjusted) should not be shadowed.
         let computation = Precomputation::new(&intersection, &ray);
-        let adjusted_hit = computation.get_adjusted_hit_point();
+        let adjusted_hit = computation.adjusted_hit_point();
 
         assert_eq!(world.is_point_shadowed(&adjusted_hit), false);
     }

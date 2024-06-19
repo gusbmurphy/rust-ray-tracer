@@ -24,19 +24,19 @@ impl Point {
 }
 
 impl Tuple for Point {
-    fn get_x(&self) -> &f32 {
+    fn x(&self) -> &f32 {
         &self.x
     }
 
-    fn get_y(&self) -> &f32 {
+    fn y(&self) -> &f32 {
         &self.y
     }
 
-    fn get_z(&self) -> &f32 {
+    fn z(&self) -> &f32 {
         &self.z
     }
 
-    fn get_w(&self) -> &f32 {
+    fn w(&self) -> &f32 {
         &1.0
     }
 
@@ -58,7 +58,7 @@ impl ops::Add<Vector> for Point {
     type Output = Point;
 
     fn add(self, v: Vector) -> Self::Output {
-        Point::new(self.x + v.get_x(), self.y + v.get_y(), self.z + v.get_z())
+        Point::new(self.x + v.x(), self.y + v.y(), self.z + v.z())
     }
 }
 
@@ -66,7 +66,7 @@ impl ops::Sub<Vector> for Point {
     type Output = Point;
 
     fn sub(self, v: Vector) -> Self::Output {
-        Point::new(self.x - v.get_x(), self.y - v.get_y(), self.z - v.get_z())
+        Point::new(self.x - v.x(), self.y - v.y(), self.z - v.z())
     }
 }
 
@@ -74,7 +74,7 @@ impl ops::Sub<Point> for Point {
     type Output = Vector;
 
     fn sub(self, p: Point) -> Self::Output {
-        Vector::new(self.x - p.get_x(), self.y - p.get_y(), self.z - p.get_z())
+        Vector::new(self.x - p.x(), self.y - p.y(), self.z - p.z())
     }
 }
 

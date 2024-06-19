@@ -11,11 +11,11 @@ impl<const S: usize> Matrix<S> {
         Matrix { values }
     }
 
-    pub fn get_row(&self, row: usize) -> &[f32; S] {
+    pub fn row_at(&self, row: usize) -> &[f32; S] {
         &self.values[row]
     }
 
-    pub fn get_column(&self, column: usize) -> [f32; S] {
+    pub fn column_at(&self, column: usize) -> [f32; S] {
         let mut column_values = [0.0f32; S];
 
         for row in 0..S {
@@ -39,7 +39,7 @@ impl<const S: usize> Matrix<S> {
         }
     }
 
-    pub fn set_value(&mut self, at_col: usize, at_row: usize, value: f32) {
+    pub fn set_value_at(&mut self, at_col: usize, at_row: usize, value: f32) {
         self.values[at_row][at_col] = value;
     }
 }
@@ -110,7 +110,7 @@ impl Matrix<4> {
         let mut determinant = 0.0f32;
 
         const ROW_INDEX_TO_USE: usize = 0;
-        let row_to_use = self.get_row(ROW_INDEX_TO_USE);
+        let row_to_use = self.row_at(ROW_INDEX_TO_USE);
 
         for column in 0..4 {
             let value = row_to_use[column];
@@ -170,7 +170,7 @@ impl<const S: usize> Mul<Matrix<S>> for Matrix<S> {
                 let mut value = 0.0;
 
                 for i in 0..S {
-                    value += self.get_row(row_index)[i] * rhs.get_column(column_index)[i];
+                    value += self.row_at(row_index)[i] * rhs.column_at(column_index)[i];
                 }
 
                 result_values[row_index][column_index] = value;
@@ -193,7 +193,7 @@ impl<const S: usize> Mul<[f32; S]> for Matrix<S> {
 
         for row in 0..S {
             for column in 0..S {
-                result[row] += self.get_row(row)[column] * rhs[column];
+                result[row] += self.row_at(row)[column] * rhs[column];
             }
         }
 
@@ -252,7 +252,7 @@ impl Matrix<3> {
         let mut determinant = 0.0f32;
 
         const ROW_INDEX_TO_USE: usize = 0;
-        let row_to_use = self.get_row(ROW_INDEX_TO_USE);
+        let row_to_use = self.row_at(ROW_INDEX_TO_USE);
 
         for column in 0..3 {
             let value = row_to_use[column];
@@ -354,8 +354,8 @@ mod test {
         for column in 0..4 {
             for row in 0..4 {
                 assert_eq!(
-                    result.get_column(column)[row],
-                    expected.get_column(column)[row]
+                    result.column_at(column)[row],
+                    expected.column_at(column)[row]
                 )
             }
         }
@@ -500,20 +500,20 @@ mod test {
                 [-8.0, 13.0, 1.0, 9.0],
             ],
         };
-        assert_eq!(four_matrix.get_row(2).to_owned(), [-32.0, 7.0, 10.0, -2.0]);
-        assert_eq!(four_matrix.get_column(1), [2.0, -3.0, 7.0, 13.0]);
+        assert_eq!(four_matrix.row_at(2).to_owned(), [-32.0, 7.0, 10.0, -2.0]);
+        assert_eq!(four_matrix.column_at(1), [2.0, -3.0, 7.0, 13.0]);
 
         let three_matrix = Matrix {
             values: [[3.0, 5.0, 0.0], [2.0, -1.0, -7.0], [6.0, -1.0, 5.0]],
         };
-        assert_eq!(three_matrix.get_row(1).to_owned(), [2.0, -1.0, -7.0]);
-        assert_eq!(three_matrix.get_column(0), [3.0, 2.0, 6.0]);
+        assert_eq!(three_matrix.row_at(1).to_owned(), [2.0, -1.0, -7.0]);
+        assert_eq!(three_matrix.column_at(0), [3.0, 2.0, 6.0]);
 
         let two_matrix = Matrix {
             values: [[1.0, 5.0], [-3.0, 2.0]],
         };
-        assert_eq!(two_matrix.get_row(1).to_owned(), [-3.0, 2.0]);
-        assert_eq!(two_matrix.get_column(1), [5.0, 2.0]);
+        assert_eq!(two_matrix.row_at(1).to_owned(), [-3.0, 2.0]);
+        assert_eq!(two_matrix.column_at(1), [5.0, 2.0]);
     }
 
     #[test]

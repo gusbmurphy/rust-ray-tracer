@@ -20,14 +20,14 @@ impl Transform {
         let true_up = cross(&left, &forward);
 
         let orientation = Transform::new(Matrix::new([
-            [*left.get_x(), *left.get_y(), *left.get_z(), 0.0],
-            [*true_up.get_x(), *true_up.get_y(), *true_up.get_z(), 0.0],
-            [-*forward.get_x(), -*forward.get_y(), -*forward.get_z(), 0.0],
+            [*left.x(), *left.y(), *left.z(), 0.0],
+            [*true_up.x(), *true_up.y(), *true_up.z(), 0.0],
+            [-*forward.x(), -*forward.y(), -*forward.z(), 0.0],
             [0.0, 0.0, 0.0, 1.0],
         ]));
 
         let orientation_moved_into_place =
-            orientation * Transform::new_translation(-from.get_x(), -from.get_y(), -from.get_z());
+            orientation * Transform::new_translation(-from.x(), -from.y(), -from.z());
 
         return orientation_moved_into_place;
     }
@@ -35,9 +35,9 @@ impl Transform {
     pub fn new_translation(x: f32, y: f32, z: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
-        matrix.set_value(3, 0, x);
-        matrix.set_value(3, 1, y);
-        matrix.set_value(3, 2, z);
+        matrix.set_value_at(3, 0, x);
+        matrix.set_value_at(3, 1, y);
+        matrix.set_value_at(3, 2, z);
 
         Transform { matrix }
     }
@@ -45,9 +45,9 @@ impl Transform {
     pub fn new_scaling(x: f32, y: f32, z: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
-        matrix.set_value(0, 0, x);
-        matrix.set_value(1, 1, y);
-        matrix.set_value(2, 2, z);
+        matrix.set_value_at(0, 0, x);
+        matrix.set_value_at(1, 1, y);
+        matrix.set_value_at(2, 2, z);
 
         Transform { matrix }
     }
@@ -55,10 +55,10 @@ impl Transform {
     pub fn new_x_rotation(radians: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
-        matrix.set_value(1, 1, radians.cos());
-        matrix.set_value(2, 1, -radians.sin());
-        matrix.set_value(1, 2, radians.sin());
-        matrix.set_value(2, 2, radians.cos());
+        matrix.set_value_at(1, 1, radians.cos());
+        matrix.set_value_at(2, 1, -radians.sin());
+        matrix.set_value_at(1, 2, radians.sin());
+        matrix.set_value_at(2, 2, radians.cos());
 
         Transform { matrix }
     }
@@ -66,10 +66,10 @@ impl Transform {
     pub fn new_y_rotation(radians: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
-        matrix.set_value(0, 0, radians.cos());
-        matrix.set_value(0, 2, -radians.sin());
-        matrix.set_value(2, 0, radians.sin());
-        matrix.set_value(2, 2, radians.cos());
+        matrix.set_value_at(0, 0, radians.cos());
+        matrix.set_value_at(0, 2, -radians.sin());
+        matrix.set_value_at(2, 0, radians.sin());
+        matrix.set_value_at(2, 2, radians.cos());
 
         Transform { matrix }
     }
@@ -77,10 +77,10 @@ impl Transform {
     pub fn new_z_rotation(radians: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
-        matrix.set_value(0, 0, radians.cos());
-        matrix.set_value(1, 0, -radians.sin());
-        matrix.set_value(0, 1, radians.sin());
-        matrix.set_value(1, 1, radians.cos());
+        matrix.set_value_at(0, 0, radians.cos());
+        matrix.set_value_at(1, 0, -radians.sin());
+        matrix.set_value_at(0, 1, radians.sin());
+        matrix.set_value_at(1, 1, radians.cos());
 
         Transform { matrix }
     }
@@ -95,12 +95,12 @@ impl Transform {
     ) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
-        matrix.set_value(1, 0, x_to_y);
-        matrix.set_value(2, 0, x_to_z);
-        matrix.set_value(0, 1, y_to_x);
-        matrix.set_value(2, 1, y_to_z);
-        matrix.set_value(0, 2, z_to_x);
-        matrix.set_value(1, 2, z_to_y);
+        matrix.set_value_at(1, 0, x_to_y);
+        matrix.set_value_at(2, 0, x_to_z);
+        matrix.set_value_at(0, 1, y_to_x);
+        matrix.set_value_at(2, 1, y_to_z);
+        matrix.set_value_at(0, 2, z_to_x);
+        matrix.set_value_at(1, 2, z_to_y);
 
         Transform { matrix }
     }
@@ -116,7 +116,7 @@ impl Transform {
         }
     }
 
-    pub fn get_matrix(&self) -> &Matrix<4> {
+    pub fn matrix(&self) -> &Matrix<4> {
         &self.matrix
     }
 }
@@ -134,8 +134,8 @@ impl ops::Mul<&Ray> for Transform {
     type Output = Ray;
 
     fn mul(self, rhs: &Ray) -> Self::Output {
-        let new_origin = self * rhs.get_origin().to_owned();
-        let new_direction = self * rhs.get_direction().to_owned();
+        let new_origin = self * rhs.origin().to_owned();
+        let new_direction = self * rhs.direction().to_owned();
         Ray::new(new_origin, new_direction)
     }
 }

@@ -6,12 +6,12 @@ const MAX_PPM_LINE_LENGTH: u8 = 70;
 
 pub fn create_ppm_from_canvas(canvas: Canvas) -> String {
     let mut header = "P3\n".to_owned();
-    header.push_str(format!("{} {}\n", canvas.get_width(), canvas.get_height()).as_str());
+    header.push_str(format!("{} {}\n", canvas.width(), canvas.height()).as_str());
     header.push_str(format!("{}\n", MAX_PPM_COLOR_VALUE).as_str());
 
     let mut pixel_data = String::new();
 
-    for row in canvas.get_rows() {
+    for row in canvas.rows() {
         let mut row_string = String::new();
 
         for color in row {
@@ -48,9 +48,9 @@ fn row_length_will_be_under_max_after_adding_space_and_value(row: &String, value
 }
 
 fn convert_color_to_ppm_values(color: &Color) -> [u8; 3] {
-    let r = convert_color_value_to_ppm_value(*color.get_r());
-    let b = convert_color_value_to_ppm_value(*color.get_b());
-    let g = convert_color_value_to_ppm_value(*color.get_g());
+    let r = convert_color_value_to_ppm_value(*color.r());
+    let b = convert_color_value_to_ppm_value(*color.b());
+    let g = convert_color_value_to_ppm_value(*color.g());
 
     [r, b, g]
 }

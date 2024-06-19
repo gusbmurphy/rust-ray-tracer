@@ -12,7 +12,7 @@ pub struct Vector {
 
 impl Vector {
     pub fn normalize(&self) -> Self {
-        let magnitude = self.get_magnitude();
+        let magnitude = self.magnitude();
 
         Vector::new(self.x / magnitude, self.y / magnitude, self.z / magnitude)
     }
@@ -23,19 +23,19 @@ impl Vector {
 }
 
 impl Tuple for Vector {
-    fn get_x(&self) -> &f32 {
+    fn x(&self) -> &f32 {
         &self.x
     }
 
-    fn get_y(&self) -> &f32 {
+    fn y(&self) -> &f32 {
         &self.y
     }
 
-    fn get_z(&self) -> &f32 {
+    fn z(&self) -> &f32 {
         &self.z
     }
 
-    fn get_w(&self) -> &f32 {
+    fn w(&self) -> &f32 {
         &0.0
     }
 
@@ -48,7 +48,7 @@ impl ops::Add<Point> for Vector {
     type Output = Point;
 
     fn add(self, p: Point) -> Self::Output {
-        Point::new(self.x + p.get_x(), self.y + p.get_y(), self.z + p.get_z())
+        Point::new(self.x + p.x(), self.y + p.y(), self.z + p.z())
     }
 }
 
@@ -109,7 +109,7 @@ pub fn cross(a: &Vector, b: &Vector) -> Vector {
 }
 
 pub fn dot(a: &Vector, b: &Vector) -> f32 {
-    a.get_x() * b.get_x() + a.get_y() * b.get_y() + a.get_z() * b.get_z()
+    a.x() * b.x() + a.y() * b.y() + a.z() * b.z()
 }
 
 #[cfg(test)]
@@ -142,14 +142,14 @@ mod test {
             )
         );
 
-        assert!(close_enough(&normalized_vector.get_magnitude(), &1.0));
+        assert!(close_enough(&normalized_vector.magnitude(), &1.0));
     }
 
     #[test]
     fn vector_magnitude() {
         let vector = Vector::new(-1.0, -2.0, -3.0);
 
-        let result = vector.get_magnitude();
+        let result = vector.magnitude();
 
         assert_eq!(result, (14.0 as f32).sqrt());
     }

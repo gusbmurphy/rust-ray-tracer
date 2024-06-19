@@ -13,15 +13,15 @@ impl Color {
         Color { r, b, g }
     }
 
-    pub fn get_r(&self) -> &f32 {
+    pub fn r(&self) -> &f32 {
         &self.r
     }
 
-    pub fn get_b(&self) -> &f32 {
+    pub fn b(&self) -> &f32 {
         &self.b
     }
 
-    pub fn get_g(&self) -> &f32 {
+    pub fn g(&self) -> &f32 {
         &self.g
     }
 }

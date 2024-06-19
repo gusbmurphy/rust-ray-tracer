@@ -16,15 +16,15 @@ impl LightingCalculator {
         }
     }
 
-    pub fn get_color_for_material_at(
+    pub fn color_for_material_at(
         &self,
         material: Material,
         position: Point,
         in_shadow: bool,
     ) -> Color {
-        let effective_color = *material.get_color() * *self.light.get_intensity();
+        let effective_color = *material.color() * *self.light.intensity();
 
-        let light_vector = (*self.light.get_position() - position).normalize();
+        let light_vector = (*self.light.position() - position).normalize();
 
         let light_dot_normal = dot(&light_vector, &self.normal_vector);
 
@@ -36,11 +36,11 @@ impl LightingCalculator {
             diffuse_contribution = BLACK;
             specular_contribution = BLACK;
         } else {
-            diffuse_contribution = effective_color * *material.get_diffuse() * light_dot_normal;
+            diffuse_contribution = effective_color * *material.diffuse() * light_dot_normal;
             specular_contribution = self.calculate_specular_contribution(light_vector, material);
         }
 
-        let ambient_contribution = effective_color * material.get_ambient();
+        let ambient_contribution = effective_color * material.ambient();
 
         if in_shadow {
             return ambient_contribution;
@@ -57,8 +57,8 @@ impl LightingCalculator {
             // This means the light reflects away from the eye...
             return BLACK;
         } else {
-            let specular_factor = reflection_dot_eye.powf(*material.get_shininess());
-            return *self.light.get_intensity() * *material.get_specular() * specular_factor;
+            let specular_factor = reflection_dot_eye.powf(*material.shininess());
+            return *self.light.intensity() * *material.specular() * specular_factor;
         }
     }
 }
@@ -78,7 +78,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point, false);
+        let result = calculator.color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(1.9, 1.9, 1.9));
     }
@@ -94,7 +94,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point, false);
+        let result = calculator.color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(1.0, 1.0, 1.0));
     }
@@ -110,7 +110,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 10.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point, false);
+        let result = calculator.color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(0.7364, 0.7364, 0.7364));
     }
@@ -126,7 +126,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 10.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point, false);
+        let result = calculator.color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(1.63638, 1.63638, 1.63638));
     }
@@ -142,7 +142,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, 10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point, false);
+        let result = calculator.color_for_material_at(material, point, false);
 
         assert_eq!(result, Color::new(0.1, 0.1, 0.1));
     }
@@ -158,7 +158,7 @@ mod test {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(0.0, 0.0, -10.0)),
         };
 
-        let result = calculator.get_color_for_material_at(material, point, true);
+        let result = calculator.color_for_material_at(material, point, true);
 
         assert_eq!(result, Color::new(0.1, 0.1, 0.1));
     }

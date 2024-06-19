@@ -14,11 +14,11 @@ impl PointLight {
         }
     }
 
-    pub fn get_intensity(&self) -> &Color {
+    pub fn intensity(&self) -> &Color {
         &self.intensity
     }
 
-    pub fn get_position(&self) -> &Point {
+    pub fn position(&self) -> &Point {
         &self.position
     }
 }
