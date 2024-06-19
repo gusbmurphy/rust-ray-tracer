@@ -64,6 +64,10 @@ impl World {
         self.objects.get(index)
     }
 
+    pub fn objects(&self) -> &Vec<Sphere> {
+        &self.objects
+    }
+
     pub fn light(&self) -> &Option<PointLight> {
         &self.light
     }
