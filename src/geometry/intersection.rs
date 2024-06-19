@@ -1,20 +1,20 @@
 use crate::prelude::*;
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-pub struct Intersection<'a, T> {
+pub struct Intersection<'o, O> {
     time: f32,
-    object: &'a T,
+    object: &'o O,
 }
 
-impl<'a, T> Intersection<'a, T>
+impl<'o, O> Intersection<'o, O>
 where
-    T: Intersectable,
+    O: Intersectable,
 {
-    pub fn new(time: f32, object: &'a T) -> Self {
+    pub fn new(time: f32, object: &'o O) -> Self {
         Intersection { time, object }
     }
 
-    pub fn intersected_object(&self) -> &'a T {
+    pub fn intersected_object(&self) -> &'o O {
         self.object
     }
 
@@ -27,11 +27,11 @@ pub trait Intersectable {
     fn normal_at(&self, world_space_point: Point) -> Vector;
 }
 
-pub fn determine_hit<'a, T>(intersections: Vec<Intersection<'a, T>>) -> Option<Intersection<'a, T>>
+pub fn determine_hit<'o, O>(intersections: Vec<Intersection<'o, O>>) -> Option<Intersection<'o, O>>
 where
-    T: Intersectable,
+    O: Intersectable,
 {
-    let mut lowest_t_intersection: Option<Intersection<T>> = None;
+    let mut lowest_t_intersection: Option<Intersection<O>> = None;
 
     for intersection in intersections {
         if *intersection.t() > 0f32 {
