@@ -26,6 +26,36 @@ impl Ray {
         self.origin + self.direction * time
     }
 
+    pub fn cast_into<'r, 'w>(&'r self, world: &'w World) -> Option<Intersection<Sphere>>
+    where
+        'w: 'r,
+    {
+        let mut intersections = Vec::new();
+
+        for object in world.objects().as_slice() {
+            if let Some(actual_intersections) = self.intersections_with(&object) {
+                intersections.extend(Vec::from(actual_intersections));
+            }
+        }
+
+        let mut lowest_t_intersection: Option<Intersection<Sphere>> = None;
+
+        for intersection in intersections {
+            if *intersection.t() > 0f32 {
+                match lowest_t_intersection {
+                    None => lowest_t_intersection = Some(intersection),
+                    Some(ref lowest_t) => {
+                        if intersection.t() < lowest_t.t() {
+                            lowest_t_intersection = Some(intersection);
+                        }
+                    }
+                }
+            }
+        }
+
+        return lowest_t_intersection;
+    }
+
     pub fn intersections_with<'a, 'b>(
         &'a self,
         sphere: &'b Sphere,
@@ -49,7 +79,10 @@ impl Ray {
         let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
-        return Some([Intersection::new(t1, sphere, &self), Intersection::new(t2, sphere, &self)]);
+        return Some([
+            Intersection::new(t1, sphere, &self),
+            Intersection::new(t2, sphere, &self),
+        ]);
     }
 }
 
