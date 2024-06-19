@@ -44,8 +44,8 @@ where
         self.intersection.get_intersected()
     }
 
-    pub fn get_hit_point(&self) -> Point {
-        self.hit_point
+    pub fn get_hit_point(&self) -> &Point {
+        &self.hit_point
     }
 
     pub fn get_eye_vector(&self) -> Vector {
@@ -103,7 +103,7 @@ mod test {
 
         let computation = Precomputation::new(&intersection, &ray);
 
-        assert_eq!(computation.get_hit_point(), Point::new(0.0, 0.0, -1.0));
+        assert_eq!(*computation.get_hit_point(), Point::new(0.0, 0.0, -1.0));
     }
 
     #[test]
@@ -148,7 +148,7 @@ mod test {
         let computation = Precomputation::new(&intersection, &ray);
 
         assert_eq!(computation.is_inside(), true);
-        assert_eq!(computation.get_hit_point(), Point::new(0.0, 0.0, 1.0));
+        assert_eq!(*computation.get_hit_point(), Point::new(0.0, 0.0, 1.0));
 
         // And the normal is inverted...
         assert_eq!(computation.get_normal_vector(), Vector::new(0.0, 0.0, -1.0));
