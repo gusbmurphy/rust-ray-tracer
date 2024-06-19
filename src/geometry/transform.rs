@@ -20,9 +20,9 @@ impl Transform {
         let true_up = cross(&left, &forward);
 
         let orientation = Transform::new(Matrix::new([
-            [left.get_x(), left.get_y(), left.get_z(), 0.0],
-            [true_up.get_x(), true_up.get_y(), true_up.get_z(), 0.0],
-            [-forward.get_x(), -forward.get_y(), -forward.get_z(), 0.0],
+            [*left.get_x(), *left.get_y(), *left.get_z(), 0.0],
+            [*true_up.get_x(), *true_up.get_y(), *true_up.get_z(), 0.0],
+            [-*forward.get_x(), -*forward.get_y(), -*forward.get_z(), 0.0],
             [0.0, 0.0, 0.0, 1.0],
         ]));
 
@@ -125,7 +125,7 @@ impl<T: Tuple> ops::Mul<T> for Transform {
     type Output = T;
 
     fn mul(self, rhs: T) -> Self::Output {
-        let point_values = self.matrix * [rhs.get_x(), rhs.get_y(), rhs.get_z(), rhs.get_w()];
+        let point_values = self.matrix * rhs.to_array();
         T::new(point_values[0], point_values[1], point_values[2])
     }
 }

@@ -18,7 +18,7 @@ pub fn draw_projectile_example_ppm() -> String {
     let canvas_height = 500;
     let mut canvas = Canvas::new(900, canvas_height);
 
-    while projectile.get_position().get_y() > 0.0 {
+    while *projectile.get_position().get_y() > 0.0 {
         let x = projectile.get_position().get_x();
         let y = projectile.get_position().get_y();
 

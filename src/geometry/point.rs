@@ -24,20 +24,20 @@ impl Point {
 }
 
 impl Tuple for Point {
-    fn get_x(&self) -> f32 {
-        self.x
+    fn get_x(&self) -> &f32 {
+        &self.x
     }
 
-    fn get_y(&self) -> f32 {
-        self.y
+    fn get_y(&self) -> &f32 {
+        &self.y
     }
 
-    fn get_z(&self) -> f32 {
-        self.z
+    fn get_z(&self) -> &f32 {
+        &self.z
     }
 
-    fn get_w(&self) -> f32 {
-        1.0
+    fn get_w(&self) -> &f32 {
+        &1.0
     }
 
     fn new(x: f32, y: f32, z: f32) -> Self {
