@@ -35,7 +35,7 @@ impl World {
         }
     }
 
-    pub fn intersections_for<'a, 'b>(&'a self, ray: &'b Ray) -> Vec<Intersection<Sphere>>
+    fn intersections_for<'a, 'b>(&'a self, ray: &'b Ray) -> Vec<Intersection<Sphere>>
     where
         'b: 'a,
     {
@@ -92,9 +92,7 @@ impl World {
         let point_to_light_vector = *self.light.unwrap().position() - point.to_owned();
         let point_to_light_ray = Ray::new(point.to_owned(), point_to_light_vector.normalize());
 
-        let intersections = self.intersections_for(&point_to_light_ray);
-
-        let possible_hit = determine_hit(intersections);
+        let possible_hit = self.hit_for(&point_to_light_ray);
 
         if let Some(hit) = possible_hit {
             let distance_from_point_to_light = point_to_light_vector.magnitude();
