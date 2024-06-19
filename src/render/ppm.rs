@@ -48,9 +48,9 @@ fn row_length_will_be_under_max_after_adding_space_and_value(row: &String, value
 }
 
 fn convert_color_to_ppm_values(color: &Color) -> [u8; 3] {
-    let r = convert_color_value_to_ppm_value(color.get_r());
-    let b = convert_color_value_to_ppm_value(color.get_b());
-    let g = convert_color_value_to_ppm_value(color.get_g());
+    let r = convert_color_value_to_ppm_value(*color.get_r());
+    let b = convert_color_value_to_ppm_value(*color.get_b());
+    let g = convert_color_value_to_ppm_value(*color.get_g());
 
     [r, b, g]
 }
