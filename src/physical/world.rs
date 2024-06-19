@@ -125,9 +125,9 @@ mod test {
         assert!(default_spheres.iter().any(|sphere| {
             let material = sphere.get_material();
 
-            material.get_color() == Color::new(0.8, 1.0, 0.6)
-                && material.get_diffuse() == 0.7
-                && material.get_specular() == 0.2
+            *material.get_color() == Color::new(0.8, 1.0, 0.6)
+                && *material.get_diffuse() == 0.7
+                && *material.get_specular() == 0.2
         }));
 
         assert!(default_spheres.iter().any(|sphere| {

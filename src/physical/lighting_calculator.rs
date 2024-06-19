@@ -22,7 +22,7 @@ impl LightingCalculator {
         position: Point,
         in_shadow: bool,
     ) -> Color {
-        let effective_color = material.get_color() * self.light.get_intensity();
+        let effective_color = *material.get_color() * self.light.get_intensity();
 
         let light_vector = (self.light.get_position() - position).normalize();
 
@@ -36,7 +36,7 @@ impl LightingCalculator {
             diffuse_contribution = BLACK;
             specular_contribution = BLACK;
         } else {
-            diffuse_contribution = effective_color * material.get_diffuse() * light_dot_normal;
+            diffuse_contribution = effective_color * *material.get_diffuse() * light_dot_normal;
             specular_contribution = self.calculate_specular_contribution(light_vector, material);
         }
 
@@ -57,8 +57,8 @@ impl LightingCalculator {
             // This means the light reflects away from the eye...
             return BLACK;
         } else {
-            let specular_factor = reflection_dot_eye.powf(material.get_shininess());
-            return self.light.get_intensity() * material.get_specular() * specular_factor;
+            let specular_factor = reflection_dot_eye.powf(*material.get_shininess());
+            return self.light.get_intensity() * *material.get_specular() * specular_factor;
         }
     }
 }
