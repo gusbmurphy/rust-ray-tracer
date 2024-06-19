@@ -171,7 +171,7 @@ mod test {
         let canvas: Canvas = camera.render(world);
 
         assert_eq!(
-            canvas.get_pixel_at(5, 5),
+            *canvas.get_pixel_at(5, 5),
             Color::new(0.38066, 0.47583, 0.2855)
         );
     }

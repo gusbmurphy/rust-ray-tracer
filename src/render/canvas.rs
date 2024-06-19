@@ -15,12 +15,12 @@ impl Canvas {
         }
     }
 
-    pub fn get_width(&self) -> u64 {
-        self.width
+    pub fn get_width(&self) -> &u64 {
+        &self.width
     }
 
-    pub fn get_height(&self) -> u64 {
-        self.height
+    pub fn get_height(&self) -> &u64 {
+        &self.height
     }
 
     pub fn get_rows(&self) -> &Vec<Vec<Color>> {
@@ -31,8 +31,8 @@ impl Canvas {
         self.pixels[y][x] = color;
     }
 
-    pub fn get_pixel_at(&self, x: usize, y: usize) -> Color {
-        self.pixels[y][x]
+    pub fn get_pixel_at(&self, x: usize, y: usize) -> &Color {
+        &self.pixels[y][x]
     }
 }
 
@@ -65,8 +65,8 @@ mod test {
         let canvas = Canvas::new(10, 20);
 
         // The canvas has the correct dimensions...
-        assert_eq!(canvas.get_width(), 10);
-        assert_eq!(canvas.get_height(), 20);
+        assert_eq!(*canvas.get_width(), 10);
+        assert_eq!(*canvas.get_height(), 20);
 
         // ...and every pixel is black
         for row in canvas.get_rows().iter() {
@@ -83,6 +83,6 @@ mod test {
 
         canvas.write_pixel(2, 3, color);
 
-        assert_eq!(canvas.get_pixel_at(2, 3), Color::new(1.0, 0.0, 0.0));
+        assert_eq!(*canvas.get_pixel_at(2, 3), Color::new(1.0, 0.0, 0.0));
     }
 }
