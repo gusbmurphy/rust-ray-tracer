@@ -81,7 +81,7 @@ impl World {
     }
 
     pub fn is_point_shadowed(&self, point: &Point) -> bool {
-        let point_to_light_vector = self.light.unwrap().get_position() - point.to_owned();
+        let point_to_light_vector = *self.light.unwrap().get_position() - point.to_owned();
         let point_to_light_ray = Ray::new(point.to_owned(), point_to_light_vector.normalize());
 
         let intersections = self.get_intersections_for(&point_to_light_ray);
@@ -116,8 +116,8 @@ mod test {
         let default_world = World::get_default();
 
         let default_light = default_world.light.unwrap();
-        assert_eq!(default_light.get_intensity(), Color::new(1.0, 1.0, 1.0));
-        assert_eq!(default_light.get_position(), Point::new(-10.0, 10.0, -10.0));
+        assert_eq!(*default_light.get_intensity(), Color::new(1.0, 1.0, 1.0));
+        assert_eq!(*default_light.get_position(), Point::new(-10.0, 10.0, -10.0));
 
         let default_spheres = default_world.objects;
         assert_eq!(default_spheres.len(), 2);

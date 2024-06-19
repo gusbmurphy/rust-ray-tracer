@@ -22,9 +22,9 @@ impl LightingCalculator {
         position: Point,
         in_shadow: bool,
     ) -> Color {
-        let effective_color = *material.get_color() * self.light.get_intensity();
+        let effective_color = *material.get_color() * *self.light.get_intensity();
 
-        let light_vector = (self.light.get_position() - position).normalize();
+        let light_vector = (*self.light.get_position() - position).normalize();
 
         let light_dot_normal = dot(&light_vector, &self.normal_vector);
 
@@ -58,7 +58,7 @@ impl LightingCalculator {
             return BLACK;
         } else {
             let specular_factor = reflection_dot_eye.powf(*material.get_shininess());
-            return self.light.get_intensity() * *material.get_specular() * specular_factor;
+            return *self.light.get_intensity() * *material.get_specular() * specular_factor;
         }
     }
 }
