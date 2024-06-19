@@ -52,6 +52,14 @@ impl World {
         intersections
     }
 
+    pub fn hit_for<'a, 'b>(&'a self, ray: &'b Ray) -> Option<Intersection<Sphere>>
+    where
+        'b: 'a,
+    {
+        let intersections = self.intersections_for(ray);
+        determine_hit(intersections)
+    }
+
     pub fn object_at(&self, index: usize) -> Option<&Sphere> {
         self.objects.get(index)
     }
