@@ -73,10 +73,9 @@ impl World {
     }
 
     pub fn color_for_ray(&self, ray: Ray) -> Color {
-        let intersections = self.intersections_for(&ray);
-        let hit_intersection = determine_hit(intersections);
+        let possible_hit = self.hit_for(&ray);
 
-        if let Some(hit) = hit_intersection {
+        if let Some(hit) = possible_hit {
             let precomputation = Precomputation::new(&hit, &ray);
             return shade_hit(self, &precomputation);
         }
