@@ -5,7 +5,7 @@ where
     O: Intersectable + 'o,
     'o: 'i,
 {
-    intersection: &'i Intersection<'o, O>,
+    intersection: &'i Intersection<'o, 'r, O>,
     ray: &'r Ray,
     base_normal_vector: Vector,
     hit_point: Point,
@@ -19,7 +19,7 @@ where
     O: Intersectable + 'o,
     'o: 'i,
 {
-    pub fn new(intersection: &'i Intersection<'o, O>, ray: &'r Ray) -> Self {
+    pub fn new(intersection: &'i Intersection<'o, 'r, O>, ray: &'r Ray) -> Self {
         let hit_point = Precomputation::calculate_hit_point(intersection, ray);
         let base_normal_vector = intersection.intersected_object().normal_at(hit_point);
 
@@ -31,7 +31,7 @@ where
         }
     }
 
-    fn calculate_hit_point(intersection: &'i Intersection<'o, O>, ray: &'r Ray) -> Point {
+    fn calculate_hit_point(intersection: &'i Intersection<'o, 'r, O>, ray: &'r Ray) -> Point {
         let t = *intersection.t();
         return ray.position_at(t);
     }
@@ -77,7 +77,7 @@ mod test {
     fn time_is_correctly_given_based_on_intersection() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, &sphere);
+        let intersection = Intersection::new(4.0, &sphere, &ray);
 
         let computation = Precomputation::new(&intersection, &ray);
 
@@ -88,7 +88,7 @@ mod test {
     fn the_object_is_correctly_given_based_on_intersection() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, &sphere);
+        let intersection = Intersection::new(4.0, &sphere, &ray);
 
         let computation = Precomputation::new(&intersection, &ray);
 
@@ -99,7 +99,7 @@ mod test {
     fn hit_point_is_correct() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, &sphere);
+        let intersection = Intersection::new(4.0, &sphere, &ray);
 
         let computation = Precomputation::new(&intersection, &ray);
 
@@ -110,7 +110,7 @@ mod test {
     fn eye_vector_is_the_opposite_of_the_given_ray() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, &sphere);
+        let intersection = Intersection::new(4.0, &sphere, &ray);
 
         let computation = Precomputation::new(&intersection, &ray);
 
@@ -121,7 +121,7 @@ mod test {
     fn normal_vector_is_based_on_the_hit_point_and_the_object() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, &sphere);
+        let intersection = Intersection::new(4.0, &sphere, &ray);
 
         let computation = Precomputation::new(&intersection, &ray);
 
@@ -132,7 +132,7 @@ mod test {
     fn the_computation_correctly_says_that_we_are_outside_of_the_shape() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, &sphere);
+        let intersection = Intersection::new(4.0, &sphere, &ray);
 
         let computation = Precomputation::new(&intersection, &ray);
 
@@ -143,7 +143,7 @@ mod test {
     fn when_the_intersection_is_inside_the_vectors_are_correctly_calculated() {
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(1.0, &sphere);
+        let intersection = Intersection::new(1.0, &sphere, &ray);
 
         let computation = Precomputation::new(&intersection, &ray);
 
@@ -165,7 +165,7 @@ mod test {
         // Z, and only has a radius of 1.0.
         let actual_hit = ORIGIN;
 
-        let intersection = Intersection::new(5.0, &sphere);
+        let intersection = Intersection::new(5.0, &sphere, &ray);
         let computation = Precomputation::new(&intersection, &ray);
         let adjusted_hit = computation.adjusted_hit_point();
 
@@ -191,7 +191,7 @@ mod test {
 
         // ...and a ray that hits the sphere at the origin...
         let ray = Ray::new(Point::new(0.0, 0.0, -3.0), Vector::new(0.0, 0.0, 1.0));
-        let intersection = Intersection::new(3.0, &sphere);
+        let intersection = Intersection::new(3.0, &sphere, &ray);
 
         // ...then that hit (when adjusted) should not be shadowed.
         let computation = Precomputation::new(&intersection, &ray);

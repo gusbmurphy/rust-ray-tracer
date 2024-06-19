@@ -1,17 +1,18 @@
 use crate::prelude::*;
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-pub struct Intersection<'o, O> {
+pub struct Intersection<'o, 'r, O> {
     time: f32,
     object: &'o O,
+    ray: &'r Ray,
 }
 
-impl<'o, O> Intersection<'o, O>
+impl<'o, 'r, O> Intersection<'o, 'r, O>
 where
     O: Intersectable,
 {
-    pub fn new(time: f32, object: &'o O) -> Self {
-        Intersection { time, object }
+    pub fn new(time: f32, object: &'o O, ray: &'r Ray) -> Self {
+        Intersection { time, object, ray }
     }
 
     pub fn intersected_object(&self) -> &'o O {
@@ -27,7 +28,9 @@ pub trait Intersectable {
     fn normal_at(&self, world_space_point: Point) -> Vector;
 }
 
-pub fn determine_hit<'o, O>(intersections: Vec<Intersection<'o, O>>) -> Option<Intersection<'o, O>>
+pub fn determine_hit<'o, 'r, O>(
+    intersections: Vec<Intersection<'o, 'r, O>>,
+) -> Option<Intersection<'o, 'r, O>>
 where
     O: Intersectable,
 {
@@ -57,9 +60,10 @@ mod test {
     #[test]
     fn the_lowest_positive_t_among_positives_is_the_hit() {
         let interesected_sphere = Sphere::new();
+        let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(1.0, &interesected_sphere);
-        let i2 = Intersection::new(2.0, &interesected_sphere);
+        let i1 = Intersection::new(1.0, &interesected_sphere, &ray);
+        let i2 = Intersection::new(2.0, &interesected_sphere, &ray);
 
         let result = determine_hit(vec![i1, i2]).unwrap();
 
@@ -69,10 +73,11 @@ mod test {
     #[test]
     fn the_lowest_positive_t_is_the_hit_when_a_negative_is_present() {
         let interesected_sphere = Sphere::new();
+        let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.0, &interesected_sphere);
-        let i2 = Intersection::new(2.0, &interesected_sphere);
-        let i3 = Intersection::new(10.0, &interesected_sphere);
+        let i1 = Intersection::new(-1.0, &interesected_sphere, &ray);
+        let i2 = Intersection::new(2.0, &interesected_sphere, &ray);
+        let i3 = Intersection::new(10.0, &interesected_sphere, &ray);
 
         let result = determine_hit(vec![i1, i2, i3]).unwrap();
 
@@ -82,9 +87,10 @@ mod test {
     #[test]
     fn there_is_no_hit_if_every_t_is_negative() {
         let interesected_sphere = Sphere::new();
+        let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.0, &interesected_sphere);
-        let i2 = Intersection::new(-2.0, &interesected_sphere);
+        let i1 = Intersection::new(-1.0, &interesected_sphere, &ray);
+        let i2 = Intersection::new(-2.0, &interesected_sphere, &ray);
 
         let result = determine_hit(vec![i1, i2]);
 
@@ -94,9 +100,10 @@ mod test {
     #[test]
     fn let_me_say_it_again_there_is_no_hit_if_every_t_is_negative() {
         let interesected_sphere = Sphere::new();
+        let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.07378995, &interesected_sphere);
-        let i2 = Intersection::new(-2.38418579E-7, &interesected_sphere);
+        let i1 = Intersection::new(-1.07378995, &interesected_sphere, &ray);
+        let i2 = Intersection::new(-2.38418579E-7, &interesected_sphere, &ray);
 
         let result = determine_hit(vec![i1, i2]);
 
@@ -106,11 +113,12 @@ mod test {
     #[test]
     fn the_hit_is_always_the_lowest_nonnegative_intersection() {
         let interesected_sphere = Sphere::new();
+        let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(5.0, &interesected_sphere);
-        let i2 = Intersection::new(7.0, &interesected_sphere);
-        let i3 = Intersection::new(-3.0, &interesected_sphere);
-        let i4 = Intersection::new(2.0, &interesected_sphere);
+        let i1 = Intersection::new(5.0, &interesected_sphere, &ray);
+        let i2 = Intersection::new(7.0, &interesected_sphere, &ray);
+        let i3 = Intersection::new(-3.0, &interesected_sphere, &ray);
+        let i4 = Intersection::new(2.0, &interesected_sphere, &ray);
 
         let result = determine_hit(vec![i1, i2, i3, i4]).unwrap();
 

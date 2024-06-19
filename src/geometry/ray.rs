@@ -49,7 +49,7 @@ impl Ray {
         let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
-        return Some([Intersection::new(t1, sphere), Intersection::new(t2, sphere)]);
+        return Some([Intersection::new(t1, sphere, &self), Intersection::new(t2, sphere, &self)]);
     }
 }
 

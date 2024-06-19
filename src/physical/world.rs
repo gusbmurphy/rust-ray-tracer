@@ -207,7 +207,7 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         // The intersection will happen with the outermost sphere...
-        let intersection = Intersection::new(4.0, world.object_at(0).unwrap());
+        let intersection = Intersection::new(4.0, world.object_at(0).unwrap(), &ray);
         let computation = Precomputation::new(&intersection, &ray);
 
         let is_point_shadowed = world.is_point_shadowed(&computation.adjusted_hit_point());
