@@ -22,6 +22,14 @@ where
     pub fn t(&self) -> &f32 {
         &self.time
     }
+
+    pub fn point(&self) -> Point {
+        self.ray.position_at(self.time)
+    }
+
+    pub fn normal_vector(&self) -> Vector {
+        self.object.normal_at(self.point())
+    }
 }
 
 pub trait Intersectable {
