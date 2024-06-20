@@ -44,7 +44,7 @@ where
     }
 
     pub fn eye_vector(&self) -> Vector {
-        -self.ray.direction().to_owned()
+        -self.intersection.ray().direction().to_owned()
     }
 
     pub fn normal_vector(&self) -> Vector {

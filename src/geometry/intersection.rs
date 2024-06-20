@@ -23,6 +23,10 @@ where
         &self.time
     }
 
+    pub fn ray(&self) -> &Ray {
+        &self.ray
+    }
+
     pub fn point(&self) -> Point {
         self.ray.position_at(self.time)
     }
