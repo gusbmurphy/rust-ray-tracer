@@ -80,7 +80,7 @@ impl World {
         let possible_hit = self.hit_for(&ray);
 
         if let Some(hit) = possible_hit {
-            let precomputation = Precomputation::new(&hit, &ray);
+            let precomputation = Precomputation::new(&hit);
             return shade_hit(self, &precomputation);
         }
 
@@ -212,7 +212,7 @@ mod test {
 
         // The intersection will happen with the outermost sphere...
         let intersection = Intersection::new(4.0, world.object_at(0).unwrap(), &ray);
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
 
         let is_point_shadowed = world.is_point_shadowed(&computation.adjusted_hit_point());
         assert_eq!(is_point_shadowed, false);

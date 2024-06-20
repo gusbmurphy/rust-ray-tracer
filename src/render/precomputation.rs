@@ -6,7 +6,6 @@ where
     'o: 'i,
 {
     intersection: &'i Intersection<'o, 'r, O>,
-    ray: &'r Ray,
     base_normal_vector: Vector,
     hit_point: Point,
 }
@@ -19,13 +18,12 @@ where
     O: Intersectable + 'o,
     'o: 'i,
 {
-    pub fn new(intersection: &'i Intersection<'o, 'r, O>, ray: &'r Ray) -> Self {
+    pub fn new(intersection: &'i Intersection<'o, 'r, O>) -> Self {
         let hit_point = intersection.point();
         let base_normal_vector = intersection.normal_vector();
 
         Precomputation {
             intersection,
-            ray,
             base_normal_vector,
             hit_point,
         }
@@ -74,7 +72,7 @@ mod test {
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere, &ray);
 
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
 
         assert_eq!(*computation.t(), 4.0);
     }
@@ -85,7 +83,7 @@ mod test {
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere, &ray);
 
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
 
         assert_eq!(computation.intersected_object().to_owned(), sphere);
     }
@@ -96,7 +94,7 @@ mod test {
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere, &ray);
 
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
 
         assert_eq!(*computation.hit_point(), Point::new(0.0, 0.0, -1.0));
     }
@@ -107,7 +105,7 @@ mod test {
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere, &ray);
 
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
 
         assert_eq!(computation.eye_vector(), Vector::new(0.0, 0.0, -1.0));
     }
@@ -118,7 +116,7 @@ mod test {
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere, &ray);
 
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
 
         assert_eq!(computation.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
@@ -129,7 +127,7 @@ mod test {
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere, &ray);
 
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
 
         assert_eq!(computation.is_inside(), false);
     }
@@ -140,7 +138,7 @@ mod test {
         let sphere = Sphere::new();
         let intersection = Intersection::new(1.0, &sphere, &ray);
 
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
 
         assert_eq!(computation.is_inside(), true);
         assert_eq!(*computation.hit_point(), Point::new(0.0, 0.0, 1.0));
@@ -161,7 +159,7 @@ mod test {
         let actual_hit = ORIGIN;
 
         let intersection = Intersection::new(5.0, &sphere, &ray);
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
         let adjusted_hit = computation.adjusted_hit_point();
 
         // The actual hit and the adjusted one should have the same X and Y values...
@@ -189,7 +187,7 @@ mod test {
         let intersection = Intersection::new(3.0, &sphere, &ray);
 
         // ...then that hit (when adjusted) should not be shadowed.
-        let computation = Precomputation::new(&intersection, &ray);
+        let computation = Precomputation::new(&intersection);
         let adjusted_hit = computation.adjusted_hit_point();
 
         assert_eq!(world.is_point_shadowed(&adjusted_hit), false);

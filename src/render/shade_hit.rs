@@ -30,7 +30,7 @@ mod test {
         let hit_object = world.object_at(0).unwrap();
         let intersection = Intersection::new(4.0, hit_object, &ray);
 
-        let precomputation = Precomputation::new(&intersection, &ray);
+        let precomputation = Precomputation::new(&intersection);
 
         let result = shade_hit(&world, &precomputation);
 
@@ -49,7 +49,7 @@ mod test {
         let hit_object = world.object_at(1).unwrap();
         let intersection = Intersection::new(0.5, hit_object, &ray);
 
-        let precomputation = Precomputation::new(&intersection, &ray);
+        let precomputation = Precomputation::new(&intersection);
 
         let result = shade_hit(&world, &precomputation);
 

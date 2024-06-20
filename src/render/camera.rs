@@ -42,7 +42,7 @@ impl Camera {
                 let mut color = BLACK;
 
                 if let Some(hit) = possible_hit {
-                    let precomputation = Precomputation::new(&hit, &ray);
+                    let precomputation = Precomputation::new(&hit);
                     color = shade_hit(&world, &precomputation);
                 }
 
