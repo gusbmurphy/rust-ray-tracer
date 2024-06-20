@@ -20,8 +20,8 @@ where
     'o: 'i,
 {
     pub fn new(intersection: &'i Intersection<'o, 'r, O>, ray: &'r Ray) -> Self {
-        let hit_point = Precomputation::calculate_hit_point(intersection, ray);
-        let base_normal_vector = intersection.intersected_object().normal_at(hit_point);
+        let hit_point = intersection.point();
+        let base_normal_vector = intersection.normal_vector();
 
         Precomputation {
             intersection,
@@ -29,11 +29,6 @@ where
             base_normal_vector,
             hit_point,
         }
-    }
-
-    fn calculate_hit_point(intersection: &'i Intersection<'o, 'r, O>, ray: &'r Ray) -> Point {
-        let t = *intersection.t();
-        return ray.position_at(t);
     }
 
     pub fn t(&self) -> &f32 {
