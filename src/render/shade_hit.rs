@@ -27,10 +27,9 @@ mod test {
         let world = World::create_default();
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
-        let hit_object = world.object_at(0).unwrap();
-        let intersection = Intersection::new(4.0, hit_object, &ray);
+        let hit = ray.cast_into(&world).unwrap();
 
-        let precomputation = Precomputation::new(&intersection);
+        let precomputation = Precomputation::new(&hit);
 
         let result = shade_hit(&world, &precomputation);
 
@@ -46,10 +45,9 @@ mod test {
 
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
 
-        let hit_object = world.object_at(1).unwrap();
-        let intersection = Intersection::new(0.5, hit_object, &ray);
+        let hit = ray.cast_into(&world).unwrap();
 
-        let precomputation = Precomputation::new(&intersection);
+        let precomputation = Precomputation::new(&hit);
 
         let result = shade_hit(&world, &precomputation);
 
