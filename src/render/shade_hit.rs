@@ -1,21 +1,34 @@
 use crate::prelude::*;
-use crate::render::precomputation::Precomputation;
 
-pub fn shade_hit(world: &World, precomputation: &Precomputation<Sphere>) -> Color {
+pub fn shade_hit(world: &World, hit: &Intersection<Sphere>) -> Color {
+    let eye_vector = -hit.ray().direction().to_owned();
+
     let lighting_calculator = LightingCalculator::new(
-        precomputation.eye_vector(),
-        precomputation.normal_vector(),
+        eye_vector,
+        hit.normal_vector(),
         world.light().to_owned().unwrap(),
     );
 
-    let adjusted_hit = precomputation.adjusted_hit_point();
+    let adjusted_hit = adjust_hit(hit);
     let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
 
     return lighting_calculator.color_for_material_at(
-        *precomputation.intersected_object().material(),
+        hit.object().material().to_owned(),
         adjusted_hit,
         hit_is_in_shadow,
     );
+}
+
+fn adjust_hit(hit: &Intersection<Sphere>) -> Point {
+    hit.point() + adjust_normal_vector(hit) * EPSILON
+}
+
+fn adjust_normal_vector(hit: &Intersection<Sphere>) -> Vector {
+    if hit.is_inside_object() {
+        -hit.normal_vector()
+    } else {
+        hit.normal_vector()
+    }
 }
 
 #[cfg(test)]
@@ -29,9 +42,7 @@ mod test {
 
         let hit = ray.cast_into(&world).unwrap();
 
-        let precomputation = Precomputation::new(&hit);
-
-        let result = shade_hit(&world, &precomputation);
+        let result = shade_hit(&world, &hit);
 
         assert_eq!(result, Color::new(0.38066, 0.47583, 0.2855))
     }
@@ -47,9 +58,7 @@ mod test {
 
         let hit = ray.cast_into(&world).unwrap();
 
-        let precomputation = Precomputation::new(&hit);
-
-        let result = shade_hit(&world, &precomputation);
+        let result = shade_hit(&world, &hit);
 
         assert_eq!(result, Color::new(0.90498, 0.90498, 0.90498))
     }

@@ -43,7 +43,7 @@ impl Camera {
 
                 if let Some(hit) = possible_hit {
                     let precomputation = Precomputation::new(&hit);
-                    color = shade_hit(&world, &precomputation);
+                    color = shade_hit(&world, &hit);
                 }
 
                 canvas.write_pixel(pixel_x as usize, pixel_y as usize, color);

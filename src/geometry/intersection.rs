@@ -27,12 +27,20 @@ where
         &self.ray
     }
 
+    pub fn object(&self) -> &O {
+        &self.object
+    }
+
     pub fn point(&self) -> Point {
         self.ray.position_at(self.time)
     }
 
     pub fn normal_vector(&self) -> Vector {
         self.object.normal_at(self.point())
+    }
+
+    pub fn is_inside_object(&self) -> bool {
+        dot(&-self.ray.direction().to_owned(), &self.normal_vector()) < 0f32
     }
 }
 
@@ -135,5 +143,23 @@ mod test {
         let result = determine_hit(vec![i1, i2, i3, i4]).unwrap();
 
         assert_eq!(result.to_owned(), i4)
+    }
+
+    #[test]
+    fn the_intersection_says_that_we_are_outside_of_the_shape() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+        let intersection = Intersection::new(4.0, &sphere, &ray);
+
+        assert_eq!(intersection.is_inside_object(), false);
+    }
+
+    #[test]
+    fn the_intersection_says_we_are_inside_the_shape() {
+        let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+        let intersection = Intersection::new(1.0, &sphere, &ray);
+
+        assert_eq!(intersection.is_inside_object(), true);
     }
 }

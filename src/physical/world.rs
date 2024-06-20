@@ -80,8 +80,7 @@ impl World {
         let possible_hit = self.hit_for(&ray);
 
         if let Some(hit) = possible_hit {
-            let precomputation = Precomputation::new(&hit);
-            return shade_hit(self, &precomputation);
+            return shade_hit(self, &hit);
         }
 
         return BLACK;
