@@ -50,7 +50,10 @@ where
     }
 
     fn is_inside_object(&self) -> bool {
-        dot(&-self.ray.direction().to_owned(), &self.base_normal_vector()) < 0f32
+        dot(
+            &-self.ray.direction().to_owned(),
+            &self.base_normal_vector(),
+        ) < 0f32
     }
 }
 
