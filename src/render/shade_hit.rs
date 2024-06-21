@@ -20,15 +20,7 @@ pub fn shade_hit(world: &World, hit: &Intersection<Sphere>) -> Color {
 }
 
 fn adjust_hit(hit: &Intersection<Sphere>) -> Point {
-    hit.point() + adjust_normal_vector(hit) * EPSILON
-}
-
-fn adjust_normal_vector(hit: &Intersection<Sphere>) -> Vector {
-    if hit.is_inside_object() {
-        -hit.normal_vector()
-    } else {
-        hit.normal_vector()
-    }
+    hit.point() + hit.normal_vector() * EPSILON
 }
 
 #[cfg(test)]

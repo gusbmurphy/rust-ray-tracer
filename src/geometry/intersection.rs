@@ -36,11 +36,21 @@ where
     }
 
     pub fn normal_vector(&self) -> Vector {
+        let base_normal = self.base_normal_vector();
+
+        if self.is_inside_object() {
+            -base_normal
+        } else {
+            base_normal
+        }
+    }
+
+    fn base_normal_vector(&self) -> Vector {
         self.object.normal_at(self.point())
     }
 
-    pub fn is_inside_object(&self) -> bool {
-        dot(&-self.ray.direction().to_owned(), &self.normal_vector()) < 0f32
+    fn is_inside_object(&self) -> bool {
+        dot(&-self.ray.direction().to_owned(), &self.base_normal_vector()) < 0f32
     }
 }
 
@@ -146,20 +156,20 @@ mod test {
     }
 
     #[test]
-    fn the_intersection_says_that_we_are_outside_of_the_shape() {
+    fn the_normal_vector_when_the_hit_originates_outside_of_the_shape_is_correct() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
         let intersection = Intersection::new(4.0, &sphere, &ray);
 
-        assert_eq!(intersection.is_inside_object(), false);
+        assert_eq!(intersection.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 
     #[test]
-    fn the_intersection_says_we_are_inside_the_shape() {
+    fn the_normal_vector_is_correct_when_we_are_inside_of_the_shape() {
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
         let intersection = Intersection::new(1.0, &sphere, &ray);
 
-        assert_eq!(intersection.is_inside_object(), true);
+        assert_eq!(intersection.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
 }
