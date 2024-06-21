@@ -113,6 +113,42 @@ pub fn dot(a: &Vector, b: &Vector) -> f32 {
     a.x() * b.x() + a.y() * b.y() + a.z() * b.z()
 }
 
+pub const POSITIVE_X: Vector = Vector {
+    x: 1.0,
+    y: 0.0,
+    z: 0.0,
+};
+
+pub const NEGATIVE_X: Vector = Vector {
+    x: -1.0,
+    y: 0.0,
+    z: 0.0,
+};
+
+pub const POSITIVE_Y: Vector = Vector {
+    x: 0.0,
+    y: 1.0,
+    z: 0.0,
+};
+
+pub const NEGATIVE_Y: Vector = Vector {
+    x: 0.0,
+    y: -1.0,
+    z: 0.0,
+};
+
+pub const POSITIVE_Z: Vector = Vector {
+    x: 0.0,
+    y: 0.0,
+    z: 1.0,
+};
+
+pub const NEGATIVE_Z: Vector = Vector {
+    x: 0.0,
+    y: 0.0,
+    z: -1.0,
+};
+
 #[cfg(test)]
 mod test {
     use super::*;
