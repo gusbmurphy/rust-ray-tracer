@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+// TODO: How about this takes the world and a ray? Then we can just figure out the intersection?
 pub fn shade_hit(world: &World, hit: &Intersection<Sphere>) -> Color {
     let eye_vector = -hit.ray().direction().to_owned();
 
