@@ -3,20 +3,58 @@ use crate::prelude::*;
 pub fn shade_hit(world: &World, hit: &Intersection<Sphere>) -> Color {
     let eye_vector = -hit.ray().direction().to_owned();
 
-    let lighting_calculator = LightingCalculator::new(
-        eye_vector,
-        hit.normal_vector(),
-        world.light().to_owned().unwrap(),
-    );
-
     let adjusted_hit = adjust_hit(hit);
     let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
 
-    return lighting_calculator.color_for_material_at(
-        hit.object().material().to_owned(),
-        adjusted_hit,
-        hit_is_in_shadow,
-    );
+    let material = hit.intersected_object().material();
+    let light = world.light().unwrap();
+
+    let effective_color = *material.color() * *light.intensity();
+
+    let light_vector = (*light.position() - hit.point()).normalize();
+
+    let light_dot_normal = dot(&light_vector, &hit.normal_vector());
+
+    let ambient_contribution = effective_color * material.ambient();
+
+    if hit_is_in_shadow {
+        return ambient_contribution;
+    }
+
+    let diffuse_contribution: Color;
+    let specular_contribution: Color;
+
+    if light_dot_normal < 0.0 {
+        // This means the light is opposite the normal vector...
+        diffuse_contribution = BLACK;
+        specular_contribution = BLACK;
+    } else {
+        diffuse_contribution = effective_color * *material.diffuse() * light_dot_normal;
+        specular_contribution = calculate_specular_contribution(
+            light_vector, &hit.normal_vector(), &eye_vector, *hit.intersected_object().material(), light
+        );
+    }
+
+    return ambient_contribution + diffuse_contribution + specular_contribution;
+}
+
+fn calculate_specular_contribution(
+    light_vector: Vector,
+    normal_vector: &Vector,
+    eye_vector: &Vector,
+    material: Material,
+    light: PointLight
+) -> Color {
+    let reflection_vector = (-light_vector).reflect_around(normal_vector);
+    let reflection_dot_eye = dot(&reflection_vector, eye_vector);
+
+    if reflection_dot_eye < 0.0 {
+        // This means the light reflects away from the eye...
+        return BLACK;
+    } else {
+        let specular_factor = reflection_dot_eye.powf(*material.shininess());
+        return *light.intensity() * *material.specular() * specular_factor;
+    }
 }
 
 fn adjust_hit(hit: &Intersection<Sphere>) -> Point {
