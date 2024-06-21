@@ -116,7 +116,6 @@ mod test {
     use super::*;
 
     #[test]
-    #[ignore]
     // TODO: There is a lot of "acne" on this, which is to be fixed.
     fn snapshot() {
         let result = draw_scene_ppm(100, 50);
