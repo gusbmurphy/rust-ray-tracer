@@ -100,6 +100,7 @@ impl PartialEq<Vector> for Vector {
     }
 }
 
+// TODO: What if "cross" and "dot" lived on Vector?
 pub fn cross(a: &Vector, b: &Vector) -> Vector {
     let x = a.y * b.z - a.z * b.y;
     let y = a.z * b.x - a.x * b.z;
