@@ -51,11 +51,17 @@ impl Shape for Sphere {
         return world_space_normal.normalize();
     }
 
-    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection<Sphere>> where 'r: 's {
+    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection<Sphere>>
+    where
+        'r: 's,
+    {
         let ray_in_object_space = self.transform().invert().unwrap() * ray;
         let vector_from_sphere_to_ray = *ray_in_object_space.origin() - *self.center();
 
-        let a = dot(ray_in_object_space.direction(), ray_in_object_space.direction());
+        let a = dot(
+            ray_in_object_space.direction(),
+            ray_in_object_space.direction(),
+        );
         let b = 2f32 * dot(ray_in_object_space.direction(), &vector_from_sphere_to_ray);
         let c = dot(&vector_from_sphere_to_ray, &vector_from_sphere_to_ray) - 1f32;
 
@@ -68,10 +74,10 @@ impl Shape for Sphere {
         let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
-        return vec!(
+        return vec![
             Intersection::new(t1, self, ray),
             Intersection::new(t2, self, ray),
-        );
+        ];
     }
 }
 
