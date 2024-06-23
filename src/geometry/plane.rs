@@ -22,7 +22,7 @@ impl Plane {
 }
 
 impl Shape for Plane {
-    fn normal_at(&self, world_space_point: Point) -> Vector {
+    fn normal_at(&self, _world_space_point: Point) -> Vector {
         self.normal.clone()
     }
 
