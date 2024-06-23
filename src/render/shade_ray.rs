@@ -3,48 +3,52 @@ use crate::prelude::*;
 // TODO: How about this takes the world and a ray? Then we can just figure out the intersection?
 pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     if let Some(hit) = world.hit_for(ray) {
-        let eye_vector = -hit.ray().direction().to_owned();
-
-        let adjusted_hit = adjust_hit(&hit);
-        let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
-
-        let material = hit.intersected_object().material();
-        let light = world.light().unwrap();
-
-        let effective_color = *material.color() * *light.intensity();
-
-        let light_vector = (*light.position() - hit.point()).normalize();
-
-        let light_dot_normal = dot(&light_vector, &hit.normal_vector());
-
-        let ambient_contribution = effective_color * material.ambient();
-
-        if hit_is_in_shadow {
-            return ambient_contribution;
-        }
-
-        let diffuse_contribution: Color;
-        let specular_contribution: Color;
-
-        if light_dot_normal < 0.0 {
-            // This means the light is opposite the normal vector...
-            diffuse_contribution = BLACK;
-            specular_contribution = BLACK;
-        } else {
-            diffuse_contribution = effective_color * *material.diffuse() * light_dot_normal;
-            specular_contribution = calculate_specular_contribution(
-                light_vector,
-                &hit.normal_vector(),
-                &eye_vector,
-                *hit.intersected_object().material(),
-                light,
-            );
-        }
-
-        return ambient_contribution + diffuse_contribution + specular_contribution;
+        shade_hit(world, &hit)
     } else {
         BLACK
     }
+}
+
+fn shade_hit(world: &World, hit: &Intersection<Sphere>) -> Color {
+    let eye_vector = -hit.ray().direction().to_owned();
+
+    let adjusted_hit = adjust_hit(&hit);
+    let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
+
+    let material = hit.intersected_object().material();
+    let light = world.light().unwrap();
+
+    let effective_color = *material.color() * *light.intensity();
+
+    let light_vector = (*light.position() - hit.point()).normalize();
+
+    let light_dot_normal = dot(&light_vector, &hit.normal_vector());
+
+    let ambient_contribution = effective_color * material.ambient();
+
+    if hit_is_in_shadow {
+        return ambient_contribution;
+    }
+
+    let diffuse_contribution: Color;
+    let specular_contribution: Color;
+
+    if light_dot_normal < 0.0 {
+        // This means the light is opposite the normal vector...
+        diffuse_contribution = BLACK;
+        specular_contribution = BLACK;
+    } else {
+        diffuse_contribution = effective_color * *material.diffuse() * light_dot_normal;
+        specular_contribution = calculate_specular_contribution(
+            light_vector,
+            &hit.normal_vector(),
+            &eye_vector,
+            *hit.intersected_object().material(),
+            light,
+        );
+    }
+
+    return ambient_contribution + diffuse_contribution + specular_contribution;
 }
 
 fn calculate_specular_contribution(
