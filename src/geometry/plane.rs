@@ -1,7 +1,5 @@
 use crate::prelude::*;
 
-use super::intersection;
-
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Plane {
     point: Point,
@@ -30,10 +28,9 @@ impl Shape for Plane {
     where
         'r: 's,
     {
-        let ray_in_object_space = self.transform().invert().unwrap() * ray;
-        if ray_in_object_space.direction().y().abs() < EPSILON { return vec![]; }
+        if ray.direction().y().abs() < EPSILON { return vec![]; }
 
-        let t = -ray_in_object_space.origin().y() / ray_in_object_space.direction().y();
+        let t = -ray.origin().y() / ray.direction().y();
         let intersection = Intersection::new(t, self, &ray);
 
         vec![intersection]
