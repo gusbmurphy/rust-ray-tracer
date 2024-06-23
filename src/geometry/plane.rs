@@ -1,6 +1,6 @@
-use core::slice;
-
 use crate::prelude::*;
+
+use super::intersection;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Plane {
@@ -30,7 +30,13 @@ impl Shape for Plane {
     where
         'r: 's,
     {
-        Vec::new()
+        let ray_in_object_space = self.transform().invert().unwrap() * ray;
+        if ray_in_object_space.direction().y().abs() < EPSILON { return vec![]; }
+
+        let t = -ray_in_object_space.origin().y() / ray_in_object_space.direction().y();
+        let intersection = Intersection::new(t, self, &ray);
+
+        vec![intersection]
     }
 
     fn material(&self) -> &Material {
@@ -83,5 +89,19 @@ mod test {
         let intersections = plane.intersections_with(&ray);
 
         assert!(intersections.is_empty())
+    }
+
+    #[test]
+    fn a_ray_intersection_from_above() {
+        let plane = Plane::new(ORIGIN, POSITIVE_Y);
+        let ray = Ray::new(Point::new(0.0, 3.0, 0.0), NEGATIVE_Y);
+
+        let intersections = plane.intersections_with(&ray);
+
+        assert_eq!(intersections.len(), 1);
+
+        let intersection = intersections.get(0).unwrap();
+        assert_eq!(*intersection.intersected_object(), plane);
+        assert_eq!(*intersection.t(), 3.0);
     }
 }
