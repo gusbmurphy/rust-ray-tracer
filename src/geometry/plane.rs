@@ -30,7 +30,7 @@ impl Shape for Plane {
     where
         'r: 's,
     {
-        todo!()
+        Vec::new()
     }
 
     fn material(&self) -> &Material {
@@ -61,5 +61,16 @@ mod test {
         assert_eq!(plane.normal_at(ORIGIN), POSITIVE_Y);
         assert_eq!(plane.normal_at(Point::new(1.0, 0.0, 0.0)), POSITIVE_Y);
         assert_eq!(plane.normal_at(Point::new(8.0, 0.0, -3.0)), POSITIVE_Y);
+    }
+
+    #[test]
+    fn there_are_no_intersections_with_a_parallel_ray() {
+        // Given a flat plane, and a ray above it running parallel...
+        let plane = Plane::new(ORIGIN, POSITIVE_Y);
+        let ray = Ray::new(Point::new(0.0, 1.0, 0.0), POSITIVE_Z);
+
+        let intersections = plane.intersections_with(&ray);
+
+        assert!(intersections.is_empty())
     }
 }
