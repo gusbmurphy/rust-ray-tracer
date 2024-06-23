@@ -42,9 +42,7 @@ impl World {
         let mut intersections = Vec::new();
 
         for object in self.objects.as_slice() {
-            if let Some(actual_intersections) = ray.intersections_with(&object) {
-                intersections.extend(Vec::from(actual_intersections));
-            }
+            intersections.extend(Vec::from(object.intersections_with(&ray)));
         }
 
         intersections.sort_by(|a, b| a.t().total_cmp(&b.t()));
