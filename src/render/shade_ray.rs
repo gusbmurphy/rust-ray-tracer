@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 // TODO: How about this takes the world and a ray? Then we can just figure out the intersection?
-pub fn shade_hit(world: &World, ray: &Ray) -> Color {
+pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     if let Some(hit) = world.hit_for(ray) {
         let eye_vector = -hit.ray().direction().to_owned();
 
@@ -79,7 +79,7 @@ mod test {
         let world = World::create_default();
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
-        let result = shade_hit(&world, &ray);
+        let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.38066, 0.47583, 0.2855))
     }
@@ -93,7 +93,7 @@ mod test {
 
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
 
-        let result = shade_hit(&world, &ray);
+        let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.90498, 0.90498, 0.90498))
     }
@@ -103,7 +103,7 @@ mod test {
         let world = World::create_default();
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 1.0, 0.0));
 
-        let result = shade_hit(&world, &ray);
+        let result = shade_ray(&world, &ray);
 
         assert_eq!(result, BLACK);
     }
@@ -113,7 +113,7 @@ mod test {
         let world = World::create_default();
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
-        let result = shade_hit(&world, &ray);
+        let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.38066, 0.47583, 0.2855));
     }
@@ -149,7 +149,7 @@ mod test {
         // This ray originates inside of the outermost sphere, and is pointed at the inner one.
         let ray = Ray::new(Point::new(0.0, 0.0, 0.75), Vector::new(0.0, 0.0, -1.0));
 
-        let result = shade_hit(&world, &ray);
+        let result = shade_ray(&world, &ray);
 
         // Since the ambient is 1, the color will just be the color of that inner sphere.
         assert_eq!(result, Color::new(1.0, 1.0, 1.0));
@@ -172,7 +172,7 @@ mod test {
 
         let ray = Ray::new(Point::new(0.0, 0.0, -3.0), Vector::new(0.0, 0.0, 1.0));
 
-        let result = shade_hit(&world, &ray);
+        let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.1, 0.1, 0.1));
     }

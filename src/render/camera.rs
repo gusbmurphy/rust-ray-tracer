@@ -38,7 +38,7 @@ impl Camera {
             for pixel_y in 0..self.vertical_size {
                 let ray = self.get_ray_for_pixel(pixel_x, pixel_y);
 
-                let color = shade_hit(&world, &ray);
+                let color = shade_ray(&world, &ray);
 
                 canvas.write_pixel(pixel_x as usize, pixel_y as usize, color);
             }
