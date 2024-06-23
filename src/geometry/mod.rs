@@ -18,3 +18,4 @@ pub use sphere::Sphere;
 pub use transform::Transform;
 pub use tuple::Tuple;
 pub use vector::*;
+pub use shape::Shape;

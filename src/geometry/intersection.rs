@@ -1,21 +1,21 @@
 use crate::prelude::*;
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-pub struct Intersection<'o, 'r, O> {
+pub struct Intersection<'o, 'r, S> {
     time: f32,
-    object: &'o O,
+    object: &'o S,
     ray: &'r Ray,
 }
 
-impl<'o, 'r, O> Intersection<'o, 'r, O>
+impl<'o, 'r, S> Intersection<'o, 'r, S>
 where
-    O: Intersectable,
+    S: Shape,
 {
-    pub fn new(time: f32, object: &'o O, ray: &'r Ray) -> Self {
+    pub fn new(time: f32, object: &'o S, ray: &'r Ray) -> Self {
         Intersection { time, object, ray }
     }
 
-    pub fn intersected_object(&self) -> &'o O {
+    pub fn intersected_object(&self) -> &'o S {
         self.object
     }
 
@@ -27,7 +27,7 @@ where
         &self.ray
     }
 
-    pub fn object(&self) -> &O {
+    pub fn object(&self) -> &S {
         &self.object
     }
 
@@ -57,17 +57,13 @@ where
     }
 }
 
-pub trait Intersectable {
-    fn normal_at(&self, world_space_point: Point) -> Vector;
-}
-
-pub fn determine_hit<'o, 'r, O>(
-    intersections: Vec<Intersection<'o, 'r, O>>,
-) -> Option<Intersection<'o, 'r, O>>
+pub fn determine_hit<'o, 'r, S>(
+    intersections: Vec<Intersection<'o, 'r, S>>,
+) -> Option<Intersection<'o, 'r, S>>
 where
-    O: Intersectable,
+    S: Shape,
 {
-    let mut lowest_t_intersection: Option<Intersection<O>> = None;
+    let mut lowest_t_intersection: Option<Intersection<S>> = None;
 
     for intersection in intersections {
         if *intersection.t() > 0f32 {

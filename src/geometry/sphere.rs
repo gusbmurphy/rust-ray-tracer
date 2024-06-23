@@ -1,7 +1,5 @@
 use crate::prelude::*;
 
-use super::{intersection::Intersectable, matrix::IDENTITY_MATRIX, transform::Transform};
-
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Sphere {
     center: Point,
@@ -41,7 +39,7 @@ impl Sphere {
     }
 }
 
-impl Intersectable for Sphere {
+impl Shape for Sphere {
     fn normal_at(&self, world_space_point: Point) -> Vector {
         let transform_inverse = self.transform.invert().unwrap();
         let object_space_point = transform_inverse * world_space_point;
