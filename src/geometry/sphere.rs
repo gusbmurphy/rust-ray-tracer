@@ -50,6 +50,29 @@ impl Shape for Sphere {
 
         return world_space_normal.normalize();
     }
+
+    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection<Sphere>> where 'r: 's {
+        let ray_in_object_space = self.transform().invert().unwrap() * ray;
+        let vector_from_sphere_to_ray = *ray_in_object_space.origin() - *self.center();
+
+        let a = dot(ray_in_object_space.direction(), ray_in_object_space.direction());
+        let b = 2f32 * dot(ray_in_object_space.direction(), &vector_from_sphere_to_ray);
+        let c = dot(&vector_from_sphere_to_ray, &vector_from_sphere_to_ray) - 1f32;
+
+        let discriminant = b.powi(2) - 4f32 * a * c;
+
+        if discriminant < 0f32 {
+            return Vec::new();
+        }
+
+        let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
+        let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
+
+        return vec!(
+            Intersection::new(t1, self, ray),
+            Intersection::new(t2, self, ray),
+        );
+    }
 }
 
 #[cfg(test)]
@@ -86,11 +109,16 @@ mod test {
         let mut sphere = Sphere::new();
         sphere.set_transform(Transform::new_scaling(2.0, 2.0, 2.0));
 
-        let intersections = ray.intersections_with(&sphere).unwrap();
+        let intersections = sphere.intersections_with(&ray);
 
         assert_eq!(intersections.len(), 2);
-        assert_eq!(*intersections[0].t(), 3.0);
-        assert_eq!(*intersections[1].t(), 7.0);
+
+        assert!(intersections
+            .iter()
+            .any(|intersection| *intersection.t() == 3.0));
+        assert!(intersections
+            .iter()
+            .any(|intersection| *intersection.t() == 7.0));
     }
 
     #[test]
@@ -100,9 +128,9 @@ mod test {
         let mut sphere = Sphere::new();
         sphere.set_transform(Transform::new_translation(5.0, 0.0, 0.0));
 
-        let intersections = ray.intersections_with(&sphere);
+        let intersections = sphere.intersections_with(&ray);
 
-        assert!(intersections.is_none());
+        assert!(intersections.is_empty());
     }
 
     #[test]
@@ -176,5 +204,75 @@ mod test {
         let normal = sphere.normal_at(Point::new(0.0, 2f32.sqrt() / 2.0, -2f32.sqrt() / 2.0));
 
         assert_eq!(normal, Vector::new(0.0, 0.97014, -0.24254));
+    }
+
+    #[test]
+    fn intersection_through_middle_of_sphere() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+
+        let intersections = sphere.intersections_with(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        for intersection in intersections.as_slice() {
+            assert_eq!(*intersection.intersected_object(), sphere);
+        }
+
+        assert!(intersections
+            .iter()
+            .any(|intersection| *intersection.t() == 4.0));
+        assert!(intersections
+            .iter()
+            .any(|intersection| *intersection.t() == 6.0));
+    }
+
+    #[test]
+    fn ray_missing_a_sphere() {
+        let ray = Ray::new(Point::new(0.0, 2.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+
+        let intersections = sphere.intersections_with(&ray);
+
+        assert!(intersections.is_empty());
+    }
+
+    #[test]
+    fn ray_originating_inside_of_a_sphere() {
+        let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+
+        let intersections = sphere.intersections_with(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        for intersection in intersections.as_slice() {
+            assert_eq!(*intersection.intersected_object(), sphere);
+        }
+
+        assert!(intersections
+            .iter()
+            .any(|intersection| *intersection.t() == -1.0));
+        assert!(intersections
+            .iter()
+            .any(|intersection| *intersection.t() == 1.0));
+    }
+
+    #[test]
+    fn ray_ahead_of_a_sphere() {
+        let ray = Ray::new(Point::new(0.0, 0.0, 5.0), Vector::new(0.0, 0.0, 1.0));
+        let sphere = Sphere::new();
+
+        let intersections = sphere.intersections_with(&ray);
+        assert_eq!(intersections.len(), 2);
+
+        for intersection in intersections.as_slice() {
+            assert_eq!(*intersection.intersected_object(), sphere);
+        }
+
+        assert!(intersections
+            .iter()
+            .any(|intersection| *intersection.t() == -6.0));
+        assert!(intersections
+            .iter()
+            .any(|intersection| *intersection.t() == -4.0));
     }
 }
