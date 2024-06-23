@@ -73,4 +73,15 @@ mod test {
 
         assert!(intersections.is_empty())
     }
+
+    #[test]
+    fn there_are_no_intersections_with_a_coplanar_ray() {
+        // Given a flat plane, and a ray at the same height running parallel...
+        let plane = Plane::new(ORIGIN, POSITIVE_Y);
+        let ray = Ray::new(Point::new(0.0, 0.0, 0.0), POSITIVE_Z);
+
+        let intersections = plane.intersections_with(&ray);
+
+        assert!(intersections.is_empty())
+    }
 }
