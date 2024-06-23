@@ -1,6 +1,5 @@
 use crate::prelude::*;
 
-// TODO: How about this takes the world and a ray? Then we can just figure out the intersection?
 pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     if let Some(hit) = world.hit_for(ray) {
         shade_hit(world, &hit)
