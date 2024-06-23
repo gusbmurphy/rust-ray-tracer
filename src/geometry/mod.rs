@@ -1,6 +1,7 @@
 mod close_enough;
 mod intersection;
 mod matrix;
+mod plane;
 mod point;
 mod ray;
 mod shape;
