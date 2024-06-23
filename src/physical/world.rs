@@ -76,16 +76,6 @@ impl World {
         self.light = Some(light);
     }
 
-    pub fn color_for_ray(&self, ray: Ray) -> Color {
-        let possible_hit = self.hit_for(&ray);
-
-        if let Some(hit) = possible_hit {
-            return shade_hit(self, &hit);
-        }
-
-        return BLACK;
-    }
-
     pub fn add_sphere(&mut self, sphere: Sphere) {
         self.objects.push(sphere);
     }
@@ -185,55 +175,6 @@ mod test {
     }
 
     #[test]
-    fn color_when_ray_misses_everything() {
-        let world = World::create_default();
-        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 1.0, 0.0));
-
-        let result = world.color_for_ray(ray);
-
-        assert_eq!(result, BLACK);
-    }
-
-    #[test]
-    fn color_for_a_ray_that_hits() {
-        let world = World::create_default();
-        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
-
-        let result = world.color_for_ray(ray);
-
-        assert_eq!(result, Color::new(0.38066, 0.47583, 0.2855));
-    }
-
-    #[test]
-    fn color_for_a_ray_that_hits_but_originates_inside_a_different_object() {
-        let mut world = World::create_default();
-        let spheres = world.objects.as_slice();
-
-        let mut modified_spheres: Vec<Sphere> = Vec::new();
-
-        // Setting the ambient value of each sphere's material to 1...
-        for sphere in spheres {
-            let mut material = sphere.material().to_owned();
-            material.set_ambient(1.0);
-
-            let mut modified_sphere = sphere.clone();
-            modified_sphere.set_material(material);
-
-            modified_spheres.push(modified_sphere);
-        }
-
-        world.objects = modified_spheres;
-
-        // This ray originates inside of the outermost sphere, and is pointed at the inner one.
-        let ray = Ray::new(Point::new(0.0, 0.0, 0.75), Vector::new(0.0, 0.0, -1.0));
-
-        let result = world.color_for_ray(ray);
-
-        // Since the ambient is 1, the color will just be the color of that inner sphere.
-        assert_eq!(result, Color::new(1.0, 1.0, 1.0));
-    }
-
-    #[test]
     fn there_is_no_shadow_when_nothing_is_collinear_with_point_and_light() {
         let world = World::create_default();
         let point = Point::new(0.0, 10.0, 0.0);
@@ -263,27 +204,5 @@ mod test {
         let point = Point::new(-2.0, 2.0, -2.0);
         let result = world.is_point_shadowed(&point);
         assert_eq!(result, false);
-    }
-
-    #[test]
-    fn getting_the_color_for_a_shaded_hit() {
-        let mut world = World::new();
-        world.set_light(PointLight::new(
-            Color::new(1.0, 1.0, 1.0),
-            Point::new(0.0, 0.0, -10.0),
-        ));
-
-        let sphere_one = Sphere::new();
-        world.add_sphere(sphere_one);
-
-        let mut sphere_two = Sphere::new();
-        sphere_two.set_transform(Transform::new_translation(0.0, 0.0, -5.0));
-        world.add_sphere(sphere_two);
-
-        let ray = Ray::new(Point::new(0.0, 0.0, -3.0), Vector::new(0.0, 0.0, 1.0));
-
-        let result = world.color_for_ray(ray);
-
-        assert_eq!(result, Color::new(0.1, 0.1, 0.1));
     }
 }
