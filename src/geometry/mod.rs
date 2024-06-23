@@ -7,6 +7,7 @@ mod sphere;
 mod transform;
 mod tuple;
 mod vector;
+mod shape;
 
 pub use close_enough::*;
 pub use intersection::*;
