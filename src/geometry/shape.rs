@@ -5,4 +5,8 @@ pub trait Shape: Sized {
     fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection<Self>>
     where
         'r: 's;
+    fn transform(&self) -> &Transform;
+    fn set_transform(&mut self, transformation: Transform);
+    fn material(&self) -> &Material;
+    fn set_material(&mut self, material: Material);
 }

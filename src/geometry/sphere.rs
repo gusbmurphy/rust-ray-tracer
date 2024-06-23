@@ -21,22 +21,6 @@ impl Sphere {
     pub fn center(&self) -> &Point {
         &self.center
     }
-
-    pub fn transform(&self) -> &Transform {
-        &self.transform
-    }
-
-    pub fn set_transform(&mut self, transformation: Transform) {
-        self.transform = transformation;
-    }
-
-    pub fn material(&self) -> &Material {
-        &self.material
-    }
-
-    pub fn set_material(&mut self, material: Material) {
-        self.material = material;
-    }
 }
 
 impl Shape for Sphere {
@@ -78,6 +62,22 @@ impl Shape for Sphere {
             Intersection::new(t1, self, ray),
             Intersection::new(t2, self, ray),
         ];
+    }
+
+    fn transform(&self) -> &Transform {
+        &self.transform
+    }
+
+    fn set_transform(&mut self, transformation: Transform) {
+        self.transform = transformation;
+    }
+
+    fn material(&self) -> &Material {
+        &self.material
+    }
+
+    fn set_material(&mut self, material: Material) {
+        self.material = material;
     }
 }
 
