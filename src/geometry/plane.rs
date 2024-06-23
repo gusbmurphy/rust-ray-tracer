@@ -104,4 +104,18 @@ mod test {
         assert_eq!(*intersection.intersected_object(), plane);
         assert_eq!(*intersection.t(), 3.0);
     }
+
+    #[test]
+    fn a_ray_intersection_from_below() {
+        let plane = Plane::new(ORIGIN, POSITIVE_Y);
+        let ray = Ray::new(Point::new(0.0, -3.0, 0.0), POSITIVE_Y);
+
+        let intersections = plane.intersections_with(&ray);
+
+        assert_eq!(intersections.len(), 1);
+
+        let intersection = intersections.get(0).unwrap();
+        assert_eq!(*intersection.intersected_object(), plane);
+        assert_eq!(*intersection.t(), 3.0);
+    }
 }
