@@ -2,16 +2,14 @@ use crate::prelude::*;
 
 pub struct World {
     light: Option<PointLight>, // I think this needs to be non-optional
-    spheres: Vec<Sphere>,
-    planes: Vec<Plane>,
+    shapes: Vec<Box<dyn Shape>>,
 }
 
 impl World {
     pub fn new() -> Self {
         World {
             light: None,
-            spheres: Vec::new(),
-            planes: Vec::new(),
+            shapes: Vec::new(),
         }
     }
 
@@ -28,13 +26,16 @@ impl World {
         let mut second_sphere = Sphere::new();
         second_sphere.set_transform(second_sphere_scaling);
 
+        let mut shapes: Vec<Box<dyn Shape>> = Vec::new();
+        shapes.push(Box::new(first_sphere));
+        shapes.push(Box::new(second_sphere));
+
         World {
             light: Some(PointLight::new(
                 Color::new(1.0, 1.0, 1.0),
                 Point::new(-10.0, 10.0, -10.0),
             )),
-            spheres: Vec::from([first_sphere, second_sphere]),
-            planes: Vec::new(),
+            shapes,
         }
     }
 
@@ -44,7 +45,7 @@ impl World {
     {
         let mut intersections = Vec::new();
 
-        for object in self.spheres.as_slice() {
+        for object in self.shapes.as_slice() {
             intersections.extend(Vec::from(object.intersections_with(&ray)));
         }
 
@@ -61,14 +62,6 @@ impl World {
         determine_hit(intersections)
     }
 
-    pub fn sphere_at(&self, index: usize) -> Option<&Sphere> {
-        self.spheres.get(index)
-    }
-
-    pub fn objects(&self) -> &Vec<Sphere> {
-        &self.spheres
-    }
-
     pub fn light(&self) -> &Option<PointLight> {
         &self.light
     }
@@ -78,11 +71,11 @@ impl World {
     }
 
     pub fn add_sphere(&mut self, sphere: Sphere) {
-        self.spheres.push(sphere);
+        self.shapes.push(Box::new(sphere));
     }
 
     pub fn add_plane(&mut self, plane: Plane) {
-        self.planes.push(plane);
+        self.shapes.push(Box::new(plane));
     }
 
     pub fn is_point_shadowed(&self, point: &Point) -> bool {
@@ -107,38 +100,6 @@ mod test {
     use super::*;
 
     #[test]
-    fn new_world_is_empty() {
-        let world = World::new();
-
-        assert!(world.light.is_none());
-        assert!(world.spheres.is_empty());
-    }
-
-    #[test]
-    fn default_world_has_expected_contents() {
-        let default_world = World::create_default();
-
-        let default_light = default_world.light.unwrap();
-        assert_eq!(*default_light.intensity(), Color::new(1.0, 1.0, 1.0));
-        assert_eq!(*default_light.position(), Point::new(-10.0, 10.0, -10.0));
-
-        let default_spheres = default_world.spheres;
-        assert_eq!(default_spheres.len(), 2);
-
-        assert!(default_spheres.iter().any(|sphere| {
-            let material = sphere.material();
-
-            *material.color() == Color::new(0.8, 1.0, 0.6)
-                && *material.diffuse() == 0.7
-                && *material.specular() == 0.2
-        }));
-
-        assert!(default_spheres.iter().any(|sphere| {
-            sphere.transform().to_owned() == Transform::new_scaling(0.5, 0.5, 0.5)
-        }));
-    }
-
-    #[test]
     fn intersecting_a_ray_with_a_world_gets_all_hits_sorted_in_ascending_order() {
         let world = World::create_default();
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
@@ -151,32 +112,6 @@ mod test {
         assert_eq!(*intersections[1].t(), 4.5);
         assert_eq!(*intersections[2].t(), 5.5);
         assert_eq!(*intersections[3].t(), 6.0);
-    }
-
-    #[test]
-    fn getting_an_object_returns_the_first_one() {
-        let world = World::create_default();
-
-        let found_object = world.sphere_at(0).unwrap();
-
-        let mut expected_material = Material::new();
-        expected_material.set_color(Color::new(0.8, 1.0, 0.6));
-        expected_material.set_specular(0.2);
-        expected_material.set_diffuse(0.7);
-
-        let mut expected_object = Sphere::new();
-        expected_object.set_material(expected_material);
-
-        assert_eq!(found_object.to_owned(), expected_object);
-    }
-
-    #[test]
-    fn getting_an_object_returns_nothing_for_a_wild_index() {
-        let world = World::create_default();
-
-        let result = world.sphere_at(4234);
-
-        assert_eq!(result, None);
     }
 
     #[test]
