@@ -115,4 +115,18 @@ mod test {
         assert_eq!(*intersection.intersected_object(), plane);
         assert_eq!(*intersection.t(), 3.0);
     }
+
+    #[test]
+    fn an_intersection_with_a_plane_at_an_angle() {
+        let plane = Plane::new(ORIGIN, Vector::new(0.0, 1.0, 1.0));
+        let ray = Ray::new(Point::new(0.0, 1.0, 1.0), Vector::new(0.0, -1.0, -1.0));
+
+        let intersections = plane.intersections_with(&ray);
+
+        assert_eq!(intersections.len(), 1);
+
+        let intersection = intersections.get(0).unwrap();
+        assert_eq!(*intersection.intersected_object(), plane);
+        assert_eq!(*intersection.t(), 1.0);
+    }
 }
