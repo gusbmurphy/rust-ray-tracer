@@ -81,6 +81,10 @@ impl World {
         self.spheres.push(sphere);
     }
 
+    pub fn add_plane(&mut self, plane: Plane) {
+        self.planes.push(plane);
+    }
+
     pub fn is_point_shadowed(&self, point: &Point) -> bool {
         let point_to_light_vector = *self.light.unwrap().position() - point.to_owned();
         let point_to_light_ray = Ray::new(point.to_owned(), point_to_light_vector.normalize());
