@@ -28,7 +28,9 @@ impl Shape for Plane {
     where
         'r: 's,
     {
-        if ray.direction().y().abs() < EPSILON { return vec![]; }
+        if ray.direction().y().abs() < EPSILON {
+            return vec![];
+        }
 
         let t = -ray.origin().y() / ray.direction().y();
         let intersection = Intersection::new(t, self, &ray);
