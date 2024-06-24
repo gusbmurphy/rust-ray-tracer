@@ -3,6 +3,7 @@ use crate::prelude::*;
 pub struct World {
     light: Option<PointLight>, // I think this needs to be non-optional
     spheres: Vec<Sphere>,
+    planes: Vec<Plane>,
 }
 
 impl World {
@@ -10,6 +11,7 @@ impl World {
         World {
             light: None,
             spheres: Vec::new(),
+            planes: Vec::new(),
         }
     }
 
@@ -32,6 +34,7 @@ impl World {
                 Point::new(-10.0, 10.0, -10.0),
             )),
             spheres: Vec::from([first_sphere, second_sphere]),
+            planes: Vec::new(),
         }
     }
 
