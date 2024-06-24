@@ -8,13 +8,13 @@ pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     }
 }
 
-fn shade_hit(world: &World, hit: &Intersection<Sphere>) -> Color {
+fn shade_hit(world: &World, hit: &Intersection) -> Color {
     let eye_vector = -hit.ray().direction().to_owned();
 
     let adjusted_hit = adjust_hit(&hit);
     let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
 
-    let material = hit.intersected_object().material();
+    let material = hit.material();
     let light = world.light().unwrap();
 
     let effective_color = *material.color() * *light.intensity();
@@ -42,7 +42,7 @@ fn shade_hit(world: &World, hit: &Intersection<Sphere>) -> Color {
             light_vector,
             &hit.normal_vector(),
             &eye_vector,
-            *hit.intersected_object().material(),
+            *hit.material(),
             light,
         );
     }
@@ -69,7 +69,7 @@ fn calculate_specular_contribution(
     }
 }
 
-fn adjust_hit(hit: &Intersection<Sphere>) -> Point {
+fn adjust_hit(hit: &Intersection) -> Point {
     hit.point() + hit.normal_vector() * EPSILON
 }
 

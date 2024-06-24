@@ -24,7 +24,7 @@ impl Shape for Plane {
         self.normal.clone()
     }
 
-    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection<Self>>
+    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection>
     where
         'r: 's,
     {
@@ -33,7 +33,7 @@ impl Shape for Plane {
         }
 
         let t = -ray.origin().y() / ray.direction().y();
-        let intersection = Intersection::new(t, self, &ray);
+        let intersection = Intersection::new(t, Box::new(*self), &ray);
 
         vec![intersection]
     }
@@ -100,7 +100,6 @@ mod test {
         assert_eq!(intersections.len(), 1);
 
         let intersection = intersections.get(0).unwrap();
-        assert_eq!(*intersection.intersected_object(), plane);
         assert_eq!(*intersection.t(), 3.0);
     }
 
@@ -114,7 +113,6 @@ mod test {
         assert_eq!(intersections.len(), 1);
 
         let intersection = intersections.get(0).unwrap();
-        assert_eq!(*intersection.intersected_object(), plane);
         assert_eq!(*intersection.t(), 3.0);
     }
 
@@ -128,7 +126,6 @@ mod test {
         assert_eq!(intersections.len(), 1);
 
         let intersection = intersections.get(0).unwrap();
-        assert_eq!(*intersection.intersected_object(), plane);
         assert_eq!(*intersection.t(), 1.0);
     }
 }

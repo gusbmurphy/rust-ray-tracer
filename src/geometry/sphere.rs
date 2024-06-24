@@ -35,7 +35,7 @@ impl Shape for Sphere {
         return world_space_normal.normalize();
     }
 
-    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection<Sphere>>
+    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection>
     where
         'r: 's,
     {
@@ -59,8 +59,8 @@ impl Shape for Sphere {
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
         return vec![
-            Intersection::new(t1, self, ray),
-            Intersection::new(t2, self, ray),
+            Intersection::new(t1, Box::new(*self), ray),
+            Intersection::new(t2, Box::new(*self), ray),
         ];
     }
 
@@ -220,10 +220,6 @@ mod test {
         let intersections = sphere.intersections_with(&ray);
         assert_eq!(intersections.len(), 2);
 
-        for intersection in intersections.as_slice() {
-            assert_eq!(*intersection.intersected_object(), sphere);
-        }
-
         assert!(intersections
             .iter()
             .any(|intersection| *intersection.t() == 4.0));
@@ -250,10 +246,6 @@ mod test {
         let intersections = sphere.intersections_with(&ray);
         assert_eq!(intersections.len(), 2);
 
-        for intersection in intersections.as_slice() {
-            assert_eq!(*intersection.intersected_object(), sphere);
-        }
-
         assert!(intersections
             .iter()
             .any(|intersection| *intersection.t() == -1.0));
@@ -269,10 +261,6 @@ mod test {
 
         let intersections = sphere.intersections_with(&ray);
         assert_eq!(intersections.len(), 2);
-
-        for intersection in intersections.as_slice() {
-            assert_eq!(*intersection.intersected_object(), sphere);
-        }
 
         assert!(intersections
             .iter()

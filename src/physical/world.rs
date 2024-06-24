@@ -38,7 +38,7 @@ impl World {
         }
     }
 
-    fn intersections_for<'a, 'b>(&'a self, ray: &'b Ray) -> Vec<Intersection<Sphere>>
+    fn intersections_for<'a, 'b>(&'a self, ray: &'b Ray) -> Vec<Intersection>
     where
         'b: 'a,
     {
@@ -53,7 +53,7 @@ impl World {
         intersections
     }
 
-    pub fn hit_for<'a, 'b>(&'a self, ray: &'b Ray) -> Option<Intersection<Sphere>>
+    pub fn hit_for<'a, 'b>(&'a self, ray: &'b Ray) -> Option<Intersection>
     where
         'b: 'a,
     {
@@ -143,7 +143,7 @@ mod test {
         let world = World::create_default();
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
-        let intersections: Vec<Intersection<Sphere>> = world.intersections_for(&ray);
+        let intersections: Vec<Intersection> = world.intersections_for(&ray);
 
         assert_eq!(intersections.len(), 4);
 

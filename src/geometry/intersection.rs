@@ -1,22 +1,18 @@
 use crate::prelude::*;
 
-#[derive(PartialEq, Debug, Clone, Copy)]
-pub struct Intersection<'o, 'r, S> {
+pub struct Intersection<'r> {
     time: f32,
-    object: &'o S,
+    object: Box<dyn Shape>,
     ray: &'r Ray,
 }
 
-impl<'o, 'r, S> Intersection<'o, 'r, S>
-where
-    S: Shape,
-{
-    pub fn new(time: f32, object: &'o S, ray: &'r Ray) -> Self {
+impl<'r> Intersection<'r> {
+    pub fn new(time: f32, object: Box<dyn Shape>, ray: &'r Ray) -> Self {
         Intersection { time, object, ray }
     }
 
-    pub fn intersected_object(&self) -> &'o S {
-        self.object
+    pub fn material(&self) -> &Material {
+        &self.object.material()
     }
 
     pub fn t(&self) -> &f32 {
@@ -25,10 +21,6 @@ where
 
     pub fn ray(&self) -> &Ray {
         &self.ray
-    }
-
-    pub fn object(&self) -> &S {
-        &self.object
     }
 
     pub fn point(&self) -> Point {
@@ -57,13 +49,8 @@ where
     }
 }
 
-pub fn determine_hit<'o, 'r, S>(
-    intersections: Vec<Intersection<'o, 'r, S>>,
-) -> Option<Intersection<'o, 'r, S>>
-where
-    S: Shape,
-{
-    let mut lowest_t_intersection: Option<Intersection<S>> = None;
+pub fn determine_hit<'r>(intersections: Vec<Intersection>) -> Option<Intersection> {
+    let mut lowest_t_intersection: Option<Intersection> = None;
 
     for intersection in intersections {
         if *intersection.t() > 0f32 {
@@ -91,12 +78,12 @@ mod test {
         let interesected_sphere = Sphere::new();
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(1.0, &interesected_sphere, &ray);
-        let i2 = Intersection::new(2.0, &interesected_sphere, &ray);
+        let i1 = Intersection::new(1.0, Box::new(interesected_sphere), &ray);
+        let i2 = Intersection::new(2.0, Box::new(interesected_sphere), &ray);
 
         let result = determine_hit(vec![i1, i2]).unwrap();
 
-        assert_eq!(result.to_owned(), i1);
+        assert_eq!(result.t().to_owned(), 1.0);
     }
 
     #[test]
@@ -104,13 +91,13 @@ mod test {
         let interesected_sphere = Sphere::new();
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.0, &interesected_sphere, &ray);
-        let i2 = Intersection::new(2.0, &interesected_sphere, &ray);
-        let i3 = Intersection::new(10.0, &interesected_sphere, &ray);
+        let i1 = Intersection::new(-1.0, Box::new(interesected_sphere), &ray);
+        let i2 = Intersection::new(2.0, Box::new(interesected_sphere), &ray);
+        let i3 = Intersection::new(10.0, Box::new(interesected_sphere), &ray);
 
         let result = determine_hit(vec![i1, i2, i3]).unwrap();
 
-        assert_eq!(result.to_owned(), i2);
+        assert_eq!(result.t().to_owned(), 2.0);
     }
 
     #[test]
@@ -118,8 +105,8 @@ mod test {
         let interesected_sphere = Sphere::new();
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.0, &interesected_sphere, &ray);
-        let i2 = Intersection::new(-2.0, &interesected_sphere, &ray);
+        let i1 = Intersection::new(-1.0, Box::new(interesected_sphere), &ray);
+        let i2 = Intersection::new(-2.0, Box::new(interesected_sphere), &ray);
 
         let result = determine_hit(vec![i1, i2]);
 
@@ -131,8 +118,8 @@ mod test {
         let interesected_sphere = Sphere::new();
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.07378995, &interesected_sphere, &ray);
-        let i2 = Intersection::new(-2.38418579E-7, &interesected_sphere, &ray);
+        let i1 = Intersection::new(-1.07378995, Box::new(interesected_sphere), &ray);
+        let i2 = Intersection::new(-2.38418579E-7, Box::new(interesected_sphere), &ray);
 
         let result = determine_hit(vec![i1, i2]);
 
@@ -144,21 +131,21 @@ mod test {
         let interesected_sphere = Sphere::new();
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(5.0, &interesected_sphere, &ray);
-        let i2 = Intersection::new(7.0, &interesected_sphere, &ray);
-        let i3 = Intersection::new(-3.0, &interesected_sphere, &ray);
-        let i4 = Intersection::new(2.0, &interesected_sphere, &ray);
+        let i1 = Intersection::new(5.0, Box::new(interesected_sphere), &ray);
+        let i2 = Intersection::new(7.0, Box::new(interesected_sphere), &ray);
+        let i3 = Intersection::new(-3.0, Box::new(interesected_sphere), &ray);
+        let i4 = Intersection::new(2.0, Box::new(interesected_sphere), &ray);
 
         let result = determine_hit(vec![i1, i2, i3, i4]).unwrap();
 
-        assert_eq!(result.to_owned(), i4)
+        assert_eq!(result.t().to_owned(), 2.0)
     }
 
     #[test]
     fn the_normal_vector_when_the_hit_originates_outside_of_the_shape_is_correct() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, &sphere, &ray);
+        let intersection = Intersection::new(4.0, Box::new(sphere), &ray);
 
         assert_eq!(intersection.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
@@ -167,7 +154,7 @@ mod test {
     fn the_normal_vector_is_correct_when_we_are_inside_of_the_shape() {
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(1.0, &sphere, &ray);
+        let intersection = Intersection::new(1.0, Box::new(sphere), &ray);
 
         assert_eq!(intersection.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
