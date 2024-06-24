@@ -2,14 +2,14 @@ use crate::prelude::*;
 
 pub struct World {
     light: Option<PointLight>, // I think this needs to be non-optional
-    objects: Vec<Sphere>,
+    spheres: Vec<Sphere>,
 }
 
 impl World {
     pub fn new() -> Self {
         World {
             light: None,
-            objects: Vec::new(),
+            spheres: Vec::new(),
         }
     }
 
@@ -31,7 +31,7 @@ impl World {
                 Color::new(1.0, 1.0, 1.0),
                 Point::new(-10.0, 10.0, -10.0),
             )),
-            objects: Vec::from([first_sphere, second_sphere]),
+            spheres: Vec::from([first_sphere, second_sphere]),
         }
     }
 
@@ -41,7 +41,7 @@ impl World {
     {
         let mut intersections = Vec::new();
 
-        for object in self.objects.as_slice() {
+        for object in self.spheres.as_slice() {
             intersections.extend(Vec::from(object.intersections_with(&ray)));
         }
 
@@ -58,12 +58,12 @@ impl World {
         determine_hit(intersections)
     }
 
-    pub fn object_at(&self, index: usize) -> Option<&Sphere> {
-        self.objects.get(index)
+    pub fn sphere_at(&self, index: usize) -> Option<&Sphere> {
+        self.spheres.get(index)
     }
 
     pub fn objects(&self) -> &Vec<Sphere> {
-        &self.objects
+        &self.spheres
     }
 
     pub fn light(&self) -> &Option<PointLight> {
@@ -75,7 +75,7 @@ impl World {
     }
 
     pub fn add_sphere(&mut self, sphere: Sphere) {
-        self.objects.push(sphere);
+        self.spheres.push(sphere);
     }
 
     pub fn is_point_shadowed(&self, point: &Point) -> bool {
@@ -104,7 +104,7 @@ mod test {
         let world = World::new();
 
         assert!(world.light.is_none());
-        assert!(world.objects.is_empty());
+        assert!(world.spheres.is_empty());
     }
 
     #[test]
@@ -115,7 +115,7 @@ mod test {
         assert_eq!(*default_light.intensity(), Color::new(1.0, 1.0, 1.0));
         assert_eq!(*default_light.position(), Point::new(-10.0, 10.0, -10.0));
 
-        let default_spheres = default_world.objects;
+        let default_spheres = default_world.spheres;
         assert_eq!(default_spheres.len(), 2);
 
         assert!(default_spheres.iter().any(|sphere| {
@@ -150,7 +150,7 @@ mod test {
     fn getting_an_object_returns_the_first_one() {
         let world = World::create_default();
 
-        let found_object = world.object_at(0).unwrap();
+        let found_object = world.sphere_at(0).unwrap();
 
         let mut expected_material = Material::new();
         expected_material.set_color(Color::new(0.8, 1.0, 0.6));
@@ -167,7 +167,7 @@ mod test {
     fn getting_an_object_returns_nothing_for_a_wild_index() {
         let world = World::create_default();
 
-        let result = world.object_at(4234);
+        let result = world.sphere_at(4234);
 
         assert_eq!(result, None);
     }
