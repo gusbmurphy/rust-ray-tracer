@@ -13,6 +13,7 @@ mod vector;
 pub use close_enough::*;
 pub use intersection::*;
 pub use matrix::IDENTITY_MATRIX;
+pub use plane::Plane;
 pub use point::*;
 pub use ray::Ray;
 pub use shape::Shape;
