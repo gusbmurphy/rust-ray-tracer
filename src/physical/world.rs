@@ -93,6 +93,10 @@ impl World {
 
         return false;
     }
+
+    pub fn shapes(&self) -> &Vec<Box<dyn Shape>> {
+        &self.shapes
+    }
 }
 
 #[cfg(test)]
