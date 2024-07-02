@@ -97,6 +97,10 @@ impl World {
     pub fn shapes(&self) -> &Vec<Box<dyn Shape>> {
         &self.shapes
     }
+
+    pub fn add_shape(&mut self, shape: Box<dyn Shape>) {
+        self.shapes.push(shape);
+    }
 }
 
 #[cfg(test)]
