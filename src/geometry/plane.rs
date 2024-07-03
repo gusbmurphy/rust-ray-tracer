@@ -51,6 +51,10 @@ impl Shape for Plane {
     fn set_transform(&mut self, transformation: Transform) {
         self.transform = transformation;
     }
+
+    fn shape_type(&self) -> ShapeType {
+        ShapeType::Sphere
+    }
 }
 
 #[cfg(test)]

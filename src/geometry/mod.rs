@@ -16,7 +16,7 @@ pub use matrix::IDENTITY_MATRIX;
 pub use plane::Plane;
 pub use point::*;
 pub use ray::Ray;
-pub use shape::Shape;
+pub use shape::*;
 pub use sphere::Sphere;
 pub use transform::Transform;
 pub use tuple::Tuple;

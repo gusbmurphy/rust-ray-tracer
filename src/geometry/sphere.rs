@@ -79,6 +79,10 @@ impl Shape for Sphere {
     fn set_material(&mut self, material: Material) {
         self.material = material;
     }
+
+    fn shape_type(&self) -> ShapeType {
+        ShapeType::Sphere
+    }
 }
 
 #[cfg(test)]

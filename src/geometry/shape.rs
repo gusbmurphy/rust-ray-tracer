@@ -1,8 +1,6 @@
-use std::any::Any;
-
 use crate::prelude::*;
 
-pub trait Shape: Any {
+pub trait Shape {
     fn normal_at(&self, world_space_point: Point) -> Vector;
     fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection>
     where
@@ -11,4 +9,11 @@ pub trait Shape: Any {
     fn set_transform(&mut self, transformation: Transform);
     fn material(&self) -> &Material;
     fn set_material(&mut self, material: Material);
+    fn shape_type(&self) -> ShapeType;
+}
+
+#[derive(Debug, PartialEq)]
+pub enum ShapeType {
+    Sphere,
+    Plane,
 }
