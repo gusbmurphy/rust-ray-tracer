@@ -22,7 +22,9 @@ pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn
                     match key.as_str().unwrap() {
                         "camera" => camera = parse_camera(value_hash)?,
                         "light" => world.set_light(parse_light(value_hash)?),
-                        "sphere" => world.add_shape(parse_shape(value_hash)?),
+                        "sphere" | "plane" => {
+                            world.add_shape(parse_shape(value_hash, key.as_str().unwrap())?)
+                        }
                         _ => todo!(),
                     }
                     println!("{:?}:", key);
@@ -39,8 +41,6 @@ pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn
 
 #[cfg(test)]
 mod test {
-    use std::any::Any;
-
     use super::*;
 
     #[test]
@@ -90,5 +90,27 @@ mod test {
             Vector::new(0.0, 1.0, 0.0),
         );
         assert_eq!(*camera.transform(), expected_transform)
+    }
+
+    #[test]
+    fn a_plane_is_correctly_parsed() {
+        let (world, _camera) =
+            parse_scene_from_yaml("src/parse/examples/scene_with_plane_and_sphere.yaml").unwrap();
+
+        let shapes = world.shapes().to_owned();
+        assert_eq!(shapes.len(), 2); // There is also a sphere here!
+
+        let plane = shapes.get(1).unwrap().to_owned();
+        assert_eq!(plane.shape_type(), ShapeType::Plane);
+
+        let mut expected_material = Material::new();
+        expected_material.set_diffuse(1.1);
+        expected_material.set_specular(0.2);
+        expected_material.set_color(Color::new(0.8, 2.0, 10.0));
+        assert_eq!(plane.material().to_owned(), expected_material);
+
+        let expected_transform =
+            Transform::new_translation(0.0, 0.0, 2.0) * Transform::new_x_rotation(1.57079);
+        assert_eq!(*plane.transform(), expected_transform);
     }
 }

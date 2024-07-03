@@ -6,7 +6,10 @@ use yaml_rust::Yaml;
 
 use super::parse_little_things::{parse_color, parse_f32_from_integer_or_real};
 
-pub fn parse_shape(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Box<dyn Shape>, Box<dyn Error>> {
+pub fn parse_shape(
+    map: &LinkedHashMap<Yaml, Yaml>,
+    shape_name: &str,
+) -> Result<Box<dyn Shape>, Box<dyn Error>> {
     let mut material: Option<Material> = None;
     let mut transform: Option<Transform> = None;
 
@@ -18,11 +21,16 @@ pub fn parse_shape(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Box<dyn Shape>, Bo
         }
     }
 
-    let mut sphere = Sphere::new();
-    sphere.set_material(material.unwrap());
-    sphere.set_transform(transform.unwrap());
+    let mut shape: Box<dyn Shape> = match shape_name {
+        "sphere" => Box::new(Sphere::new()),
+        "plane" => Box::new(Plane::new()),
+        _ => todo!()
+    };
 
-    Ok(Box::new(sphere))
+    shape.set_material(material.unwrap());
+    shape.set_transform(transform.unwrap());
+
+    Ok(shape)
 }
 
 fn parse_material(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Material, Box<dyn Error>> {
@@ -72,6 +80,11 @@ fn parse_transform(nodes: &Vec<Yaml>) -> Result<Transform, Box<dyn Error>> {
                         values[2].unwrap(),
                     );
                     transform = transform * scaling;
+                }
+                "rotate_x" => {
+                    let radians = parse_f32_from_integer_or_real(value)?;
+                    let rotation = Transform::new_x_rotation(radians);
+                    transform = transform * rotation;
                 }
                 _ => todo!(),
             }

@@ -59,12 +59,12 @@ pub fn parse_f32_from_integer_or_real(yaml: &Yaml) -> Result<f32, Box<dyn Error>
 }
 
 #[derive(Debug)]
-struct YamlParsingError {
+pub struct YamlParsingError {
     message: String,
 }
 
 impl YamlParsingError {
-    fn new(message: &str) -> Self {
+    pub fn new(message: &str) -> Self {
         YamlParsingError {
             message: message.to_string(),
         }
