@@ -19,8 +19,7 @@ fn just_three_spheres() {
         Point::new(0.0, 1.0, 0.0),
         Vector::new(0.0, 1.0, 0.0),
     );
-    let camera =
-        Camera::new_with_transform(100, 50, PI / 3.0, camera_transform);
+    let camera = Camera::new_with_transform(100, 50, PI / 3.0, camera_transform);
 
     insta::assert_yaml_snapshot!(create_ppm_from_canvas(camera.render(world)));
 }
