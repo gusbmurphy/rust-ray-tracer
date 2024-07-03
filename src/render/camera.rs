@@ -101,6 +101,14 @@ impl Camera {
     pub fn height(&self) -> &u64 {
         &self.vertical_size
     }
+
+    pub fn fov(&self) -> &f32 {
+        &self.field_of_view
+    }
+
+    pub fn transform(&self) -> &Transform {
+        &self.transform
+    }
 }
 
 #[cfg(test)]

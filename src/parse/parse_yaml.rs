@@ -44,19 +44,25 @@ mod test {
     use super::*;
 
     #[test]
-    fn parsing_a_scene_with_a_sphere() {
-        let (world, camera) =
+    fn a_light_is_correctly_parsed() {
+        let (world, _camera) =
             parse_scene_from_yaml("src/parse/examples/scene_with_sphere.yaml").unwrap();
 
         let light = world.light().unwrap();
         assert_eq!(light.intensity().to_owned(), Color::new(1.0, 1.0, 1.0));
+        assert_eq!(light.position().to_owned(), Point::new(-10.0, 10.0, -10.0));
+    }
+
+    #[test]
+    fn a_sphere_is_correctly_parsed() {
+        let (world, _camera) =
+            parse_scene_from_yaml("src/parse/examples/scene_with_sphere.yaml").unwrap();
 
         let shapes = world.shapes().to_owned();
         assert_eq!(shapes.len(), 1);
 
-        let only_shape = shapes.get(0).unwrap();
-        let some_sphere = Sphere::new();
-        assert_eq!(only_shape.type_id(), some_sphere.type_id());
+        let only_shape = shapes.get(0).unwrap().to_owned();
+        assert_eq!(only_shape.shape_type(), ShapeType::Sphere);
 
         let mut expected_material = Material::new();
         expected_material.set_diffuse(0.7);
@@ -64,7 +70,25 @@ mod test {
         expected_material.set_color(Color::new(0.1, 1.0, 0.5));
         assert_eq!(only_shape.material().to_owned(), expected_material);
 
+        let expected_transform =
+            Transform::new_translation(-0.5, 1.0, 0.5) * Transform::new_scaling(0.5, 0.5, 0.5);
+        assert_eq!(*only_shape.transform(), expected_transform);
+    }
+
+    #[test]
+    fn the_camera_is_correctly_parsed() {
+        let (_world, camera) =
+            parse_scene_from_yaml("src/parse/examples/scene_with_sphere.yaml").unwrap();
+
         assert_eq!(camera.width().to_owned(), 100);
         assert_eq!(camera.height().to_owned(), 100);
+        assert_eq!(camera.fov().to_owned(), 90.0);
+
+        let expected_transform = Transform::new_view(
+            Point::new(0.0, 1.5, -5.0),
+            Point::new(0.0, 1.0, 0.0),
+            Vector::new(0.0, 1.0, 0.0),
+        );
+        assert_eq!(*camera.transform(), expected_transform)
     }
 }

@@ -1,8 +1,10 @@
 use std::error::Error;
 
-use crate::prelude::*;
+use crate::{parse::parse_little_things::parse_values, prelude::*};
 use linked_hash_map::LinkedHashMap;
 use yaml_rust::Yaml;
+
+use super::parse_little_things::{parse_color, parse_f32_from_integer_or_real};
 
 pub fn parse_shape(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Box<dyn Shape>, Box<dyn Error>> {
     let mut material: Option<Material> = None;
@@ -11,7 +13,7 @@ pub fn parse_shape(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Box<dyn Shape>, Bo
     for (key, value) in map {
         match key.as_str().unwrap() {
             "material" => material = Some(parse_material(value.as_hash().unwrap())?),
-            "transform" => transform = Some(parse_transform(value.as_hash().unwrap())?),
+            "transform" => transform = Some(parse_transform(value.as_vec().unwrap())?),
             _ => todo!(),
         }
     }
@@ -24,9 +26,57 @@ pub fn parse_shape(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Box<dyn Shape>, Bo
 }
 
 fn parse_material(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Material, Box<dyn Error>> {
-    todo!()
+    let mut color: Option<Color> = None;
+    let mut diffuse: Option<f32> = None;
+    let mut specular: Option<f32> = None;
+
+    for (key, value) in map {
+        match key.as_str().unwrap() {
+            "color" => color = Some(parse_color(value.as_vec().unwrap().to_owned()).unwrap()),
+            "diffuse" => diffuse = Some(parse_f32_from_integer_or_real(value)?),
+            "specular" => specular = Some(parse_f32_from_integer_or_real(value)?),
+            _ => todo!(),
+        }
+    }
+
+    let mut material = Material::new();
+    material.set_color(color.unwrap());
+    material.set_diffuse(diffuse.unwrap());
+    material.set_specular(specular.unwrap());
+
+    Ok(material)
 }
 
-fn parse_transform(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Transform, Box<dyn Error>> {
-    todo!()
+fn parse_transform(nodes: &Vec<Yaml>) -> Result<Transform, Box<dyn Error>> {
+    let mut transform = Transform::new(IDENTITY_MATRIX);
+
+    for node in nodes {
+        let map = node.as_hash().unwrap();
+
+        for (key, value) in map {
+            match key.as_str().unwrap() {
+                "translate" => {
+                    let values = parse_values(value.as_vec().unwrap().to_owned()).unwrap();
+                    let translation = Transform::new_translation(
+                        values[0].unwrap(),
+                        values[1].unwrap(),
+                        values[2].unwrap(),
+                    );
+                    transform = transform * translation;
+                }
+                "scale" => {
+                    let values = parse_values(value.as_vec().unwrap().to_owned()).unwrap();
+                    let scaling = Transform::new_scaling(
+                        values[0].unwrap(),
+                        values[1].unwrap(),
+                        values[2].unwrap(),
+                    );
+                    transform = transform * scaling;
+                }
+                _ => todo!(),
+            }
+        }
+    }
+
+    Ok(transform)
 }

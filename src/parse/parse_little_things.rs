@@ -9,8 +9,8 @@ pub fn parse_point(yaml_array: yaml::Array) -> Result<Point, Box<dyn Error>> {
 
     Ok(Point::new(
         values[0].unwrap(),
-        values[0].unwrap(),
-        values[0].unwrap(),
+        values[1].unwrap(),
+        values[2].unwrap(),
     ))
 }
 
@@ -19,8 +19,8 @@ pub fn parse_vector(yaml_array: yaml::Array) -> Result<Vector, Box<dyn Error>> {
 
     Ok(Vector::new(
         values[0].unwrap(),
-        values[0].unwrap(),
-        values[0].unwrap(),
+        values[1].unwrap(),
+        values[2].unwrap(),
     ))
 }
 
@@ -29,8 +29,8 @@ pub fn parse_color(yaml_array: yaml::Array) -> Result<Color, Box<dyn Error>> {
 
     Ok(Color::new(
         values[0].unwrap(),
-        values[0].unwrap(),
-        values[0].unwrap(),
+        values[1].unwrap(),
+        values[2].unwrap(),
     ))
 }
 
