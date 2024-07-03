@@ -93,6 +93,14 @@ impl Camera {
     fn aspect(&self) -> f32 {
         (self.horizontal_size as f32) / (self.vertical_size as f32)
     }
+
+    pub fn width(&self) -> &u64 {
+        &self.horizontal_size
+    }
+
+    pub fn height(&self) -> &u64 {
+        &self.vertical_size
+    }
 }
 
 #[cfg(test)]
