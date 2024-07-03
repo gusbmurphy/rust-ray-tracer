@@ -53,7 +53,7 @@ impl Shape for Plane {
     }
 
     fn shape_type(&self) -> ShapeType {
-        ShapeType::Sphere
+        ShapeType::Plane
     }
 }
 
