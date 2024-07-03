@@ -14,6 +14,7 @@ impl Transform {
         Transform { matrix }
     }
 
+    // TODO: How about removing "new" from the start of all these?
     pub fn new_view(from: Point, to: Point, approximate_up: Vector) -> Self {
         let forward = (to - from).normalize();
         let left = cross(&forward, &approximate_up.normalize());
