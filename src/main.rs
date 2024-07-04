@@ -1,4 +1,3 @@
-mod example;
 mod geometry;
 mod parse;
 mod physical;
