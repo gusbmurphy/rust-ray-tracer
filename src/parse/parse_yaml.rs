@@ -51,7 +51,7 @@ mod test {
     #[test]
     fn a_light_is_correctly_parsed() {
         let (world, _camera) =
-            parse_scene_from_yaml("src/parse/examples/scene_with_sphere.yaml").unwrap();
+            parse_scene_from_yaml("tests/scenes/scene_with_sphere.yaml").unwrap();
 
         let light = world.light().unwrap();
         assert_eq!(light.intensity().to_owned(), Color::new(1.0, 1.0, 1.0));
@@ -61,7 +61,7 @@ mod test {
     #[test]
     fn a_sphere_is_correctly_parsed() {
         let (world, _camera) =
-            parse_scene_from_yaml("src/parse/examples/scene_with_sphere.yaml").unwrap();
+            parse_scene_from_yaml("tests/scenes/scene_with_sphere.yaml").unwrap();
 
         let shapes = world.shapes().to_owned();
         assert_eq!(shapes.len(), 1);
@@ -83,7 +83,7 @@ mod test {
     #[test]
     fn the_camera_is_correctly_parsed() {
         let (_world, camera) =
-            parse_scene_from_yaml("src/parse/examples/scene_with_sphere.yaml").unwrap();
+            parse_scene_from_yaml("tests/scenes/scene_with_sphere.yaml").unwrap();
 
         assert_eq!(camera.width().to_owned(), 100);
         assert_eq!(camera.height().to_owned(), 100);
@@ -100,7 +100,7 @@ mod test {
     #[test]
     fn a_plane_is_correctly_parsed() {
         let (world, _camera) =
-            parse_scene_from_yaml("src/parse/examples/scene_with_plane_and_sphere.yaml").unwrap();
+            parse_scene_from_yaml("tests/scenes/scene_with_plane_and_sphere.yaml").unwrap();
 
         let shapes = world.shapes().to_owned();
         assert_eq!(shapes.len(), 2); // There is also a sphere here!
@@ -122,7 +122,7 @@ mod test {
     #[test]
     fn a_scene_with_three_spheres_gets_parsed_correctly() {
         let (world, _camera) =
-            parse_scene_from_yaml("src/parse/examples/three_spheres.yaml").unwrap();
+            parse_scene_from_yaml("tests/scenes/three_spheres.yaml").unwrap();
 
         let shapes = world.shapes().to_owned();
         assert_eq!(shapes.len(), 3);
