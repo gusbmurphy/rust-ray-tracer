@@ -1,6 +1,6 @@
 use crate::parse::parse_scene_from_yaml;
-use std::{error::Error, fs::File, io::Write};
 use crate::prelude::*;
+use std::{error::Error, fs::File, io::Write};
 
 pub fn render_from_yaml(yaml_path: &str, target_path: &str) -> Result<(), Box<dyn Error>> {
     let (world, camera) = parse_scene_from_yaml(yaml_path)?;

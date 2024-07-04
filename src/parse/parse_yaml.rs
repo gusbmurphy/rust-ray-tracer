@@ -121,8 +121,7 @@ mod test {
 
     #[test]
     fn a_scene_with_three_spheres_gets_parsed_correctly() {
-        let (world, _camera) =
-            parse_scene_from_yaml("tests/scenes/three_spheres.yaml").unwrap();
+        let (world, _camera) = parse_scene_from_yaml("tests/scenes/three_spheres.yaml").unwrap();
 
         let shapes = world.shapes().to_owned();
         assert_eq!(shapes.len(), 3);
