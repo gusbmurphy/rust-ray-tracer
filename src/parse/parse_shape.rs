@@ -24,7 +24,7 @@ pub fn parse_shape(
     let mut shape: Box<dyn Shape> = match shape_name {
         "sphere" => Box::new(Sphere::new()),
         "plane" => Box::new(Plane::new()),
-        _ => todo!()
+        _ => todo!(),
     };
 
     shape.set_material(material.unwrap());

@@ -9,12 +9,17 @@ use crate::{
 
 pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn Error>> {
     let text = read_to_string(file_path)?;
-    let yaml = YamlLoader::load_from_str(text.as_str())?;
+    let nodes = YamlLoader::load_from_str(text.as_str())?
+        .get(0)
+        .unwrap()
+        .as_vec()
+        .unwrap()
+        .to_owned();
 
     let mut world = World::new();
     let mut camera = Camera::new(100, 100, 100.0);
 
-    for node in &yaml {
+    for node in nodes {
         match node {
             yaml_rust::Yaml::Hash(ref h) => {
                 for (key, value) in h {
@@ -112,5 +117,14 @@ mod test {
         let expected_transform =
             Transform::new_translation(0.0, 0.0, 2.0) * Transform::new_x_rotation(1.57079);
         assert_eq!(*plane.transform(), expected_transform);
+    }
+
+    #[test]
+    fn a_scene_with_three_spheres_gets_parsed_correctly() {
+        let (world, _camera) =
+            parse_scene_from_yaml("src/parse/examples/three_spheres.yaml").unwrap();
+
+        let shapes = world.shapes().to_owned();
+        assert_eq!(shapes.len(), 3);
     }
 }
