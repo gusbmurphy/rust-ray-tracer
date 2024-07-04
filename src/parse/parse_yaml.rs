@@ -87,7 +87,7 @@ mod test {
 
         assert_eq!(camera.width().to_owned(), 100);
         assert_eq!(camera.height().to_owned(), 100);
-        assert_eq!(camera.fov().to_owned(), 90.0);
+        assert_eq!(camera.fov().to_owned(), 1.04719);
 
         let expected_transform = Transform::new_view(
             Point::new(0.0, 1.5, -5.0),

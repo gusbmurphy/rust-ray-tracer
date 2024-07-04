@@ -1,7 +1,7 @@
 pub mod geometry;
 pub mod physical;
 pub mod render;
-mod parse;
+pub mod parse;
 
 mod prelude {
     pub use crate::geometry::*;
