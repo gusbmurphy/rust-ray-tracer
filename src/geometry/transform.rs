@@ -14,8 +14,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    // TODO: How about removing "new" from the start of all these?
-    pub fn new_view(from: Point, to: Point, approximate_up: Vector) -> Self {
+    pub fn view(from: Point, to: Point, approximate_up: Vector) -> Self {
         let forward = (to - from).normalize();
         let left = cross(&forward, &approximate_up.normalize());
         let true_up = cross(&left, &forward);
@@ -28,12 +27,12 @@ impl Transform {
         ]));
 
         let orientation_moved_into_place =
-            orientation * Transform::new_translation(-from.x(), -from.y(), -from.z());
+            orientation * Transform::translation(-from.x(), -from.y(), -from.z());
 
         return orientation_moved_into_place;
     }
 
-    pub fn new_translation(x: f32, y: f32, z: f32) -> Self {
+    pub fn translation(x: f32, y: f32, z: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(3, 0, x);
@@ -43,7 +42,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn new_scaling(x: f32, y: f32, z: f32) -> Self {
+    pub fn scaling(x: f32, y: f32, z: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(0, 0, x);
@@ -53,7 +52,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn new_x_rotation(radians: f32) -> Self {
+    pub fn x_rotation(radians: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(1, 1, radians.cos());
@@ -64,7 +63,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn new_y_rotation(radians: f32) -> Self {
+    pub fn y_rotation(radians: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(0, 0, radians.cos());
@@ -75,7 +74,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn new_z_rotation(radians: f32) -> Self {
+    pub fn z_rotation(radians: f32) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(0, 0, radians.cos());
@@ -86,7 +85,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn new_shearing(
+    pub fn shearing(
         x_to_y: f32,
         x_to_z: f32,
         y_to_x: f32,
@@ -164,7 +163,7 @@ mod test {
 
     #[test]
     fn multiplying_point_by_a_translation() {
-        let translation = Transform::new_translation(5.0, -3.0, 2.0);
+        let translation = Transform::translation(5.0, -3.0, 2.0);
         let point = Point::new(-3.0, 4.0, 5.0);
 
         let result = translation * point;
@@ -175,7 +174,7 @@ mod test {
 
     #[test]
     fn multiplying_point_by_the_inverse_of_a_translation() {
-        let translation = Transform::new_translation(5.0, -3.0, 2.0);
+        let translation = Transform::translation(5.0, -3.0, 2.0);
         let inverse = translation.invert().unwrap();
         let point = Point::new(-3.0, 4.0, 5.0);
 
@@ -187,7 +186,7 @@ mod test {
 
     #[test]
     fn translation_does_not_affect_vectors() {
-        let translation = Transform::new_translation(5.0, -3.0, 2.0);
+        let translation = Transform::translation(5.0, -3.0, 2.0);
         let vector = Vector::new(-3.0, 4.0, 5.0);
 
         let result = translation * vector;
@@ -197,7 +196,7 @@ mod test {
 
     #[test]
     fn scaling_a_point() {
-        let scaling = Transform::new_scaling(2.0, 3.0, 4.0);
+        let scaling = Transform::scaling(2.0, 3.0, 4.0);
         let point = Point::new(-4.0, 6.0, 8.0);
 
         let result = scaling * point;
@@ -208,7 +207,7 @@ mod test {
 
     #[test]
     fn scaling_a_vector() {
-        let scaling = Transform::new_scaling(2.0, 3.0, 4.0);
+        let scaling = Transform::scaling(2.0, 3.0, 4.0);
         let vector = Vector::new(-4.0, 6.0, 8.0);
 
         let result = scaling * vector;
@@ -219,7 +218,7 @@ mod test {
 
     #[test]
     fn multiplying_by_the_inverse_of_a_scaling() {
-        let scaling = Transform::new_scaling(2.0, 3.0, 4.0);
+        let scaling = Transform::scaling(2.0, 3.0, 4.0);
         let inversion = scaling.invert().unwrap();
 
         let vector = Vector::new(-4.0, 6.0, 8.0);
@@ -232,7 +231,7 @@ mod test {
 
     #[test]
     fn reflection_is_scaling_by_a_negative_value() {
-        let scaling = Transform::new_scaling(-1.0, 1.0, 1.0);
+        let scaling = Transform::scaling(-1.0, 1.0, 1.0);
         let point = Point::new(2.0, 3.0, 4.0);
 
         let result = scaling * point;
@@ -245,8 +244,8 @@ mod test {
     fn rotating_a_point_around_the_x_axis() {
         let point = Point::new(0.0, 1.0, 0.0);
 
-        let half_quarter = Transform::new_x_rotation(PI / 4.0);
-        let full_quarter = Transform::new_x_rotation(PI / 2.0);
+        let half_quarter = Transform::x_rotation(PI / 4.0);
+        let full_quarter = Transform::x_rotation(PI / 2.0);
 
         assert_eq!(
             half_quarter * point,
@@ -259,7 +258,7 @@ mod test {
     fn inverse_of_an_x_rotation_rotates_in_opposite_direction() {
         let point = Point::new(0.0, 1.0, 0.0);
 
-        let half_quarter = Transform::new_x_rotation(PI / 4.0);
+        let half_quarter = Transform::x_rotation(PI / 4.0);
         let inverse = half_quarter.invert().unwrap();
 
         assert_eq!(
@@ -272,8 +271,8 @@ mod test {
     fn rotating_a_point_around_the_y_axis() {
         let point = Point::new(0.0, 0.0, 1.0);
 
-        let half_quarter = Transform::new_y_rotation(PI / 4.0);
-        let full_quarter = Transform::new_y_rotation(PI / 2.0);
+        let half_quarter = Transform::y_rotation(PI / 4.0);
+        let full_quarter = Transform::y_rotation(PI / 2.0);
 
         assert_eq!(
             half_quarter * point,
@@ -286,8 +285,8 @@ mod test {
     fn rotating_a_point_around_the_z_axis() {
         let point = Point::new(0.0, 1.0, 0.0);
 
-        let half_quarter = Transform::new_z_rotation(PI / 4.0);
-        let full_quarter = Transform::new_z_rotation(PI / 2.0);
+        let half_quarter = Transform::z_rotation(PI / 4.0);
+        let full_quarter = Transform::z_rotation(PI / 2.0);
 
         assert_eq!(
             half_quarter * point,
@@ -299,7 +298,7 @@ mod test {
     #[test]
     fn shearing_transformation_moves_x_in_proportion_to_y() {
         let point = Point::new(2.0, 3.0, 4.0);
-        let shearing = Transform::new_shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        let shearing = Transform::shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
         assert_eq!(shearing * point, Point::new(5.0, 3.0, 4.0))
     }
@@ -307,7 +306,7 @@ mod test {
     #[test]
     fn shearing_transformation_moves_x_in_proportion_to_z() {
         let point = Point::new(2.0, 3.0, 4.0);
-        let shearing = Transform::new_shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+        let shearing = Transform::shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
 
         assert_eq!(shearing * point, Point::new(6.0, 3.0, 4.0))
     }
@@ -315,7 +314,7 @@ mod test {
     #[test]
     fn shearing_transformation_moves_y_in_proportion_to_x() {
         let point = Point::new(2.0, 3.0, 4.0);
-        let shearing = Transform::new_shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+        let shearing = Transform::shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
 
         assert_eq!(shearing * point, Point::new(2.0, 5.0, 4.0))
     }
@@ -323,7 +322,7 @@ mod test {
     #[test]
     fn shearing_transformation_moves_y_in_proportion_to_z() {
         let point = Point::new(2.0, 3.0, 4.0);
-        let shearing = Transform::new_shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+        let shearing = Transform::shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
         assert_eq!(shearing * point, Point::new(2.0, 7.0, 4.0))
     }
@@ -331,7 +330,7 @@ mod test {
     #[test]
     fn shearing_transformation_moves_z_in_proportion_to_x() {
         let point = Point::new(2.0, 3.0, 4.0);
-        let shearing = Transform::new_shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+        let shearing = Transform::shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
         assert_eq!(shearing * point, Point::new(2.0, 3.0, 6.0))
     }
@@ -339,7 +338,7 @@ mod test {
     #[test]
     fn shearing_transformation_moves_z_in_proportion_to_y() {
         let point = Point::new(2.0, 3.0, 4.0);
-        let shearing = Transform::new_shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+        let shearing = Transform::shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
 
         assert_eq!(shearing * point, Point::new(2.0, 3.0, 7.0))
     }
@@ -350,7 +349,7 @@ mod test {
         let vector = Vector::new(0.0, 1.0, 0.0);
         let ray = Ray::new(point, vector);
 
-        let translation = Transform::new_translation(3.0, 4.0, 5.0);
+        let translation = Transform::translation(3.0, 4.0, 5.0);
 
         let result = translation * &ray;
 
@@ -366,7 +365,7 @@ mod test {
         let vector = Vector::new(0.0, 1.0, 0.0);
         let ray = Ray::new(point, vector);
 
-        let scaling = Transform::new_scaling(2.0, 3.0, 4.0);
+        let scaling = Transform::scaling(2.0, 3.0, 4.0);
 
         let result = scaling * &ray;
 
@@ -380,9 +379,9 @@ mod test {
     fn individual_transformations_are_applied_in_sequence() {
         let point = Point::new(1.0, 0.0, 1.0);
 
-        let rotation = Transform::new_x_rotation(PI / 2.0);
-        let scaling = Transform::new_scaling(5.0, 5.0, 5.0);
-        let translation = Transform::new_translation(10.0, 5.0, 7.0);
+        let rotation = Transform::x_rotation(PI / 2.0);
+        let scaling = Transform::scaling(5.0, 5.0, 5.0);
+        let translation = Transform::translation(10.0, 5.0, 7.0);
 
         let point_after_rotation = rotation * point;
         assert_eq!(point_after_rotation, Point::new(1.0, -1.0, 0.0));
@@ -398,9 +397,9 @@ mod test {
     fn chained_tranformations_must_be_applied_in_reverse_order() {
         let point = Point::new(1.0, 0.0, 1.0);
 
-        let rotation = Transform::new_x_rotation(PI / 2.0);
-        let scaling = Transform::new_scaling(5.0, 5.0, 5.0);
-        let translation = Transform::new_translation(10.0, 5.0, 7.0);
+        let rotation = Transform::x_rotation(PI / 2.0);
+        let scaling = Transform::scaling(5.0, 5.0, 5.0);
+        let translation = Transform::translation(10.0, 5.0, 7.0);
 
         let combined_transformation = translation * scaling * rotation;
 
@@ -413,7 +412,7 @@ mod test {
         let point_to_look_at = Point::new(0.0, 0.0, -1.0);
         let up = Vector::new(0.0, 1.0, 0.0);
 
-        let view_transform = Transform::new_view(center, point_to_look_at, up);
+        let view_transform = Transform::view(center, point_to_look_at, up);
 
         assert_eq!(view_transform, IDENTITY_MATRIX);
     }
@@ -424,9 +423,9 @@ mod test {
         let point_to_look_at = Point::new(0.0, 0.0, 1.0);
         let up = Vector::new(0.0, 1.0, 0.0);
 
-        let view_transform = Transform::new_view(center, point_to_look_at, up);
+        let view_transform = Transform::view(center, point_to_look_at, up);
 
-        assert_eq!(view_transform, Transform::new_scaling(-1.0, 1.0, -1.0));
+        assert_eq!(view_transform, Transform::scaling(-1.0, 1.0, -1.0));
     }
 
     #[test]
@@ -435,9 +434,9 @@ mod test {
         let point_to_look_at = Point::new(0.0, 0.0, 0.0);
         let up = Vector::new(0.0, 1.0, 0.0);
 
-        let view_transform = Transform::new_view(center, point_to_look_at, up);
+        let view_transform = Transform::view(center, point_to_look_at, up);
 
-        assert_eq!(view_transform, Transform::new_translation(0.0, 0.0, -8.0));
+        assert_eq!(view_transform, Transform::translation(0.0, 0.0, -8.0));
     }
 
     #[test]
@@ -446,7 +445,7 @@ mod test {
         let point_to_look_at = Point::new(4.0, -2.0, 8.0);
         let up = Vector::new(1.0, 1.0, 0.0);
 
-        let view_transform = Transform::new_view(center, point_to_look_at, up);
+        let view_transform = Transform::view(center, point_to_look_at, up);
 
         let expected_matrix = Matrix::new([
             [-0.50709, 0.50709, 0.67612, -2.36643],

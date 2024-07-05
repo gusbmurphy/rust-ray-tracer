@@ -25,7 +25,7 @@ pub fn parse_camera(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Camera, Box<dyn E
         }
     }
 
-    let transform = Transform::new_view(from.unwrap(), to.unwrap(), up.unwrap());
+    let transform = Transform::view(from.unwrap(), to.unwrap(), up.unwrap());
 
     Ok(Camera::new_with_transform(
         width.unwrap(),

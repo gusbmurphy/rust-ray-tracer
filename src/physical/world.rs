@@ -22,7 +22,7 @@ impl World {
         let mut first_sphere = Sphere::new();
         first_sphere.set_material(first_sphere_material);
 
-        let second_sphere_scaling = Transform::new_scaling(0.5, 0.5, 0.5);
+        let second_sphere_scaling = Transform::scaling(0.5, 0.5, 0.5);
         let mut second_sphere = Sphere::new();
         second_sphere.set_transform(second_sphere_scaling);
 

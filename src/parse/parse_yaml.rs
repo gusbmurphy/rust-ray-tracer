@@ -76,7 +76,7 @@ mod test {
         assert_eq!(only_shape.material().to_owned(), expected_material);
 
         let expected_transform =
-            Transform::new_translation(-0.5, 1.0, 0.5) * Transform::new_scaling(0.5, 0.5, 0.5);
+            Transform::translation(-0.5, 1.0, 0.5) * Transform::scaling(0.5, 0.5, 0.5);
         assert_eq!(*only_shape.transform(), expected_transform);
     }
 
@@ -89,7 +89,7 @@ mod test {
         assert_eq!(camera.height().to_owned(), 100);
         assert_eq!(camera.fov().to_owned(), 1.04719);
 
-        let expected_transform = Transform::new_view(
+        let expected_transform = Transform::view(
             Point::new(0.0, 1.5, -5.0),
             Point::new(0.0, 1.0, 0.0),
             Vector::new(0.0, 1.0, 0.0),
@@ -115,7 +115,7 @@ mod test {
         assert_eq!(plane.material().to_owned(), expected_material);
 
         let expected_transform =
-            Transform::new_translation(0.0, 0.0, 2.0) * Transform::new_x_rotation(1.57079);
+            Transform::translation(0.0, 0.0, 2.0) * Transform::x_rotation(1.57079);
         assert_eq!(*plane.transform(), expected_transform);
     }
 

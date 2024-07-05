@@ -71,7 +71,7 @@ fn parse_transform(nodes: &Vec<Yaml>) -> Result<Transform, Box<dyn Error>> {
             match key.as_str().unwrap() {
                 "translate" => {
                     let values = parse_values(value.as_vec().unwrap().to_owned()).unwrap();
-                    let translation = Transform::new_translation(
+                    let translation = Transform::translation(
                         values[0].unwrap(),
                         values[1].unwrap(),
                         values[2].unwrap(),
@@ -80,7 +80,7 @@ fn parse_transform(nodes: &Vec<Yaml>) -> Result<Transform, Box<dyn Error>> {
                 }
                 "scale" => {
                     let values = parse_values(value.as_vec().unwrap().to_owned()).unwrap();
-                    let scaling = Transform::new_scaling(
+                    let scaling = Transform::scaling(
                         values[0].unwrap(),
                         values[1].unwrap(),
                         values[2].unwrap(),
@@ -89,7 +89,7 @@ fn parse_transform(nodes: &Vec<Yaml>) -> Result<Transform, Box<dyn Error>> {
                 }
                 "rotate_x" => {
                     let radians = parse_f32_from_integer_or_real(value)?;
-                    let rotation = Transform::new_x_rotation(radians);
+                    let rotation = Transform::x_rotation(radians);
                     transform = transform * rotation;
                 }
                 _ => todo!(),

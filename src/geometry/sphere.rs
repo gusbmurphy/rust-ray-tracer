@@ -105,7 +105,7 @@ mod test {
     #[test]
     fn changing_sphere_transform() {
         let mut sphere = Sphere::new();
-        let translation = Transform::new_translation(2.0, 2.0, 4.0);
+        let translation = Transform::translation(2.0, 2.0, 4.0);
 
         sphere.set_transform(translation);
 
@@ -117,7 +117,7 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         let mut sphere = Sphere::new();
-        sphere.set_transform(Transform::new_scaling(2.0, 2.0, 2.0));
+        sphere.set_transform(Transform::scaling(2.0, 2.0, 2.0));
 
         let intersections = sphere.intersections_with(&ray);
 
@@ -136,7 +136,7 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
 
         let mut sphere = Sphere::new();
-        sphere.set_transform(Transform::new_translation(5.0, 0.0, 0.0));
+        sphere.set_transform(Transform::translation(5.0, 0.0, 0.0));
 
         let intersections = sphere.intersections_with(&ray);
 
@@ -197,7 +197,7 @@ mod test {
     #[test]
     fn computing_normal_on_a_translated_sphere() {
         let mut sphere = Sphere::new();
-        sphere.set_transform(Transform::new_translation(0.0, 1.0, 0.0));
+        sphere.set_transform(Transform::translation(0.0, 1.0, 0.0));
 
         let normal = sphere.normal_at(Point::new(0.0, 1.70711, -0.70711));
 
@@ -207,9 +207,7 @@ mod test {
     #[test]
     fn computing_normal_on_a_scaled_and_rotated_sphere() {
         let mut sphere = Sphere::new();
-        sphere.set_transform(
-            Transform::new_scaling(1.0, 0.5, 1.0) * Transform::new_z_rotation(PI / 5.0),
-        );
+        sphere.set_transform(Transform::scaling(1.0, 0.5, 1.0) * Transform::z_rotation(PI / 5.0));
 
         let normal = sphere.normal_at(Point::new(0.0, 2f32.sqrt() / 2.0, -2f32.sqrt() / 2.0));
 

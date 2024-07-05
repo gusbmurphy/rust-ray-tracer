@@ -136,7 +136,7 @@ mod test {
         let mut second_sphere_material = Material::new();
         second_sphere_material.set_ambient(1.0);
 
-        let second_sphere_scaling = Transform::new_scaling(0.5, 0.5, 0.5);
+        let second_sphere_scaling = Transform::scaling(0.5, 0.5, 0.5);
 
         let mut second_sphere = Sphere::new();
         second_sphere.set_transform(second_sphere_scaling);
@@ -170,7 +170,7 @@ mod test {
         world.add_sphere(sphere_one);
 
         let mut sphere_two = Sphere::new();
-        sphere_two.set_transform(Transform::new_translation(0.0, 0.0, -5.0));
+        sphere_two.set_transform(Transform::translation(0.0, 0.0, -5.0));
         world.add_sphere(sphere_two);
 
         let ray = Ray::new(Point::new(0.0, 0.0, -3.0), Vector::new(0.0, 0.0, 1.0));

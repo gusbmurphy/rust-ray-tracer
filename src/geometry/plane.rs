@@ -123,9 +123,8 @@ mod test {
     #[test]
     fn intersection_when_plane_is_up_and_down() {
         let mut plane = Plane::new();
-        plane.set_transform(
-            Transform::new_translation(0.0, 0.0, 2.0) * Transform::new_x_rotation(PI / 2.0),
-        );
+        plane
+            .set_transform(Transform::translation(0.0, 0.0, 2.0) * Transform::x_rotation(PI / 2.0));
 
         let ray = Ray::new(ORIGIN, POSITIVE_Z);
 

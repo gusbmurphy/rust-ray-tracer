@@ -163,8 +163,7 @@ mod test {
 
     #[test]
     fn constructing_a_ray_when_the_camera_is_transformed() {
-        let transform =
-            Transform::new_y_rotation(PI / 4.0) * Transform::new_translation(0.0, -2.0, 5.0);
+        let transform = Transform::y_rotation(PI / 4.0) * Transform::translation(0.0, -2.0, 5.0);
         let camera = Camera::new_with_transform(201, 101, PI / 2.0, transform);
 
         let ray: Ray = camera.get_ray_for_pixel(100, 50);
@@ -179,7 +178,7 @@ mod test {
     #[test]
     fn rendering_a_world_has_the_correct_pixel_in_the_center() {
         let world = World::create_default();
-        let camera_transform = Transform::new_view(
+        let camera_transform = Transform::view(
             Point::new(0.0, 0.0, -5.0),
             ORIGIN,
             Vector::new(0.0, 1.0, 0.0),
