@@ -7,19 +7,11 @@ use yaml_rust::Yaml;
 use super::parse_little_things::{parse_color, parse_f32_from_integer_or_real};
 
 pub fn parse_shape(
-    map: &LinkedHashMap<Yaml, Yaml>,
+    map: Option<&LinkedHashMap<Yaml, Yaml>>,
     shape_name: &str,
 ) -> Result<Box<dyn Shape>, Box<dyn Error>> {
-    let mut material: Option<Material> = None;
-    let mut transform: Option<Transform> = None;
-
-    for (key, value) in map {
-        match key.as_str().unwrap() {
-            "material" => material = Some(parse_material(value.as_hash().unwrap())?),
-            "transform" => transform = Some(parse_transform(value.as_vec().unwrap())?),
-            _ => todo!(),
-        }
-    }
+    let mut given_material: Option<Material> = None;
+    let mut given_transform: Option<Transform> = None;
 
     let mut shape: Box<dyn Shape> = match shape_name {
         "sphere" => Box::new(Sphere::new()),
@@ -27,8 +19,23 @@ pub fn parse_shape(
         _ => todo!(),
     };
 
-    shape.set_material(material.unwrap());
-    shape.set_transform(transform.unwrap());
+    if let Some(m) = map {
+        for (key, value) in m {
+            match key.as_str().unwrap() {
+                "material" => given_material = Some(parse_material(value.as_hash().unwrap())?),
+                "transform" => given_transform = Some(parse_transform(value.as_vec().unwrap())?),
+                _ => todo!(),
+            }
+        }
+
+        if let Some(material) = given_material {
+            shape.set_material(material);
+        }
+        if let Some(transform) = given_transform {
+            shape.set_transform(transform);
+        }
+
+    }
 
     Ok(shape)
 }

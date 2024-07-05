@@ -1,0 +1,13 @@
+- camera:
+    width: 100
+    height: 100
+    fov: 1.04719
+    from: [0, 1.5, -5]
+    to: [0, 1, 0]
+    up: [0, 1, 0]
+
+- light:
+    at: [-10, 10, -10]
+    intensity: [1, 1, 1]
+
+- plane:

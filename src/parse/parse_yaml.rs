@@ -23,10 +23,10 @@ pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn
         match node {
             yaml_rust::Yaml::Hash(ref h) => {
                 for (key, value) in h {
-                    let value_hash = value.as_hash().unwrap();
+                    let value_hash = value.as_hash();
                     match key.as_str().unwrap() {
-                        "camera" => camera = parse_camera(value_hash)?,
-                        "light" => world.set_light(parse_light(value_hash)?),
+                        "camera" => camera = parse_camera(value_hash.unwrap())?,
+                        "light" => world.set_light(parse_light(value_hash.unwrap())?),
                         "sphere" | "plane" => {
                             world.add_shape(parse_shape(value_hash, key.as_str().unwrap())?)
                         }
@@ -125,5 +125,17 @@ mod test {
 
         let shapes = world.shapes().to_owned();
         assert_eq!(shapes.len(), 3);
+    }
+
+    #[test]
+    fn a_plane_can_have_no_attributes() {
+        let (world, _camera) = parse_scene_from_yaml("tests/scenes/default_plane.yaml").unwrap();
+
+        let shapes = world.shapes().to_owned();
+        let plane = shapes.get(0).unwrap();
+
+        // The plane should just have the default transform and material...
+        assert_eq!(*plane.transform(), Transform::new(IDENTITY_MATRIX));
+        assert_eq!(*plane.material(), Material::new());
     }
 }
