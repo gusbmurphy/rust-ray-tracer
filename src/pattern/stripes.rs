@@ -9,7 +9,7 @@ struct StripePattern {
 }
 
 impl StripePattern {
-    fn new(background: Color, stripe: Color, width: f32) -> Self {
+    pub fn new(background: Color, stripe: Color, width: f32) -> Self {
         StripePattern {
             width,
             background,
