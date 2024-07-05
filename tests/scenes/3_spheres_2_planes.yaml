@@ -8,7 +8,7 @@
 
 - light:
     at: [-10, 10, -10]
-    intensity: [1, 1, 1]
+    intensity: [0.9, 1, 1]
 
 - sphere:
     material:
@@ -38,3 +38,12 @@
       - scale: [0.33, 0.33, 0.33]
 
 - plane:
+    material:
+      color: [1, 0.3, 0.1]
+      diffuse: 0.4
+      specular: 0.3
+
+- plane:
+    transform:
+      - translate: [0.0, 0.0, 2.0]
+      - rotate_x: 1.57079

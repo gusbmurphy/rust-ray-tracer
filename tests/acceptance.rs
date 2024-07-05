@@ -22,8 +22,7 @@ fn plane_and_sphere() {
 
 #[test]
 fn three_spheres_on_a_plane() {
-    let (world, camera) =
-        parse_scene_from_yaml("tests/scenes/three_spheres_on_top_of_plane.yaml").unwrap();
+    let (world, camera) = parse_scene_from_yaml("tests/scenes/3_spheres_2_planes.yaml").unwrap();
 
     let ppm = create_ppm_from_canvas(camera.render(world));
 
