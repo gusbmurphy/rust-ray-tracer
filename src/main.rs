@@ -1,5 +1,6 @@
 mod geometry;
 mod parse;
+mod pattern;
 mod physical;
 mod render;
 
