@@ -1,5 +1,7 @@
 use crate::prelude::*;
 
+use super::pattern::Pattern;
+
 struct StripePattern {
     width: f32,
     background: Color,
@@ -14,8 +16,10 @@ impl StripePattern {
             stripe,
         }
     }
+}
 
-    pub fn color_at(&self, point: &Point) -> Color {
+impl Pattern for StripePattern {
+    fn color_at(&self, point: &Point) -> Color {
         let point_x = point.x().to_owned();
 
         if (point_x % (self.width * 2.0)).floor() == 0.0 {
