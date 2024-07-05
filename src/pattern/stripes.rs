@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 use super::pattern::Pattern;
 
-struct StripePattern {
+pub struct StripePattern {
     width: f32,
     background: Color,
     stripe: Color,

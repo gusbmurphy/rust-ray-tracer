@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 use super::pattern::Pattern;
 
-struct FlatPattern {
+pub struct FlatPattern {
     color: Color,
 }
 
