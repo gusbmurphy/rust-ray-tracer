@@ -34,7 +34,6 @@ pub fn parse_shape(
         if let Some(transform) = given_transform {
             shape.set_transform(transform);
         }
-
     }
 
     Ok(shape)
