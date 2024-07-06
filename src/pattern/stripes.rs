@@ -6,17 +6,25 @@ use super::pattern::Pattern;
 pub struct StripePattern {
     background: Color,
     stripe: Color,
+    transform: Transform,
 }
 
 impl StripePattern {
     pub fn new(background: Color, stripe: Color) -> Self {
-        StripePattern { background, stripe }
+        let transform = Transform::new(IDENTITY_MATRIX);
+
+        StripePattern { background, stripe, transform }
+    }
+
+    pub fn set_transform(&mut self, transform: Transform) {
+        self.transform = transform;
     }
 }
 
 impl Pattern for StripePattern {
     fn color_at(&self, point: &Point) -> Color {
-        let point_x = point.x().to_owned();
+        let pattern_space_point = self.transform.invert().unwrap() * *point;
+        let point_x = pattern_space_point.x().to_owned();
 
         if (point_x.floor() % 2.0) == 0.0 {
             self.background.clone()
@@ -57,5 +65,25 @@ mod test {
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(0.9, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(1.0, 0.0, 0.0)), BLACK);
+    }
+
+    #[test]
+    fn the_stripes_can_be_translated() {
+        let mut pattern = StripePattern::new(WHITE, BLACK);
+        pattern.set_transform(Transform::translation(0.5, 0.0, 0.0));
+
+        assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), BLACK);
+        assert_eq!(pattern.color_at(&Point::new(0.5, 0.0, 0.0)), WHITE);
+        assert_eq!(pattern.color_at(&Point::new(1.5, 0.0, 0.0)), BLACK);
+    }
+
+    #[test]
+    fn the_stripes_can_be_scaled() {
+        let mut pattern = StripePattern::new(WHITE, BLACK);
+        pattern.set_transform(Transform::scaling(2.0, 2.0, 2.0));
+
+        assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
+        assert_eq!(pattern.color_at(&Point::new(1.9, 0.0, 0.0)), WHITE);
+        assert_eq!(pattern.color_at(&Point::new(2.0, 0.0, 0.0)), BLACK);
     }
 }
