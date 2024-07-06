@@ -1,4 +1,7 @@
-use crate::{pattern::FlatPattern, pattern::Pattern, prelude::*};
+use crate::{
+    pattern::{self, FlatPattern, Pattern},
+    prelude::*,
+};
 
 #[derive(Debug)]
 pub struct Material {
@@ -28,6 +31,10 @@ impl Material {
 
     pub fn set_flat_color(&mut self, color: Color) {
         self.pattern = Box::new(FlatPattern::new(color));
+    }
+
+    pub fn set_pattern(&mut self, pattern: Box<dyn Pattern>) {
+        self.pattern = pattern;
     }
 
     pub fn ambient(&self) -> f32 {
