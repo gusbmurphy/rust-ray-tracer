@@ -17,7 +17,8 @@ fn shade_hit(world: &World, hit: &Intersection) -> Color {
     let material = hit.material();
     let light = world.light();
 
-    let effective_color = material.color_at(&adjusted_hit) * *light.intensity();
+    let hit_in_object_space = hit.object().transform().invert().unwrap() * adjusted_hit;
+    let effective_color = material.color_at(&hit_in_object_space) * *light.intensity();
 
     let light_vector = (*light.position() - hit.point()).normalize();
 
@@ -144,6 +145,29 @@ mod test {
 
         assert_eq!(shade_ray(&world, &ray_hitting_black), BLACK);
         assert_eq!(shade_ray(&world, &ray_hitting_white), WHITE);
+    }
+
+    #[test]
+    fn hits_on_a_sphere_with_a_transform_and_stripes() {
+        let mut material = Material::new();
+        // Setting ambient to 1.0 to simplify the color of any hit...
+        material.set_specular(0.0);
+        material.set_diffuse(0.0);
+        material.set_ambient(1.0);
+
+        let pattern = StripePattern::new(WHITE, GREEN);
+        material.set_pattern(Box::new(pattern));
+
+        let mut sphere = Sphere::new();
+        sphere.set_transform(Transform::scaling(2.0, 2.0, 2.0));
+        sphere.set_material(material);
+
+        let mut world = World::new();
+        world.add_shape(Rc::new(sphere));
+
+        let ray = Ray::new(Point::new(1.5, 0.0, 0.0), POSITIVE_Z);
+
+        assert_eq!(shade_ray(&world, &ray), WHITE);
     }
 
     #[test]

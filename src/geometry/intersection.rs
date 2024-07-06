@@ -13,6 +13,10 @@ impl<'r> Intersection<'r> {
         Intersection { time, object, ray }
     }
 
+    pub fn object(&self) -> Rc<dyn Shape> {
+        self.object.clone()
+    }
+
     pub fn material(&self) -> &Material {
         &self.object.material()
     }
