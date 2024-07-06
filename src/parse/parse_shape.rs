@@ -23,8 +23,8 @@ pub fn parse_shape(
     if let Some(m) = map {
         for (key, value) in m {
             match key.as_str().unwrap() {
-                "material" => given_material = Some(parse_material(value.as_hash().unwrap())?),
-                "transform" => given_transform = Some(parse_transform(value.as_vec().unwrap())?),
+                "material" => given_material = Some(parse_material(value)?),
+                "transform" => given_transform = Some(parse_transform(value)?),
                 _ => todo!(),
             }
         }
@@ -40,7 +40,9 @@ pub fn parse_shape(
     Ok(Rc::from(shape))
 }
 
-fn parse_material(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Material, Box<dyn Error>> {
+fn parse_material(yaml: &Yaml) -> Result<Material, Box<dyn Error>> {
+    let map = yaml.as_hash().unwrap();
+
     let mut pattern: Option<Box<dyn Pattern>> = None;
     let mut diffuse: Option<f32> = None;
     let mut specular: Option<f32> = None;
@@ -70,7 +72,7 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
     for (key, value) in map {
         match key.as_str().unwrap() {
             "flat" => {
-                let color = parse_color(value.as_vec().unwrap().to_owned()).unwrap(); 
+                let color = parse_color(value.as_vec().unwrap().to_owned()).unwrap();
                 pattern = Some(Box::new(FlatPattern::new(color)));
             }
             _ => todo!(),
@@ -80,7 +82,9 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
     Ok(pattern.unwrap())
 }
 
-fn parse_transform(nodes: &Vec<Yaml>) -> Result<Transform, Box<dyn Error>> {
+fn parse_transform(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {
+    let nodes = yaml.as_vec().unwrap();
+
     let mut transform = Transform::new(IDENTITY_MATRIX);
 
     for node in nodes {
