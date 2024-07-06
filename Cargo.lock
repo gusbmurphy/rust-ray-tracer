@@ -25,6 +25,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "dyn-eq"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c2d035d21af5cde1a6f5c7b444a5bf963520a9f142e5d06931178433d7d5388"
+
+[[package]]
 name = "encode_unicode"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -115,6 +121,7 @@ name = "ray_tracer"
 version = "0.1.0"
 dependencies = [
  "duplicate",
+ "dyn-eq",
  "insta",
  "linked-hash-map",
  "yaml-rust",
