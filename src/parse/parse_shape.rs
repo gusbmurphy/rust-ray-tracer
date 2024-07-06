@@ -75,6 +75,14 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
                 let color = parse_color(value)?;
                 pattern = Some(Box::new(FlatPattern::new(color)));
             }
+            "stripes" => {
+                let value_vec = value.as_vec().unwrap().to_owned();
+
+                let background = parse_color(value_vec.get(0).unwrap())?;
+                let stripe = parse_color(value_vec.get(1).unwrap())?;
+
+                pattern = Some(Box::new(StripePattern::new(background, stripe)));
+            }
             _ => todo!(),
         }
     }
