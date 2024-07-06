@@ -12,9 +12,7 @@ pub fn parse_light(map: &LinkedHashMap<Yaml, Yaml>) -> Result<PointLight, Box<dy
     for (key, value) in map {
         match key.as_str().unwrap() {
             "at" => at = Some(parse_point(value.as_vec().unwrap().to_owned()).unwrap()),
-            "intensity" => {
-                intensity = Some(parse_color(value).unwrap())
-            }
+            "intensity" => intensity = Some(parse_color(value).unwrap()),
             _ => todo!(),
         }
     }
