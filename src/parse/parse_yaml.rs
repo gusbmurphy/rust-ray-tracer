@@ -141,13 +141,17 @@ mod test {
 
     #[test]
     fn stripes_are_parsed() {
-        let (world, _camera) = parse_scene_from_yaml("tests/scenes/sphere_with_stripes.yaml").unwrap();
+        let (world, _camera) =
+            parse_scene_from_yaml("tests/scenes/sphere_with_stripes.yaml").unwrap();
 
         let sphere = world.shapes().get(0).unwrap();
         let material = sphere.material();
 
         let mut expected_material = Material::new();
-        expected_material.set_pattern(Box::new(StripePattern::new(BLACK, WHITE)));
+        expected_material.set_pattern(Box::new(StripePattern::new(
+            Color::new(0.1, 1.0, 0.5),
+            Color::new(0.5, 1.0, 0.1),
+        )));
         expected_material.set_diffuse(0.7);
         expected_material.set_specular(0.3);
 
