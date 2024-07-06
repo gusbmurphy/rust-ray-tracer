@@ -9,10 +9,7 @@ pub struct World {
 impl World {
     pub fn new() -> Self {
         World {
-            light: PointLight::new(
-                Color::new(1.0, 1.0, 1.0),
-                Point::new(-10.0, 10.0, -10.0),
-            ),
+            light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(-10.0, 10.0, -10.0)),
             shapes: Vec::new(),
         }
     }
@@ -35,10 +32,7 @@ impl World {
         shapes.push(Rc::new(second_sphere));
 
         World {
-            light: PointLight::new(
-                Color::new(1.0, 1.0, 1.0),
-                Point::new(-10.0, 10.0, -10.0),
-            ),
+            light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(-10.0, 10.0, -10.0)),
             shapes,
         }
     }
