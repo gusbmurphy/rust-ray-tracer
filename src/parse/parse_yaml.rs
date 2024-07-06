@@ -155,7 +155,6 @@ mod test {
         expected_material.set_diffuse(0.7);
         expected_material.set_specular(0.3);
 
-        // The plane should just have the default transform and material...
         assert_eq!(*material, expected_material);
     }
 }
