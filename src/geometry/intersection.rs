@@ -1,13 +1,15 @@
+use std::rc::Rc;
+
 use crate::prelude::*;
 
 pub struct Intersection<'r> {
     time: f32,
-    object: Box<dyn Shape>,
+    object: Rc<dyn Shape>,
     ray: &'r Ray,
 }
 
 impl<'r> Intersection<'r> {
-    pub fn new(time: f32, object: Box<dyn Shape>, ray: &'r Ray) -> Self {
+    pub fn new(time: f32, object: Rc<dyn Shape>, ray: &'r Ray) -> Self {
         Intersection { time, object, ray }
     }
 
@@ -75,11 +77,11 @@ mod test {
 
     #[test]
     fn the_lowest_positive_t_among_positives_is_the_hit() {
-        let interesected_sphere = Sphere::new();
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(1.0, Box::new(interesected_sphere), &ray);
-        let i2 = Intersection::new(2.0, Box::new(interesected_sphere), &ray);
+        let i1 = Intersection::new(1.0, interesected_sphere.clone(), &ray);
+        let i2 = Intersection::new(2.0, interesected_sphere.clone(), &ray);
 
         let result = determine_hit(vec![i1, i2]).unwrap();
 
@@ -88,12 +90,12 @@ mod test {
 
     #[test]
     fn the_lowest_positive_t_is_the_hit_when_a_negative_is_present() {
-        let interesected_sphere = Sphere::new();
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.0, Box::new(interesected_sphere), &ray);
-        let i2 = Intersection::new(2.0, Box::new(interesected_sphere), &ray);
-        let i3 = Intersection::new(10.0, Box::new(interesected_sphere), &ray);
+        let i1 = Intersection::new(-1.0, interesected_sphere.clone(), &ray);
+        let i2 = Intersection::new(2.0, interesected_sphere.clone(), &ray);
+        let i3 = Intersection::new(10.0, interesected_sphere.clone(), &ray);
 
         let result = determine_hit(vec![i1, i2, i3]).unwrap();
 
@@ -102,11 +104,11 @@ mod test {
 
     #[test]
     fn there_is_no_hit_if_every_t_is_negative() {
-        let interesected_sphere = Sphere::new();
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.0, Box::new(interesected_sphere), &ray);
-        let i2 = Intersection::new(-2.0, Box::new(interesected_sphere), &ray);
+        let i1 = Intersection::new(-1.0, interesected_sphere.clone(), &ray);
+        let i2 = Intersection::new(-2.0, interesected_sphere.clone(), &ray);
 
         let result = determine_hit(vec![i1, i2]);
 
@@ -115,11 +117,11 @@ mod test {
 
     #[test]
     fn let_me_say_it_again_there_is_no_hit_if_every_t_is_negative() {
-        let interesected_sphere = Sphere::new();
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(-1.07378995, Box::new(interesected_sphere), &ray);
-        let i2 = Intersection::new(-2.38418579E-7, Box::new(interesected_sphere), &ray);
+        let i1 = Intersection::new(-1.07378995, interesected_sphere.clone(), &ray);
+        let i2 = Intersection::new(-2.38418579E-7, interesected_sphere.clone(), &ray);
 
         let result = determine_hit(vec![i1, i2]);
 
@@ -128,13 +130,13 @@ mod test {
 
     #[test]
     fn the_hit_is_always_the_lowest_nonnegative_intersection() {
-        let interesected_sphere = Sphere::new();
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
-        let i1 = Intersection::new(5.0, Box::new(interesected_sphere), &ray);
-        let i2 = Intersection::new(7.0, Box::new(interesected_sphere), &ray);
-        let i3 = Intersection::new(-3.0, Box::new(interesected_sphere), &ray);
-        let i4 = Intersection::new(2.0, Box::new(interesected_sphere), &ray);
+        let i1 = Intersection::new(5.0, interesected_sphere.clone(), &ray);
+        let i2 = Intersection::new(7.0, interesected_sphere.clone(), &ray);
+        let i3 = Intersection::new(-3.0, interesected_sphere.clone(), &ray);
+        let i4 = Intersection::new(2.0, interesected_sphere.clone(), &ray);
 
         let result = determine_hit(vec![i1, i2, i3, i4]).unwrap();
 
@@ -145,7 +147,7 @@ mod test {
     fn the_normal_vector_when_the_hit_originates_outside_of_the_shape_is_correct() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, Box::new(sphere), &ray);
+        let intersection = Intersection::new(4.0, Rc::new(sphere), &ray);
 
         assert_eq!(intersection.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
@@ -154,7 +156,7 @@ mod test {
     fn the_normal_vector_is_correct_when_we_are_inside_of_the_shape() {
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(1.0, Box::new(sphere), &ray);
+        let intersection = Intersection::new(1.0, Rc::new(sphere), &ray);
 
         assert_eq!(intersection.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }

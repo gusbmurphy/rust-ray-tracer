@@ -2,6 +2,7 @@ use crate::prelude::*;
 
 use super::pattern::Pattern;
 
+#[derive(Debug, Clone, PartialEq)]
 pub struct StripePattern {
     width: f32,
     background: Color,
@@ -29,6 +30,8 @@ impl Pattern for StripePattern {
         }
     }
 }
+
+impl Eq for StripePattern {}
 
 #[cfg(test)]
 mod test {

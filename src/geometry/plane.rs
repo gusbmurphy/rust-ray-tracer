@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct Plane {
     transform: Transform,
     material: Material,
@@ -20,7 +20,7 @@ impl Shape for Plane {
         self.transform * POSITIVE_Y
     }
 
-    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection>
+    fn times_of_intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<f32>
     where
         'r: 's,
     {
@@ -31,9 +31,7 @@ impl Shape for Plane {
         }
 
         let t = -local_ray.origin().y() / local_ray.direction().y();
-        let intersection = Intersection::new(t, Box::new(*self), &ray);
-
-        vec![intersection]
+        vec![t]
     }
 
     fn material(&self) -> &Material {
@@ -78,9 +76,9 @@ mod test {
         let plane = Plane::new();
         let ray = Ray::new(Point::new(0.0, 1.0, 0.0), POSITIVE_Z);
 
-        let intersections = plane.intersections_with(&ray);
+        let times = plane.times_of_intersections_with(&ray);
 
-        assert!(intersections.is_empty())
+        assert!(times.is_empty())
     }
 
     #[test]
@@ -89,9 +87,9 @@ mod test {
         let plane = Plane::new();
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), POSITIVE_Z);
 
-        let intersections = plane.intersections_with(&ray);
+        let times = plane.times_of_intersections_with(&ray);
 
-        assert!(intersections.is_empty())
+        assert!(times.is_empty())
     }
 
     #[test]
@@ -99,12 +97,12 @@ mod test {
         let plane = Plane::new();
         let ray = Ray::new(Point::new(0.0, 3.0, 0.0), NEGATIVE_Y);
 
-        let intersections = plane.intersections_with(&ray);
+        let times = plane.times_of_intersections_with(&ray);
 
-        assert_eq!(intersections.len(), 1);
+        assert_eq!(times.len(), 1);
 
-        let intersection = intersections.get(0).unwrap();
-        assert_eq!(*intersection.t(), 3.0);
+        let time = times.get(0).unwrap();
+        assert_eq!(*time, 3.0);
     }
 
     #[test]
@@ -112,12 +110,12 @@ mod test {
         let plane = Plane::new();
         let ray = Ray::new(Point::new(0.0, -3.0, 0.0), POSITIVE_Y);
 
-        let intersections = plane.intersections_with(&ray);
+        let times = plane.times_of_intersections_with(&ray);
 
-        assert_eq!(intersections.len(), 1);
+        assert_eq!(times.len(), 1);
 
-        let intersection = intersections.get(0).unwrap();
-        assert_eq!(*intersection.t(), 3.0);
+        let time = times.get(0).unwrap();
+        assert_eq!(*time, 3.0);
     }
 
     #[test]
@@ -128,11 +126,11 @@ mod test {
 
         let ray = Ray::new(ORIGIN, POSITIVE_Z);
 
-        let intersections = plane.intersections_with(&ray);
+        let times = plane.times_of_intersections_with(&ray);
 
-        assert_eq!(intersections.len(), 1);
+        assert_eq!(times.len(), 1);
 
-        let intersection = intersections.get(0).unwrap();
-        assert_eq!(*intersection.t(), 2.0);
+        let time = times.get(0).unwrap();
+        assert_eq!(*time, 2.0);
     }
 }

@@ -72,8 +72,8 @@ mod test {
         let mut expected_material = Material::new();
         expected_material.set_diffuse(0.7);
         expected_material.set_specular(0.3);
-        expected_material.set_color(Color::new(0.1, 1.0, 0.5));
-        assert_eq!(only_shape.material().to_owned(), expected_material);
+        expected_material.set_flat_color(Color::new(0.1, 1.0, 0.5));
+        assert_eq!(*only_shape.material(), expected_material);
 
         let expected_transform =
             Transform::translation(-0.5, 1.0, 0.5) * Transform::scaling(0.5, 0.5, 0.5);
@@ -111,8 +111,8 @@ mod test {
         let mut expected_material = Material::new();
         expected_material.set_diffuse(1.1);
         expected_material.set_specular(0.2);
-        expected_material.set_color(Color::new(0.8, 2.0, 10.0));
-        assert_eq!(plane.material().to_owned(), expected_material);
+        expected_material.set_flat_color(Color::new(0.8, 2.0, 10.0));
+        assert_eq!(*plane.material(), expected_material);
 
         let expected_transform =
             Transform::translation(0.0, 0.0, 2.0) * Transform::x_rotation(1.57079);

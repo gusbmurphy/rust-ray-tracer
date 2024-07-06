@@ -2,6 +2,7 @@ use crate::prelude::*;
 
 use super::pattern::Pattern;
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlatPattern {
     color: Color,
 }

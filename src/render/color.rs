@@ -64,6 +64,8 @@ impl PartialEq for Color {
     }
 }
 
+impl Eq for Color {}
+
 impl ops::Add<Color> for Color {
     type Output = Color;
 

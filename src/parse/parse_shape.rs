@@ -1,4 +1,5 @@
 use std::error::Error;
+use std::rc::Rc;
 
 use crate::{parse::parse_little_things::parse_values, prelude::*};
 use linked_hash_map::LinkedHashMap;
@@ -9,7 +10,7 @@ use super::parse_little_things::{parse_color, parse_f32_from_integer_or_real};
 pub fn parse_shape(
     map: Option<&LinkedHashMap<Yaml, Yaml>>,
     shape_name: &str,
-) -> Result<Box<dyn Shape>, Box<dyn Error>> {
+) -> Result<Rc<dyn Shape>, Box<dyn Error>> {
     let mut given_material: Option<Material> = None;
     let mut given_transform: Option<Transform> = None;
 
@@ -36,7 +37,7 @@ pub fn parse_shape(
         }
     }
 
-    Ok(shape)
+    Ok(Rc::from(shape))
 }
 
 fn parse_material(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Material, Box<dyn Error>> {
@@ -54,7 +55,7 @@ fn parse_material(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Material, Box<dyn E
     }
 
     let mut material = Material::new();
-    material.set_color(color.unwrap());
+    material.set_flat_color(color.unwrap());
     material.set_diffuse(diffuse.unwrap());
     material.set_specular(specular.unwrap());
 

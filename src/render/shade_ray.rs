@@ -17,7 +17,7 @@ fn shade_hit(world: &World, hit: &Intersection) -> Color {
     let material = hit.material();
     let light = world.light().unwrap();
 
-    let effective_color = *material.color() * *light.intensity();
+    let effective_color = material.color_at(&adjusted_hit) * *light.intensity();
 
     let light_vector = (*light.position() - hit.point()).normalize();
 
@@ -42,7 +42,7 @@ fn shade_hit(world: &World, hit: &Intersection) -> Color {
             light_vector,
             &hit.normal_vector(),
             &eye_vector,
-            *hit.material(),
+            hit.material(),
             light,
         );
     }
@@ -54,7 +54,7 @@ fn calculate_specular_contribution(
     light_vector: Vector,
     normal_vector: &Vector,
     eye_vector: &Vector,
-    material: Material,
+    material: &Material,
     light: PointLight,
 ) -> Color {
     let reflection_vector = (-light_vector).reflect_around(normal_vector);
@@ -125,7 +125,7 @@ mod test {
     fn color_for_a_ray_that_hits_but_originates_inside_a_different_object() {
         // Setting the ambient value of each sphere's material to 1 to simplify things...
         let mut first_sphere_material = Material::new();
-        first_sphere_material.set_color(Color::new(0.8, 1.0, 0.6));
+        first_sphere_material.set_flat_color(Color::new(0.8, 1.0, 0.6));
         first_sphere_material.set_specular(0.2);
         first_sphere_material.set_diffuse(0.7);
         first_sphere_material.set_ambient(1.0);

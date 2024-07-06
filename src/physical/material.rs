@@ -1,8 +1,8 @@
-use crate::prelude::*;
+use crate::{pattern::FlatPattern, pattern::Pattern, prelude::*};
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Debug)]
 pub struct Material {
-    color: Color,
+    pattern: Box<dyn Pattern>,
     ambient: f32,
     diffuse: f32,
     specular: f32,
@@ -11,8 +11,10 @@ pub struct Material {
 
 impl Material {
     pub fn new() -> Self {
+        let pattern = Box::new(FlatPattern::new(Color::new(1.0, 1.0, 1.0)));
+
         Material {
-            color: Color::new(1.0, 1.0, 1.0),
+            pattern,
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,
@@ -20,12 +22,12 @@ impl Material {
         }
     }
 
-    pub fn color(&self) -> &Color {
-        &self.color
+    pub fn color_at(&self, point: &Point) -> Color {
+        self.pattern.color_at(point)
     }
 
-    pub fn set_color(&mut self, color: Color) {
-        self.color = color;
+    pub fn set_flat_color(&mut self, color: Color) {
+        self.pattern = Box::new(FlatPattern::new(color));
     }
 
     pub fn ambient(&self) -> f32 {
@@ -61,6 +63,16 @@ impl Material {
     }
 }
 
+impl PartialEq for Material {
+    fn eq(&self, other: &Self) -> bool {
+        return self.pattern.eq(&other.pattern)
+            && self.ambient == other.ambient
+            && self.diffuse == other.diffuse
+            && self.specular == other.specular
+            && self.shininess == other.shininess;
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -69,7 +81,6 @@ mod test {
     fn default_material() {
         let default_material = Material::new();
 
-        assert_eq!(default_material.color, Color::new(1.0, 1.0, 1.0));
         assert_eq!(default_material.ambient, 0.1);
         assert_eq!(default_material.diffuse, 0.9);
         assert_eq!(default_material.specular, 0.9);

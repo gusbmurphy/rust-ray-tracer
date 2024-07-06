@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct Sphere {
     center: Point,
     radius: f32,
@@ -35,7 +35,7 @@ impl Shape for Sphere {
         return world_space_normal.normalize();
     }
 
-    fn intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<Intersection>
+    fn times_of_intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<f32>
     where
         'r: 's,
     {
@@ -58,10 +58,7 @@ impl Shape for Sphere {
         let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
         let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
 
-        return vec![
-            Intersection::new(t1, Box::new(*self), ray),
-            Intersection::new(t2, Box::new(*self), ray),
-        ];
+        return vec![t1, t2];
     }
 
     fn transform(&self) -> &Transform {
@@ -119,16 +116,12 @@ mod test {
         let mut sphere = Sphere::new();
         sphere.set_transform(Transform::scaling(2.0, 2.0, 2.0));
 
-        let intersections = sphere.intersections_with(&ray);
+        let times = sphere.times_of_intersections_with(&ray);
 
-        assert_eq!(intersections.len(), 2);
+        assert_eq!(times.len(), 2);
 
-        assert!(intersections
-            .iter()
-            .any(|intersection| *intersection.t() == 3.0));
-        assert!(intersections
-            .iter()
-            .any(|intersection| *intersection.t() == 7.0));
+        assert!(times.iter().any(|t| *t == 3.0));
+        assert!(times.iter().any(|t| *t == 7.0));
     }
 
     #[test]
@@ -138,9 +131,9 @@ mod test {
         let mut sphere = Sphere::new();
         sphere.set_transform(Transform::translation(5.0, 0.0, 0.0));
 
-        let intersections = sphere.intersections_with(&ray);
+        let times = sphere.times_of_intersections_with(&ray);
 
-        assert!(intersections.is_empty());
+        assert!(times.is_empty());
     }
 
     #[test]
@@ -219,15 +212,11 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
 
-        let intersections = sphere.intersections_with(&ray);
-        assert_eq!(intersections.len(), 2);
+        let times = sphere.times_of_intersections_with(&ray);
+        assert_eq!(times.len(), 2);
 
-        assert!(intersections
-            .iter()
-            .any(|intersection| *intersection.t() == 4.0));
-        assert!(intersections
-            .iter()
-            .any(|intersection| *intersection.t() == 6.0));
+        assert!(times.iter().any(|t| *t == 4.0));
+        assert!(times.iter().any(|t| *t == 6.0));
     }
 
     #[test]
@@ -235,9 +224,9 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 2.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
 
-        let intersections = sphere.intersections_with(&ray);
+        let times = sphere.times_of_intersections_with(&ray);
 
-        assert!(intersections.is_empty());
+        assert!(times.is_empty());
     }
 
     #[test]
@@ -245,15 +234,11 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
 
-        let intersections = sphere.intersections_with(&ray);
-        assert_eq!(intersections.len(), 2);
+        let times = sphere.times_of_intersections_with(&ray);
+        assert_eq!(times.len(), 2);
 
-        assert!(intersections
-            .iter()
-            .any(|intersection| *intersection.t() == -1.0));
-        assert!(intersections
-            .iter()
-            .any(|intersection| *intersection.t() == 1.0));
+        assert!(times.iter().any(|t| *t == -1.0));
+        assert!(times.iter().any(|t| *t == 1.0));
     }
 
     #[test]
@@ -261,14 +246,10 @@ mod test {
         let ray = Ray::new(Point::new(0.0, 0.0, 5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
 
-        let intersections = sphere.intersections_with(&ray);
-        assert_eq!(intersections.len(), 2);
+        let times = sphere.times_of_intersections_with(&ray);
+        assert_eq!(times.len(), 2);
 
-        assert!(intersections
-            .iter()
-            .any(|intersection| *intersection.t() == -6.0));
-        assert!(intersections
-            .iter()
-            .any(|intersection| *intersection.t() == -4.0));
+        assert!(times.iter().any(|t| *t == -6.0));
+        assert!(times.iter().any(|t| *t == -4.0));
     }
 }

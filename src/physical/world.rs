@@ -1,8 +1,9 @@
 use crate::prelude::*;
+use std::rc::Rc;
 
 pub struct World {
     light: Option<PointLight>, // I think this needs to be non-optional
-    shapes: Vec<Box<dyn Shape>>,
+    shapes: Vec<Rc<dyn Shape>>,
 }
 
 impl World {
@@ -15,7 +16,7 @@ impl World {
 
     pub fn create_default() -> Self {
         let mut first_sphere_material = Material::new();
-        first_sphere_material.set_color(Color::new(0.8, 1.0, 0.6));
+        first_sphere_material.set_flat_color(Color::new(0.8, 1.0, 0.6));
         first_sphere_material.set_specular(0.2);
         first_sphere_material.set_diffuse(0.7);
 
@@ -26,9 +27,9 @@ impl World {
         let mut second_sphere = Sphere::new();
         second_sphere.set_transform(second_sphere_scaling);
 
-        let mut shapes: Vec<Box<dyn Shape>> = Vec::new();
-        shapes.push(Box::new(first_sphere));
-        shapes.push(Box::new(second_sphere));
+        let mut shapes: Vec<Rc<dyn Shape>> = Vec::new();
+        shapes.push(Rc::new(first_sphere));
+        shapes.push(Rc::new(second_sphere));
 
         World {
             light: Some(PointLight::new(
@@ -45,8 +46,13 @@ impl World {
     {
         let mut intersections = Vec::new();
 
-        for object in self.shapes.as_slice() {
-            intersections.extend(Vec::from(object.intersections_with(&ray)));
+        for object in &self.shapes {
+            let intersection_times = object.times_of_intersections_with(&ray);
+
+            for time in intersection_times {
+                let intersection = Intersection::new(time, object.to_owned(), ray);
+                intersections.push(intersection)
+            }
         }
 
         intersections.sort_by(|a, b| a.t().total_cmp(&b.t()));
@@ -71,11 +77,11 @@ impl World {
     }
 
     pub fn add_sphere(&mut self, sphere: Sphere) {
-        self.shapes.push(Box::new(sphere));
+        self.shapes.push(Rc::new(sphere));
     }
 
     pub fn add_plane(&mut self, plane: Plane) {
-        self.shapes.push(Box::new(plane));
+        self.shapes.push(Rc::new(plane));
     }
 
     pub fn is_point_shadowed(&self, point: &Point) -> bool {
@@ -94,11 +100,11 @@ impl World {
         return false;
     }
 
-    pub fn shapes(&self) -> &Vec<Box<dyn Shape>> {
+    pub fn shapes(&self) -> &Vec<Rc<dyn Shape>> {
         &self.shapes
     }
 
-    pub fn add_shape(&mut self, shape: Box<dyn Shape>) {
+    pub fn add_shape(&mut self, shape: Rc<dyn Shape>) {
         self.shapes.push(shape);
     }
 }
