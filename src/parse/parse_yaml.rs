@@ -53,7 +53,7 @@ mod test {
         let (world, _camera) =
             parse_scene_from_yaml("tests/scenes/scene_with_sphere.yaml").unwrap();
 
-        let light = world.light().unwrap();
+        let light = world.light();
         assert_eq!(light.intensity().to_owned(), Color::new(1.0, 1.0, 1.0));
         assert_eq!(light.position().to_owned(), Point::new(-10.0, 10.0, -10.0));
     }

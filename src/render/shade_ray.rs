@@ -15,7 +15,7 @@ fn shade_hit(world: &World, hit: &Intersection) -> Color {
     let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
 
     let material = hit.material();
-    let light = world.light().unwrap();
+    let light = world.light();
 
     let effective_color = material.color_at(&adjusted_hit) * *light.intensity();
 
@@ -55,7 +55,7 @@ fn calculate_specular_contribution(
     normal_vector: &Vector,
     eye_vector: &Vector,
     material: &Material,
-    light: PointLight,
+    light: &PointLight,
 ) -> Color {
     let reflection_vector = (-light_vector).reflect_around(normal_vector);
     let reflection_dot_eye = dot(&reflection_vector, eye_vector);

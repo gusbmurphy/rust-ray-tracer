@@ -2,14 +2,17 @@ use crate::prelude::*;
 use std::rc::Rc;
 
 pub struct World {
-    light: Option<PointLight>, // I think this needs to be non-optional
+    light: PointLight,
     shapes: Vec<Rc<dyn Shape>>,
 }
 
 impl World {
     pub fn new() -> Self {
         World {
-            light: None,
+            light: PointLight::new(
+                Color::new(1.0, 1.0, 1.0),
+                Point::new(-10.0, 10.0, -10.0),
+            ),
             shapes: Vec::new(),
         }
     }
@@ -32,10 +35,10 @@ impl World {
         shapes.push(Rc::new(second_sphere));
 
         World {
-            light: Some(PointLight::new(
+            light: PointLight::new(
                 Color::new(1.0, 1.0, 1.0),
                 Point::new(-10.0, 10.0, -10.0),
-            )),
+            ),
             shapes,
         }
     }
@@ -68,12 +71,12 @@ impl World {
         determine_hit(intersections)
     }
 
-    pub fn light(&self) -> &Option<PointLight> {
+    pub fn light(&self) -> &PointLight {
         &self.light
     }
 
     pub fn set_light(&mut self, light: PointLight) {
-        self.light = Some(light);
+        self.light = light;
     }
 
     pub fn add_sphere(&mut self, sphere: Sphere) {
@@ -85,7 +88,7 @@ impl World {
     }
 
     pub fn is_point_shadowed(&self, point: &Point) -> bool {
-        let point_to_light_vector = *self.light.unwrap().position() - point.to_owned();
+        let point_to_light_vector = *self.light.position() - point.to_owned();
         let point_to_light_ray = Ray::new(point.to_owned(), point_to_light_vector.normalize());
 
         let possible_hit = self.hit_for(&point_to_light_ray);
