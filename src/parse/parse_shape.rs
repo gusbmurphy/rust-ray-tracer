@@ -41,13 +41,13 @@ pub fn parse_shape(
 }
 
 fn parse_material(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Material, Box<dyn Error>> {
-    let mut color: Option<Color> = None;
+    let mut pattern: Option<Box<dyn Pattern>> = None;
     let mut diffuse: Option<f32> = None;
     let mut specular: Option<f32> = None;
 
     for (key, value) in map {
         match key.as_str().unwrap() {
-            "color" => color = Some(parse_color(value.as_vec().unwrap().to_owned()).unwrap()),
+            "pattern" => pattern = Some(parse_pattern(value)?),
             "diffuse" => diffuse = Some(parse_f32_from_integer_or_real(value)?),
             "specular" => specular = Some(parse_f32_from_integer_or_real(value)?),
             _ => todo!(),
@@ -55,11 +55,29 @@ fn parse_material(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Material, Box<dyn E
     }
 
     let mut material = Material::new();
-    material.set_flat_color(color.unwrap());
+    material.set_pattern(pattern.unwrap());
     material.set_diffuse(diffuse.unwrap());
     material.set_specular(specular.unwrap());
 
     Ok(material)
+}
+
+fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
+    let map = value.as_hash().unwrap();
+
+    let mut pattern: Option<Box<dyn Pattern>> = None;
+
+    for (key, value) in map {
+        match key.as_str().unwrap() {
+            "flat" => {
+                let color = parse_color(value.as_vec().unwrap().to_owned()).unwrap(); 
+                pattern = Some(Box::new(FlatPattern::new(color)));
+            }
+            _ => todo!(),
+        }
+    }
+
+    Ok(pattern.unwrap())
 }
 
 fn parse_transform(nodes: &Vec<Yaml>) -> Result<Transform, Box<dyn Error>> {

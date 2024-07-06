@@ -12,7 +12,7 @@
 
 - sphere:
     material:
-      color: [0.1, 1, 0.5]
+      pattern: { flat: [0.1, 1, 0.5] }
       diffuse: 0.7
       specular: 0.3
     transform:
@@ -21,7 +21,7 @@
 
 - sphere:
     material:
-      color: [0.5, 1, 0.1]
+      pattern: { flat: [0.5, 1, 0.1] }
       diffuse: 0.7
       specular: 0.3
     transform:
@@ -30,7 +30,7 @@
 
 - sphere:
     material:
-      color: [1.0, 0.8, 0.1]
+      pattern: { flat: [1.0, 0.8, 0.1] }
       diffuse: 0.7
       specular: 0.3
     transform:
