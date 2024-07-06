@@ -40,8 +40,8 @@ pub fn parse_values(yaml_array: yaml::Array) -> Result<[Option<f32>; 3], Box<dyn
 
     for (index, yaml) in yaml_array.iter().enumerate() {
         match yaml {
-            Yaml::Integer(ref i) => values[index] = Some(parse_f32_from_integer_or_real(yaml)?),
-            Yaml::Real(ref r) => values[index] = Some(parse_f32_from_integer_or_real(yaml)?),
+            Yaml::Integer(_) => values[index] = Some(parse_f32_from_integer_or_real(yaml)?),
+            Yaml::Real(_) => values[index] = Some(parse_f32_from_integer_or_real(yaml)?),
             _ => values[index] = None,
         }
     }
