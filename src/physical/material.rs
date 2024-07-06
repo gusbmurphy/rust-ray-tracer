@@ -12,6 +12,8 @@ pub struct Material {
     shininess: f32,
 }
 
+// TODO: What if there was a builder for this sort of thing? Instead of having a million setter
+// methods...
 impl Material {
     pub fn new() -> Self {
         let pattern = Box::new(FlatPattern::new(Color::new(1.0, 1.0, 1.0)));
