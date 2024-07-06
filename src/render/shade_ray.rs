@@ -76,6 +76,7 @@ fn adjust_hit(hit: &Intersection) -> Point {
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::rc::Rc;
 
     #[test]
     fn shading_a_ray() {
@@ -119,6 +120,30 @@ mod test {
         let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.38066, 0.47583, 0.2855));
+    }
+
+    #[test]
+    fn color_for_a_ray_hitting_a_sphere_with_a_striped_pattern() {
+        let mut material = Material::new();
+        // Setting ambient to 1.0 to simplify the color of any hit...
+        material.set_specular(0.0);
+        material.set_diffuse(0.0);
+        material.set_ambient(1.0);
+
+        let pattern = StripePattern::new(WHITE, BLACK);
+        material.set_pattern(Box::new(pattern));
+
+        let mut sphere = Sphere::new();
+        sphere.set_material(material);
+
+        let mut world = World::new();
+        world.add_shape(Rc::new(sphere));
+
+        let ray_hitting_black = Ray::new(Point::new(-0.1, 0.0, -5.0), POSITIVE_Z);
+        let ray_hitting_white = Ray::new(Point::new(0.1, 0.0, -5.0), POSITIVE_Z);
+
+        assert_eq!(shade_ray(&world, &ray_hitting_black), BLACK);
+        assert_eq!(shade_ray(&world, &ray_hitting_white), WHITE);
     }
 
     #[test]
