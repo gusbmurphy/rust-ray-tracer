@@ -72,7 +72,7 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
     for (key, value) in map {
         match key.as_str().unwrap() {
             "flat" => {
-                let color = parse_color(value.as_vec().unwrap().to_owned()).unwrap();
+                let color = parse_color(value)?;
                 pattern = Some(Box::new(FlatPattern::new(color)));
             }
             _ => todo!(),

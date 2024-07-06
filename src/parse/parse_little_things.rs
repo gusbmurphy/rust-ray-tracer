@@ -24,7 +24,8 @@ pub fn parse_vector(yaml_array: yaml::Array) -> Result<Vector, Box<dyn Error>> {
     ))
 }
 
-pub fn parse_color(yaml_array: yaml::Array) -> Result<Color, Box<dyn Error>> {
+pub fn parse_color(yaml: &Yaml) -> Result<Color, Box<dyn Error>> {
+    let yaml_array = yaml.as_vec().unwrap().to_owned();
     let values = parse_values(yaml_array)?;
 
     Ok(Color::new(
