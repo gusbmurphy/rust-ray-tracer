@@ -1,5 +1,5 @@
 use crate::{
-    pattern::{self, FlatPattern, Pattern},
+    pattern::{FlatPattern, Pattern},
     prelude::*,
 };
 
@@ -26,7 +26,6 @@ impl Material {
             shininess: 200.0,
         }
     }
-
     pub fn color_at(&self, point: &Point) -> Color {
         self.pattern.color_at(point)
     }
