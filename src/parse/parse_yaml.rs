@@ -214,4 +214,23 @@ mod test {
 
         assert_eq!(*material, expected_material);
     }
+
+    #[test]
+    fn the_ring_pattern_is_parsed_correctly() {
+        let (world, _camera) =
+            parse_scene_from_yaml("tests/scenes/sphere_with_rings.yaml").unwrap();
+
+        let sphere = world.shapes().get(0).unwrap();
+        let material = sphere.material();
+
+        let expected_pattern =
+            RingPattern::new(Color::new(0.0, 0.0, 0.0), Color::new(1.0, 0.0, 0.5));
+
+        let mut expected_material = Material::new();
+        expected_material.set_pattern(Box::new(expected_pattern));
+        expected_material.set_diffuse(0.7);
+        expected_material.set_specular(0.3);
+
+        assert_eq!(*material, expected_material);
+    }
 }
