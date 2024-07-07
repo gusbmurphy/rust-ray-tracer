@@ -88,6 +88,7 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
     Ok(pattern.unwrap())
 }
 
+// TODO: Bunch of duplicated code between this and parse_gradient.
 fn parse_stripes(value: &Yaml) -> Result<StripePattern, Box<dyn Error>> {
     let map = value.as_hash().unwrap();
 
