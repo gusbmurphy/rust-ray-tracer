@@ -195,6 +195,29 @@ mod test {
     }
 
     #[test]
+    fn hits_on_a_sphere_with_a_gradient_pattern() {
+        let mut material = Material::new();
+        // Setting ambient to 1.0 to simplify the color of any hit...
+        material.set_specular(0.0);
+        material.set_diffuse(0.0);
+        material.set_ambient(1.0);
+
+        let pattern = GradientPattern::new(WHITE, GREEN);
+        material.set_pattern(Box::new(pattern));
+
+        let mut sphere = Sphere::new();
+        sphere.set_material(material);
+
+        let mut world = World::new();
+        world.add_shape(Rc::new(sphere));
+
+        let ray_at_start = Ray::new(Point::new(-0.5, 0.0, 0.0), POSITIVE_Z);
+        let ray_at_end = Ray::new(Point::new(0.5, 0.0, 0.0), POSITIVE_Z);
+        assert_eq!(shade_ray(&world, &ray_at_start), WHITE);
+        assert_eq!(shade_ray(&world, &ray_at_end), GREEN);
+    }
+
+    #[test]
     fn color_for_a_ray_that_hits_but_originates_inside_a_different_object() {
         // Setting the ambient value of each sphere's material to 1 to simplify things...
         let mut first_sphere_material = Material::new();
