@@ -78,6 +78,9 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
             "stripes" => {
                 pattern = Some(Box::new(parse_stripes(value)?));
             }
+            "gradient" => {
+                pattern = Some(Box::new(parse_gradient(value)?));
+            }
             _ => todo!(),
         }
     }
@@ -108,6 +111,37 @@ fn parse_stripes(value: &Yaml) -> Result<StripePattern, Box<dyn Error>> {
     }
 
     let mut pattern = StripePattern::new(background.unwrap(), stripe.unwrap());
+
+    if let Some(t) = transform {
+        pattern.set_transform(t)
+    }
+
+    Ok(pattern)
+}
+
+fn parse_gradient(value: &Yaml) -> Result<GradientPattern, Box<dyn Error>> {
+    let map = value.as_hash().unwrap();
+
+    let mut starting_color: Option<Color> = None;
+    let mut ending_color: Option<Color> = None;
+    let mut transform: Option<Transform> = None;
+
+    for (key, value) in map {
+        match key.as_str().unwrap() {
+            "colors" => {
+                let value_vec = value.as_vec().unwrap().to_owned();
+
+                starting_color = Some(parse_color(value_vec.get(0).unwrap())?);
+                ending_color = Some(parse_color(value_vec.get(1).unwrap())?);
+            }
+            "transform" => {
+                transform = Some(parse_transform(value)?);
+            }
+            _ => todo!(),
+        }
+    }
+
+    let mut pattern = GradientPattern::new(starting_color.unwrap(), ending_color.unwrap());
 
     if let Some(t) = transform {
         pattern.set_transform(t)

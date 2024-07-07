@@ -194,4 +194,24 @@ mod test {
 
         assert_eq!(*transform, expected_transform);
     }
+
+    #[test]
+    fn the_gradient_pattern_is_parsed_correctly() {
+        let (world, _camera) =
+            parse_scene_from_yaml("tests/scenes/sphere_with_gradient.yaml").unwrap();
+
+        let sphere = world.shapes().get(0).unwrap();
+        let material = sphere.material();
+
+        let mut expected_pattern =
+            GradientPattern::new(Color::new(0.1, 1.0, 0.5), Color::new(0.5, 1.0, 0.1));
+        expected_pattern.set_transform(Transform::y_rotation(0.78539));
+
+        let mut expected_material = Material::new();
+        expected_material.set_pattern(Box::new(expected_pattern));
+        expected_material.set_diffuse(0.7);
+        expected_material.set_specular(0.3);
+
+        assert_eq!(*material, expected_material);
+    }
 }
