@@ -13,7 +13,11 @@ impl StripePattern {
     pub fn new(background: Color, stripe: Color) -> Self {
         let transform = Transform::new(IDENTITY_MATRIX);
 
-        StripePattern { background, stripe, transform }
+        StripePattern {
+            background,
+            stripe,
+            transform,
+        }
     }
 
     pub fn set_transform(&mut self, transform: Transform) {

@@ -1,5 +1,5 @@
-use std::error::Error;
 use std::rc::Rc;
+use std::error::Error;
 
 use crate::{parse::parse_little_things::parse_values, prelude::*};
 use linked_hash_map::LinkedHashMap;
@@ -76,18 +76,44 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
                 pattern = Some(Box::new(FlatPattern::new(color)));
             }
             "stripes" => {
-                let value_vec = value.as_vec().unwrap().to_owned();
-
-                let background = parse_color(value_vec.get(0).unwrap())?;
-                let stripe = parse_color(value_vec.get(1).unwrap())?;
-
-                pattern = Some(Box::new(StripePattern::new(background, stripe)));
+                pattern = Some(Box::new(parse_stripes(value)?));
             }
             _ => todo!(),
         }
     }
 
     Ok(pattern.unwrap())
+}
+
+fn parse_stripes(value: &Yaml) -> Result<StripePattern, Box<dyn Error>> {
+    let map = value.as_hash().unwrap();
+
+    let mut background: Option<Color> = None;
+    let mut stripe: Option<Color> = None;
+    let mut transform: Option<Transform> = None;
+
+    for (key, value) in map {
+        match key.as_str().unwrap() {
+            "colors" => {
+                let value_vec = value.as_vec().unwrap().to_owned();
+
+                background = Some(parse_color(value_vec.get(0).unwrap())?);
+                stripe = Some(parse_color(value_vec.get(1).unwrap())?);
+            }
+            "transform" => {
+                transform = Some(parse_transform(value)?);
+            }
+            _ => todo!(),
+        }
+    }
+
+    let mut pattern = StripePattern::new(background.unwrap(), stripe.unwrap());
+
+    if let Some(t) = transform {
+        pattern.set_transform(t)
+    }
+
+    Ok(pattern)
 }
 
 fn parse_transform(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {

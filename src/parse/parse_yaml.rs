@@ -156,4 +156,24 @@ mod test {
 
         assert_eq!(*material, expected_material);
     }
+
+    #[test]
+    fn stripes_can_also_have_a_transform() {
+        let (world, _camera) =
+            parse_scene_from_yaml("tests/scenes/sphere_with_stripes_and_transforms.yaml").unwrap();
+
+        let sphere = world.shapes().get(0).unwrap();
+        let material = sphere.material();
+
+        let mut expected_pattern =
+            StripePattern::new(Color::new(0.1, 1.0, 0.5), Color::new(0.5, 1.0, 0.1));
+        expected_pattern.set_transform(Transform::scaling(0.25, 0.25, 0.25));
+
+        let mut expected_material = Material::new();
+        expected_material.set_pattern(Box::new(expected_pattern));
+        expected_material.set_diffuse(0.7);
+        expected_material.set_specular(0.3);
+
+        assert_eq!(*material, expected_material);
+    }
 }
