@@ -3,13 +3,13 @@ use std::rc::Rc;
 use crate::prelude::*;
 
 pub struct Intersection<'r> {
-    time: f32,
+    time: f64,
     object: Rc<dyn Shape>,
     ray: &'r Ray,
 }
 
 impl<'r> Intersection<'r> {
-    pub fn new(time: f32, object: Rc<dyn Shape>, ray: &'r Ray) -> Self {
+    pub fn new(time: f64, object: Rc<dyn Shape>, ray: &'r Ray) -> Self {
         Intersection { time, object, ray }
     }
 
@@ -21,7 +21,7 @@ impl<'r> Intersection<'r> {
         &self.object.material()
     }
 
-    pub fn t(&self) -> &f32 {
+    pub fn t(&self) -> &f64 {
         &self.time
     }
 
@@ -51,7 +51,7 @@ impl<'r> Intersection<'r> {
         dot(
             &-self.ray.direction().to_owned(),
             &self.base_normal_vector(),
-        ) < 0f32
+        ) < 0f64
     }
 }
 
@@ -59,7 +59,7 @@ pub fn determine_hit<'r>(intersections: Vec<Intersection>) -> Option<Intersectio
     let mut lowest_t_intersection: Option<Intersection> = None;
 
     for intersection in intersections {
-        if *intersection.t() > 0f32 {
+        if *intersection.t() > 0f64 {
             match lowest_t_intersection {
                 None => lowest_t_intersection = Some(intersection),
                 Some(ref lowest_t) => {

@@ -3,20 +3,20 @@ use std::ops::Mul;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Matrix<const S: usize> {
-    values: [[f32; S]; S],
+    values: [[f64; S]; S],
 }
 
 impl<const S: usize> Matrix<S> {
-    pub fn new(values: [[f32; S]; S]) -> Self {
+    pub fn new(values: [[f64; S]; S]) -> Self {
         Matrix { values }
     }
 
-    pub fn row_at(&self, row: usize) -> &[f32; S] {
+    pub fn row_at(&self, row: usize) -> &[f64; S] {
         &self.values[row]
     }
 
-    pub fn column_at(&self, column: usize) -> [f32; S] {
-        let mut column_values = [0.0f32; S];
+    pub fn column_at(&self, column: usize) -> [f64; S] {
+        let mut column_values = [0.0f64; S];
 
         for row in 0..S {
             column_values[row] = self.values[row][column];
@@ -26,7 +26,7 @@ impl<const S: usize> Matrix<S> {
     }
 
     pub fn transpose(&self) -> Matrix<S> {
-        let mut result_values = [[0.0f32; S]; S];
+        let mut result_values = [[0.0f64; S]; S];
 
         for column in 0..S {
             for row in 0..S {
@@ -39,7 +39,7 @@ impl<const S: usize> Matrix<S> {
         }
     }
 
-    pub fn set_value_at(&mut self, at_col: usize, at_row: usize, value: f32) {
+    pub fn set_value_at(&mut self, at_col: usize, at_row: usize, value: f64) {
         self.values[at_row][at_col] = value;
     }
 }
@@ -70,7 +70,7 @@ pub const IDENTITY_MATRIX: Matrix<4> = Matrix {
 impl Matrix<4> {
     pub fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> Matrix<3> {
         const SUBMATRIX_SIZE: usize = 3;
-        let mut values = [[0.0f32; SUBMATRIX_SIZE]; SUBMATRIX_SIZE];
+        let mut values = [[0.0f64; SUBMATRIX_SIZE]; SUBMATRIX_SIZE];
 
         let mut column_shift = 0;
 
@@ -92,12 +92,12 @@ impl Matrix<4> {
         Matrix { values }
     }
 
-    fn calculate_minor_at(&self, row: usize, column: usize) -> f32 {
+    fn calculate_minor_at(&self, row: usize, column: usize) -> f64 {
         let sub_matrix = self.get_submatrix(row, column);
         sub_matrix.calculate_determinant()
     }
 
-    fn calculate_cofactor_at(&self, row: usize, column: usize) -> f32 {
+    fn calculate_cofactor_at(&self, row: usize, column: usize) -> f64 {
         let minor = self.calculate_minor_at(row, column);
         if (row + column) % 2 == 0 {
             minor
@@ -106,8 +106,8 @@ impl Matrix<4> {
         }
     }
 
-    fn calculate_determinant(&self) -> f32 {
-        let mut determinant = 0.0f32;
+    fn calculate_determinant(&self) -> f64 {
+        let mut determinant = 0.0f64;
 
         const ROW_INDEX_TO_USE: usize = 0;
         let row_to_use = self.row_at(ROW_INDEX_TO_USE);
@@ -128,7 +128,7 @@ impl Matrix<4> {
     pub fn invert(&self) -> Result<Matrix<4>, &'static str> {
         let determinant = self.calculate_determinant();
 
-        if determinant == 0f32 {
+        if determinant == 0f64 {
             return Err("Matrix cannot be inverted.");
         }
 
@@ -185,11 +185,11 @@ impl<const S: usize> Mul<Matrix<S>> for Matrix<S> {
 
 // TODO: It seems like there are places where we use arrays of values in
 // place of the Tuple struct, there's probably a way to be more consistent.
-impl<const S: usize> Mul<[f32; S]> for Matrix<S> {
-    type Output = [f32; S];
+impl<const S: usize> Mul<[f64; S]> for Matrix<S> {
+    type Output = [f64; S];
 
-    fn mul(self, rhs: [f32; S]) -> Self::Output {
-        let mut result = [0.0f32; S];
+    fn mul(self, rhs: [f64; S]) -> Self::Output {
+        let mut result = [0.0f64; S];
 
         for row in 0..S {
             for column in 0..S {
@@ -212,7 +212,7 @@ impl Mul<Vector> for Matrix<4> {
 
 impl Matrix<3> {
     fn get_submatrix(&self, row_to_drop: usize, column_to_drop: usize) -> Matrix<2> {
-        let mut values = [[0.0f32; 2]; 2];
+        let mut values = [[0.0f64; 2]; 2];
 
         let mut column_shift = 0;
 
@@ -234,12 +234,12 @@ impl Matrix<3> {
         Matrix { values }
     }
 
-    fn calculate_minor_at(&self, row: usize, column: usize) -> f32 {
+    fn calculate_minor_at(&self, row: usize, column: usize) -> f64 {
         let sub_matrix = self.get_submatrix(row, column);
         sub_matrix.calculate_determinant()
     }
 
-    fn calculate_cofactor_at(&self, row: usize, column: usize) -> f32 {
+    fn calculate_cofactor_at(&self, row: usize, column: usize) -> f64 {
         let minor = self.calculate_minor_at(row, column);
         if (row + column) % 2 == 0 {
             minor
@@ -248,8 +248,8 @@ impl Matrix<3> {
         }
     }
 
-    fn calculate_determinant(&self) -> f32 {
-        let mut determinant = 0.0f32;
+    fn calculate_determinant(&self) -> f64 {
+        let mut determinant = 0.0f64;
 
         const ROW_INDEX_TO_USE: usize = 0;
         let row_to_use = self.row_at(ROW_INDEX_TO_USE);
@@ -266,7 +266,7 @@ impl Matrix<3> {
 }
 
 impl Matrix<2> {
-    pub fn calculate_determinant(&self) -> f32 {
+    pub fn calculate_determinant(&self) -> f64 {
         self.values[0][0] * self.values[1][1] - self.values[0][1] * self.values[1][0]
     }
 }

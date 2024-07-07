@@ -5,9 +5,9 @@ use crate::prelude::*;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vector {
-    x: f32,
-    y: f32,
-    z: f32,
+    x: f64,
+    y: f64,
+    z: f64,
 }
 
 impl Vector {
@@ -23,23 +23,23 @@ impl Vector {
 }
 
 impl Tuple for Vector {
-    fn x(&self) -> &f32 {
+    fn x(&self) -> &f64 {
         &self.x
     }
 
-    fn y(&self) -> &f32 {
+    fn y(&self) -> &f64 {
         &self.y
     }
 
-    fn z(&self) -> &f32 {
+    fn z(&self) -> &f64 {
         &self.z
     }
 
-    fn w(&self) -> &f32 {
+    fn w(&self) -> &f64 {
         &0.0
     }
 
-    fn new(x: f32, y: f32, z: f32) -> Self {
+    fn new(x: f64, y: f64, z: f64) -> Self {
         Vector { x, y, z }
     }
 }
@@ -76,18 +76,18 @@ impl ops::Neg for Vector {
     }
 }
 
-impl ops::Mul<f32> for Vector {
+impl ops::Mul<f64> for Vector {
     type Output = Vector;
 
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: f64) -> Self::Output {
         Vector::new(self.x * rhs, self.y * rhs, self.z * rhs)
     }
 }
 
-impl ops::Div<f32> for Vector {
+impl ops::Div<f64> for Vector {
     type Output = Vector;
 
-    fn div(self, rhs: f32) -> Self::Output {
+    fn div(self, rhs: f64) -> Self::Output {
         Vector::new(self.x / rhs, self.y / rhs, self.z / rhs)
     }
 }
@@ -109,7 +109,7 @@ pub fn cross(a: &Vector, b: &Vector) -> Vector {
     Vector::new(x, y, z)
 }
 
-pub fn dot(a: &Vector, b: &Vector) -> f32 {
+pub fn dot(a: &Vector, b: &Vector) -> f64 {
     a.x() * b.x() + a.y() * b.y() + a.z() * b.z()
 }
 
@@ -173,9 +173,9 @@ mod test {
         assert_eq!(
             normalized_vector,
             Vector::new(
-                1.0 / (14.0f32).sqrt(),
-                2.0 / (14.0f32).sqrt(),
-                3.0 / (14.0f32).sqrt()
+                1.0 / (14.0f64).sqrt(),
+                2.0 / (14.0f64).sqrt(),
+                3.0 / (14.0f64).sqrt()
             )
         );
 
@@ -188,7 +188,7 @@ mod test {
 
         let result = vector.magnitude();
 
-        assert_eq!(result, (14.0 as f32).sqrt());
+        assert_eq!(result, (14.0 as f64).sqrt());
     }
 
     #[test]
@@ -268,7 +268,7 @@ mod test {
     #[test]
     fn reflecting_vector_off_a_slanted_surface() {
         let vector = Vector::new(0.0, -1.0, 0.0);
-        let normal = Vector::new(2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0, 0.0);
+        let normal = Vector::new(2.0f64.sqrt() / 2.0, 2.0f64.sqrt() / 2.0, 0.0);
 
         let reflection = vector.reflect_around(&normal);
 

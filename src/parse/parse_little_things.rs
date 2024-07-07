@@ -35,13 +35,13 @@ pub fn parse_color(yaml: &Yaml) -> Result<Color, Box<dyn Error>> {
     ))
 }
 
-pub fn parse_values(yaml_array: yaml::Array) -> Result<[Option<f32>; 3], Box<dyn Error>> {
-    let mut values: [Option<f32>; 3] = [None; 3];
+pub fn parse_values(yaml_array: yaml::Array) -> Result<[Option<f64>; 3], Box<dyn Error>> {
+    let mut values: [Option<f64>; 3] = [None; 3];
 
     for (index, yaml) in yaml_array.iter().enumerate() {
         match yaml {
-            Yaml::Integer(_) => values[index] = Some(parse_f32_from_integer_or_real(yaml)?),
-            Yaml::Real(_) => values[index] = Some(parse_f32_from_integer_or_real(yaml)?),
+            Yaml::Integer(_) => values[index] = Some(parse_f64_from_integer_or_real(yaml)?),
+            Yaml::Real(_) => values[index] = Some(parse_f64_from_integer_or_real(yaml)?),
             _ => values[index] = None,
         }
     }
@@ -49,10 +49,10 @@ pub fn parse_values(yaml_array: yaml::Array) -> Result<[Option<f32>; 3], Box<dyn
     Ok(values)
 }
 
-pub fn parse_f32_from_integer_or_real(yaml: &Yaml) -> Result<f32, Box<dyn Error>> {
+pub fn parse_f64_from_integer_or_real(yaml: &Yaml) -> Result<f64, Box<dyn Error>> {
     match yaml {
-        Yaml::Integer(ref i) => Ok(i.to_owned() as f32),
-        Yaml::Real(ref r) => Ok(r.parse::<f32>()?),
+        Yaml::Integer(ref i) => Ok(i.to_owned() as f64),
+        Yaml::Real(ref r) => Ok(r.parse::<f64>()?),
         _ => Err(Box::new(YamlParsingError::new(
             "Expected to find numeric value",
         ))),

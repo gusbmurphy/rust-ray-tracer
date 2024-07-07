@@ -20,7 +20,7 @@ impl Shape for Plane {
         self.transform * POSITIVE_Y
     }
 
-    fn times_of_intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<f32>
+    fn times_of_intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<f64>
     where
         'r: 's,
     {
@@ -57,7 +57,7 @@ impl Shape for Plane {
 
 #[cfg(test)]
 mod test {
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     use super::*;
 

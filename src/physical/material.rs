@@ -6,10 +6,10 @@ use crate::{
 #[derive(Debug)]
 pub struct Material {
     pattern: Box<dyn Pattern>,
-    ambient: f32,
-    diffuse: f32,
-    specular: f32,
-    shininess: f32,
+    ambient: f64,
+    diffuse: f64,
+    specular: f64,
+    shininess: f64,
 }
 
 // TODO: What if there was a builder for this sort of thing? Instead of having a million setter
@@ -38,35 +38,35 @@ impl Material {
         self.pattern = pattern;
     }
 
-    pub fn ambient(&self) -> f32 {
+    pub fn ambient(&self) -> f64 {
         self.ambient
     }
 
-    pub fn set_ambient(&mut self, ambient: f32) {
+    pub fn set_ambient(&mut self, ambient: f64) {
         self.ambient = ambient;
     }
 
-    pub fn diffuse(&self) -> &f32 {
+    pub fn diffuse(&self) -> &f64 {
         &self.diffuse
     }
 
-    pub fn set_diffuse(&mut self, diffuse: f32) {
+    pub fn set_diffuse(&mut self, diffuse: f64) {
         self.diffuse = diffuse;
     }
 
-    pub fn specular(&self) -> &f32 {
+    pub fn specular(&self) -> &f64 {
         &self.specular
     }
 
-    pub fn set_specular(&mut self, specular: f32) {
+    pub fn set_specular(&mut self, specular: f64) {
         self.specular = specular;
     }
 
-    pub fn shininess(&self) -> &f32 {
+    pub fn shininess(&self) -> &f64 {
         &self.shininess
     }
 
-    pub fn set_shininess(&mut self, shininess: f32) {
+    pub fn set_shininess(&mut self, shininess: f64) {
         self.shininess = shininess;
     }
 }

@@ -32,7 +32,7 @@ impl Transform {
         return orientation_moved_into_place;
     }
 
-    pub fn translation(x: f32, y: f32, z: f32) -> Self {
+    pub fn translation(x: f64, y: f64, z: f64) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(3, 0, x);
@@ -42,7 +42,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn scaling(x: f32, y: f32, z: f32) -> Self {
+    pub fn scaling(x: f64, y: f64, z: f64) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(0, 0, x);
@@ -52,7 +52,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn x_rotation(radians: f32) -> Self {
+    pub fn x_rotation(radians: f64) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(1, 1, radians.cos());
@@ -63,7 +63,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn y_rotation(radians: f32) -> Self {
+    pub fn y_rotation(radians: f64) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(0, 0, radians.cos());
@@ -74,7 +74,7 @@ impl Transform {
         Transform { matrix }
     }
 
-    pub fn z_rotation(radians: f32) -> Self {
+    pub fn z_rotation(radians: f64) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
         matrix.set_value_at(0, 0, radians.cos());
@@ -86,12 +86,12 @@ impl Transform {
     }
 
     pub fn shearing(
-        x_to_y: f32,
-        x_to_z: f32,
-        y_to_x: f32,
-        y_to_z: f32,
-        z_to_x: f32,
-        z_to_y: f32,
+        x_to_y: f64,
+        x_to_z: f64,
+        y_to_x: f64,
+        y_to_z: f64,
+        z_to_x: f64,
+        z_to_y: f64,
     ) -> Self {
         let mut matrix = IDENTITY_MATRIX;
 
@@ -159,7 +159,7 @@ impl PartialEq<Matrix<4>> for Transform {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     #[test]
     fn multiplying_point_by_a_translation() {
@@ -249,7 +249,7 @@ mod test {
 
         assert_eq!(
             half_quarter * point,
-            Point::new(0.0, 2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0)
+            Point::new(0.0, 2.0f64.sqrt() / 2.0, 2.0f64.sqrt() / 2.0)
         );
         assert_eq!(full_quarter * point, Point::new(0.0, 0.0, 1.0));
     }
@@ -263,7 +263,7 @@ mod test {
 
         assert_eq!(
             inverse * point,
-            Point::new(0.0, 2.0f32.sqrt() / 2.0, -2.0f32.sqrt() / 2.0)
+            Point::new(0.0, 2.0f64.sqrt() / 2.0, -2.0f64.sqrt() / 2.0)
         );
     }
 
@@ -276,7 +276,7 @@ mod test {
 
         assert_eq!(
             half_quarter * point,
-            Point::new(2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0)
+            Point::new(2.0f64.sqrt() / 2.0, 0.0, 2.0f64.sqrt() / 2.0)
         );
         assert_eq!(full_quarter * point, Point::new(1.0, 0.0, 0.0));
     }
@@ -290,7 +290,7 @@ mod test {
 
         assert_eq!(
             half_quarter * point,
-            Point::new(-2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0, 0.0)
+            Point::new(-2.0f64.sqrt() / 2.0, 2.0f64.sqrt() / 2.0, 0.0)
         );
         assert_eq!(full_quarter * point, Point::new(-1.0, 0.0, 0.0));
     }

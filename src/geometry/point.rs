@@ -4,10 +4,10 @@ use std::ops;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Point {
-    x: f32,
-    y: f32,
-    z: f32,
-    w: f32, // TODO: Can we get rid of this "w" property?
+    x: f64,
+    y: f64,
+    z: f64,
+    w: f64, // TODO: Can we get rid of this "w" property?
 }
 
 pub const ORIGIN: Point = Point {
@@ -18,29 +18,29 @@ pub const ORIGIN: Point = Point {
 };
 
 impl Point {
-    pub fn new_with_w(x: f32, y: f32, z: f32, w: f32) -> Self {
+    pub fn new_with_w(x: f64, y: f64, z: f64, w: f64) -> Self {
         Point { x, y, z, w }
     }
 }
 
 impl Tuple for Point {
-    fn x(&self) -> &f32 {
+    fn x(&self) -> &f64 {
         &self.x
     }
 
-    fn y(&self) -> &f32 {
+    fn y(&self) -> &f64 {
         &self.y
     }
 
-    fn z(&self) -> &f32 {
+    fn z(&self) -> &f64 {
         &self.z
     }
 
-    fn w(&self) -> &f32 {
+    fn w(&self) -> &f64 {
         &1.0
     }
 
-    fn new(x: f32, y: f32, z: f32) -> Self {
+    fn new(x: f64, y: f64, z: f64) -> Self {
         Point { x, y, z, w: 1.0 }
     }
 }
@@ -86,18 +86,18 @@ impl ops::Neg for Point {
     }
 }
 
-impl ops::Mul<f32> for Point {
+impl ops::Mul<f64> for Point {
     type Output = Point;
 
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: f64) -> Self::Output {
         Point::new_with_w(self.x * rhs, self.y * rhs, self.z * rhs, self.w * rhs)
     }
 }
 
-impl ops::Div<f32> for Point {
+impl ops::Div<f64> for Point {
     type Output = Point;
 
-    fn div(self, rhs: f32) -> Self::Output {
+    fn div(self, rhs: f64) -> Self::Output {
         Point::new_with_w(self.x / rhs, self.y / rhs, self.z / rhs, self.w / rhs)
     }
 }

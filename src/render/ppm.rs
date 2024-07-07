@@ -55,14 +55,14 @@ fn convert_color_to_ppm_values(color: &Color) -> [u8; 3] {
     [r, b, g]
 }
 
-fn convert_color_value_to_ppm_value(value: f32) -> u8 {
-    let ppm_value = ((MAX_PPM_COLOR_VALUE as f32) * value) as f32;
+fn convert_color_value_to_ppm_value(value: f64) -> u8 {
+    let ppm_value = ((MAX_PPM_COLOR_VALUE as f64) * value) as f64;
 
     if ppm_value < 0.0 {
         return 0;
     }
 
-    if ppm_value > MAX_PPM_COLOR_VALUE as f32 {
+    if ppm_value > MAX_PPM_COLOR_VALUE as f64 {
         return MAX_PPM_COLOR_VALUE;
     }
 

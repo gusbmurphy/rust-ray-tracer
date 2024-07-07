@@ -3,7 +3,7 @@ use crate::prelude::*;
 #[derive(Debug, PartialEq)]
 pub struct Sphere {
     center: Point,
-    radius: f32,
+    radius: f64,
     transform: Transform,
     material: Material,
 }
@@ -35,7 +35,7 @@ impl Shape for Sphere {
         return world_space_normal.normalize();
     }
 
-    fn times_of_intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<f32>
+    fn times_of_intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<f64>
     where
         'r: 's,
     {
@@ -46,17 +46,17 @@ impl Shape for Sphere {
             ray_in_object_space.direction(),
             ray_in_object_space.direction(),
         );
-        let b = 2f32 * dot(ray_in_object_space.direction(), &vector_from_sphere_to_ray);
-        let c = dot(&vector_from_sphere_to_ray, &vector_from_sphere_to_ray) - 1f32;
+        let b = 2f64 * dot(ray_in_object_space.direction(), &vector_from_sphere_to_ray);
+        let c = dot(&vector_from_sphere_to_ray, &vector_from_sphere_to_ray) - 1f64;
 
-        let discriminant = b.powi(2) - 4f32 * a * c;
+        let discriminant = b.powi(2) - 4f64 * a * c;
 
-        if discriminant < 0f32 {
+        if discriminant < 0f64 {
             return Vec::new();
         }
 
-        let t1 = (-b - discriminant.sqrt()) / (2f32 * a);
-        let t2 = (-b + discriminant.sqrt()) / (2f32 * a);
+        let t1 = (-b - discriminant.sqrt()) / (2f64 * a);
+        let t2 = (-b + discriminant.sqrt()) / (2f64 * a);
 
         return vec![t1, t2];
     }
@@ -85,7 +85,7 @@ impl Shape for Sphere {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     #[test]
     fn default_sphere_transform() {
@@ -164,17 +164,17 @@ mod test {
     fn getting_normal_at_a_nonaxial_point() {
         let sphere = Sphere::new();
         let normal = sphere.normal_at(Point::new(
-            3.0f32.sqrt() / 3.0,
-            3.0f32.sqrt() / 3.0,
-            3.0f32.sqrt() / 3.0,
+            3.0f64.sqrt() / 3.0,
+            3.0f64.sqrt() / 3.0,
+            3.0f64.sqrt() / 3.0,
         ));
 
         assert_eq!(
             normal,
             Vector::new(
-                3.0f32.sqrt() / 3.0,
-                3.0f32.sqrt() / 3.0,
-                3.0f32.sqrt() / 3.0,
+                3.0f64.sqrt() / 3.0,
+                3.0f64.sqrt() / 3.0,
+                3.0f64.sqrt() / 3.0,
             )
         );
     }
@@ -202,7 +202,7 @@ mod test {
         let mut sphere = Sphere::new();
         sphere.set_transform(Transform::scaling(1.0, 0.5, 1.0) * Transform::z_rotation(PI / 5.0));
 
-        let normal = sphere.normal_at(Point::new(0.0, 2f32.sqrt() / 2.0, -2f32.sqrt() / 2.0));
+        let normal = sphere.normal_at(Point::new(0.0, 2f64.sqrt() / 2.0, -2f64.sqrt() / 2.0));
 
         assert_eq!(normal, Vector::new(0.0, 0.97014, -0.24254));
     }

@@ -3,12 +3,12 @@ use crate::prelude::*;
 pub struct Camera {
     horizontal_size: u64,
     vertical_size: u64,
-    field_of_view: f32,
+    field_of_view: f64,
     transform: Transform,
 }
 
 impl Camera {
-    pub fn new(horizontal_size: u64, vertical_size: u64, field_of_view: f32) -> Self {
+    pub fn new(horizontal_size: u64, vertical_size: u64, field_of_view: f64) -> Self {
         Camera {
             horizontal_size,
             vertical_size,
@@ -20,7 +20,7 @@ impl Camera {
     pub fn new_with_transform(
         horizontal_size: u64,
         vertical_size: u64,
-        field_of_view: f32,
+        field_of_view: f64,
         transform: Transform,
     ) -> Self {
         Camera {
@@ -47,13 +47,13 @@ impl Camera {
         return canvas;
     }
 
-    pub fn get_pixel_size(&self) -> f32 {
-        (self.half_width() * 2.0) / (self.horizontal_size as f32)
+    pub fn get_pixel_size(&self) -> f64 {
+        (self.half_width() * 2.0) / (self.horizontal_size as f64)
     }
 
     pub fn get_ray_for_pixel(&self, pixel_x: u64, pixel_y: u64) -> Ray {
-        let x_offset = (pixel_x as f32 + 0.5) * self.get_pixel_size();
-        let y_offset = (pixel_y as f32 + 0.5) * self.get_pixel_size();
+        let x_offset = (pixel_x as f64 + 0.5) * self.get_pixel_size();
+        let y_offset = (pixel_y as f64 + 0.5) * self.get_pixel_size();
 
         let world_x = self.half_width() - x_offset;
         let world_y = self.half_height() - y_offset;
@@ -66,11 +66,11 @@ impl Camera {
         Ray::new(origin, direction)
     }
 
-    fn half_view(&self) -> f32 {
+    fn half_view(&self) -> f64 {
         (self.field_of_view / 2.0).tan()
     }
 
-    fn half_width(&self) -> f32 {
+    fn half_width(&self) -> f64 {
         let aspect = self.aspect();
 
         if aspect >= 1.0 {
@@ -80,8 +80,8 @@ impl Camera {
         return self.half_view() * aspect;
     }
 
-    fn half_height(&self) -> f32 {
-        let aspect: f32 = self.aspect();
+    fn half_height(&self) -> f64 {
+        let aspect: f64 = self.aspect();
 
         if aspect >= 1.0 {
             return self.half_view() / aspect;
@@ -90,8 +90,8 @@ impl Camera {
         return self.half_view();
     }
 
-    fn aspect(&self) -> f32 {
-        (self.horizontal_size as f32) / (self.vertical_size as f32)
+    fn aspect(&self) -> f64 {
+        (self.horizontal_size as f64) / (self.vertical_size as f64)
     }
 
     pub fn width(&self) -> &u64 {
@@ -102,7 +102,7 @@ impl Camera {
         &self.vertical_size
     }
 
-    pub fn fov(&self) -> &f32 {
+    pub fn fov(&self) -> &f64 {
         &self.field_of_view
     }
 
@@ -113,7 +113,7 @@ impl Camera {
 
 #[cfg(test)]
 mod test {
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     use super::*;
 
@@ -128,14 +128,14 @@ mod test {
     fn the_pixel_size_for_a_horizontal_canvas_is_correct() {
         let camera = Camera::new(200, 125, PI / 2.0);
 
-        assert_eq!(camera.get_pixel_size(), 0.01);
+        assert!(close_enough(&camera.get_pixel_size(), &0.01));
     }
 
     #[test]
     fn the_pixel_size_for_a_vertical_canvas_is_correct() {
         let camera = Camera::new(125, 200, PI / 2.0);
 
-        assert_eq!(camera.get_pixel_size(), 0.01);
+        assert!(close_enough(&camera.get_pixel_size(), &0.01));
     }
 
     #[test]
@@ -171,7 +171,7 @@ mod test {
         assert_eq!(ray.origin().to_owned(), Point::new(0.0, 2.0, -5.0));
         assert_eq!(
             ray.direction().to_owned(),
-            Vector::new(2.0f32.sqrt() / 2.0, 0.0, -2.0f32.sqrt() / 2.0)
+            Vector::new(2.0f64.sqrt() / 2.0, 0.0, -2.0f64.sqrt() / 2.0)
         );
     }
 

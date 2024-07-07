@@ -3,57 +3,57 @@ use std::ops;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Color {
-    r: f32,
-    b: f32,
-    g: f32,
+    r: f64,
+    b: f64,
+    g: f64,
 }
 
 impl Color {
-    pub fn new(r: f32, b: f32, g: f32) -> Self {
+    pub fn new(r: f64, b: f64, g: f64) -> Self {
         Color { r, b, g }
     }
 
-    pub fn r(&self) -> &f32 {
+    pub fn r(&self) -> &f64 {
         &self.r
     }
 
-    pub fn b(&self) -> &f32 {
+    pub fn b(&self) -> &f64 {
         &self.b
     }
 
-    pub fn g(&self) -> &f32 {
+    pub fn g(&self) -> &f64 {
         &self.g
     }
 }
 
 pub const RED: Color = Color {
-    r: 255f32,
-    g: 0f32,
-    b: 0f32,
+    r: 255f64,
+    g: 0f64,
+    b: 0f64,
 };
 
 pub const GREEN: Color = Color {
-    r: 0f32,
-    g: 255f32,
-    b: 0f32,
+    r: 0f64,
+    g: 255f64,
+    b: 0f64,
 };
 
 pub const BLUE: Color = Color {
-    r: 0f32,
-    g: 0f32,
-    b: 255f32,
+    r: 0f64,
+    g: 0f64,
+    b: 255f64,
 };
 
 pub const WHITE: Color = Color {
-    r: 255f32,
-    b: 255f32,
-    g: 255f32,
+    r: 255f64,
+    b: 255f64,
+    g: 255f64,
 };
 
 pub const BLACK: Color = Color {
-    r: 0f32,
-    b: 0f32,
-    g: 0f32,
+    r: 0f64,
+    b: 0f64,
+    g: 0f64,
 };
 
 impl PartialEq for Color {
@@ -82,10 +82,10 @@ impl ops::Sub<Color> for Color {
     }
 }
 
-impl ops::Mul<f32> for Color {
+impl ops::Mul<f64> for Color {
     type Output = Color;
 
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: f64) -> Self::Output {
         Color::new(self.r * rhs, self.b * rhs, self.g * rhs)
     }
 }

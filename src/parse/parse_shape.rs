@@ -5,7 +5,7 @@ use crate::{parse::parse_little_things::parse_values, prelude::*};
 use linked_hash_map::LinkedHashMap;
 use yaml_rust::Yaml;
 
-use super::parse_little_things::{parse_color, parse_f32_from_integer_or_real};
+use super::parse_little_things::{parse_color, parse_f64_from_integer_or_real};
 
 pub fn parse_shape(
     map: Option<&LinkedHashMap<Yaml, Yaml>>,
@@ -44,14 +44,14 @@ fn parse_material(yaml: &Yaml) -> Result<Material, Box<dyn Error>> {
     let map = yaml.as_hash().unwrap();
 
     let mut pattern: Option<Box<dyn Pattern>> = None;
-    let mut diffuse: Option<f32> = None;
-    let mut specular: Option<f32> = None;
+    let mut diffuse: Option<f64> = None;
+    let mut specular: Option<f64> = None;
 
     for (key, value) in map {
         match key.as_str().unwrap() {
             "pattern" => pattern = Some(parse_pattern(value)?),
-            "diffuse" => diffuse = Some(parse_f32_from_integer_or_real(value)?),
-            "specular" => specular = Some(parse_f32_from_integer_or_real(value)?),
+            "diffuse" => diffuse = Some(parse_f64_from_integer_or_real(value)?),
+            "specular" => specular = Some(parse_f64_from_integer_or_real(value)?),
             _ => todo!(),
         }
     }
@@ -145,26 +145,26 @@ fn parse_transform(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {
                     transform = transform * scaling;
                 }
                 "rotate_x" => {
-                    let radians = parse_f32_from_integer_or_real(value)?;
+                    let radians = parse_f64_from_integer_or_real(value)?;
                     let rotation = Transform::x_rotation(radians);
                     transform = transform * rotation;
                 }
                 "rotate_y" => {
-                    let radians = parse_f32_from_integer_or_real(value)?;
+                    let radians = parse_f64_from_integer_or_real(value)?;
                     let rotation = Transform::y_rotation(radians);
                     transform = transform * rotation;
                 }
                 "rotate_z" => {
-                    let radians = parse_f32_from_integer_or_real(value)?;
+                    let radians = parse_f64_from_integer_or_real(value)?;
                     let rotation = Transform::z_rotation(radians);
                     transform = transform * rotation;
                 }
                 "shear" => {
-                    let mut shear_values = [0.0f32; 6];
+                    let mut shear_values = [0.0f64; 6];
                     let value_vec = value.as_vec().unwrap();
 
                     for (i, value) in value_vec.iter().enumerate() {
-                        shear_values[i] = parse_f32_from_integer_or_real(value)?;
+                        shear_values[i] = parse_f64_from_integer_or_real(value)?;
                     }
 
                     let shearing = Transform::shearing(
