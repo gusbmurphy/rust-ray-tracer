@@ -17,6 +17,10 @@ impl RingPattern {
             transform,
         }
     }
+
+    pub fn set_transform(&mut self, transform: Transform) {
+        self.transform = transform;
+    }
 }
 
 impl Pattern for RingPattern {
@@ -50,5 +54,17 @@ mod test {
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 1.0)), BLACK);
         // A point on that first ring...
         assert_eq!(pattern.color_at(&Point::new(0.708, 0.0, 0.708)), BLACK);
+    }
+
+    #[test]
+    fn rings_can_be_scaled() {
+        let mut pattern = RingPattern::new(WHITE, BLACK);
+        pattern.set_transform(Transform::scaling(2.0, 2.0, 2.0));
+
+        assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
+        assert_eq!(pattern.color_at(&Point::new(2.0, 0.0, 0.0)), BLACK);
+        assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 2.0)), BLACK);
+        // A point on that first ring...
+        assert_eq!(pattern.color_at(&Point::new(1.416, 0.0, 1.416)), BLACK);
     }
 }
