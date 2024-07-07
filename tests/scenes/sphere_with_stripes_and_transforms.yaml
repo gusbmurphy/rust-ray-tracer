@@ -22,5 +22,5 @@
       diffuse: 0.7
       specular: 0.3
     transform:
+      - translate: [-1, 0, 2]
       - scale: [3, 3, 3]
-      - translate: [0, 2, -2]
