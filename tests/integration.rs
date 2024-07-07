@@ -57,3 +57,12 @@ fn sphere_with_every_transform() {
 
     insta::assert_yaml_snapshot!(ppm);
 }
+
+#[test]
+fn sphere_with_gradient() {
+    let (world, camera) = parse_scene_from_yaml("tests/scenes/sphere_with_gradient.yaml").unwrap();
+
+    let ppm = create_ppm_from_canvas(camera.render(world));
+
+    insta::assert_yaml_snapshot!(ppm);
+}
