@@ -204,7 +204,7 @@ mod test {
         let material = sphere.material();
 
         let mut expected_pattern =
-            GradientPattern::new(Color::new(0.1, 1.0, 0.5), Color::new(0.5, 1.0, 0.1));
+            GradientPattern::new(Color::new(0.1, 1.0, 0.1), Color::new(1.0, 0.0, 0.5));
         expected_pattern.set_transform(Transform::y_rotation(0.78539));
 
         let mut expected_material = Material::new();
