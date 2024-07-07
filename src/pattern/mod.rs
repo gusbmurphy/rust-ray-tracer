@@ -1,4 +1,5 @@
 mod flat;
+mod gradient;
 mod pattern;
 mod stripes;
 
