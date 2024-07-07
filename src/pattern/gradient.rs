@@ -37,6 +37,8 @@ impl Eq for GradientPattern {}
 
 #[cfg(test)]
 mod test {
+    use std::f64::consts::PI;
+
     use super::*;
 
     #[test]
@@ -83,6 +85,26 @@ mod test {
         );
         assert_eq!(
             pattern.color_at(&Point::new(1.5, 0.0, 0.0)),
+            Color::new(0.25, 0.25, 0.25)
+        );
+    }
+
+    #[test]
+    fn the_gradient_can_be_made_vertical_by_rotating_it() {
+        let mut pattern = GradientPattern::new(WHITE, BLACK);
+        pattern.set_transform(Transform::y_rotation(-PI / 2.0));
+
+        assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
+        assert_eq!(
+            pattern.color_at(&Point::new(0.0, 0.0, 0.25)),
+            Color::new(0.75, 0.75, 0.75)
+        );
+        assert_eq!(
+            pattern.color_at(&Point::new(0.0, 0.0, 0.5)),
+            Color::new(0.5, 0.5, 0.5)
+        );
+        assert_eq!(
+            pattern.color_at(&Point::new(0.0, 0.0, 0.75)),
             Color::new(0.25, 0.25, 0.25)
         );
     }
