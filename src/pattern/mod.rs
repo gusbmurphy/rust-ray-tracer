@@ -1,6 +1,7 @@
 mod flat;
 mod gradient;
 mod pattern;
+mod rings;
 mod stripes;
 
 pub use flat::FlatPattern;
