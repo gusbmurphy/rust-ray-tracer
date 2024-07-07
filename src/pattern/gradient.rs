@@ -4,20 +4,30 @@ use crate::prelude::*;
 pub struct GradientPattern {
     start: Color,
     end: Color,
+    transform: Transform,
 }
 
 impl GradientPattern {
     pub fn new(start: Color, end: Color) -> Self {
-        GradientPattern { start, end }
+        GradientPattern {
+            start,
+            end,
+            transform: Transform::new(IDENTITY_MATRIX),
+        }
+    }
+
+    pub fn set_transform(&mut self, transform: Transform) {
+        self.transform = transform;
     }
 }
 
 impl Pattern for GradientPattern {
     fn color_at(&self, point: &Point) -> Color {
-        let color_difference = self.end - self.start;
-
-        let point_x = point.x();
+        let point_in_pattern_space = self.transform.invert().unwrap() * *point;
+        let point_x = point_in_pattern_space.x();
         let fractional_part_of_x = point_x - point_x.floor();
+
+        let color_difference = self.end - self.start;
 
         self.start + (color_difference * fractional_part_of_x)
     }
@@ -55,5 +65,25 @@ mod test {
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.25, 0.0)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.25, 0.25)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.25)), WHITE);
+    }
+
+    #[test]
+    fn the_gradient_can_be_stretched_by_scaling_it() {
+        let mut pattern = GradientPattern::new(WHITE, BLACK);
+        pattern.set_transform(Transform::scaling(2.0, 1.0, 1.0));
+
+        assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
+        assert_eq!(
+            pattern.color_at(&Point::new(0.5, 0.0, 0.0)),
+            Color::new(0.75, 0.75, 0.75)
+        );
+        assert_eq!(
+            pattern.color_at(&Point::new(1.0, 0.0, 0.0)),
+            Color::new(0.5, 0.5, 0.5)
+        );
+        assert_eq!(
+            pattern.color_at(&Point::new(1.5, 0.0, 0.0)),
+            Color::new(0.25, 0.25, 0.25)
+        );
     }
 }
