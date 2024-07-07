@@ -27,27 +27,27 @@ impl Color {
 }
 
 pub const RED: Color = Color {
-    r: 255f64,
+    r: 1f64,
     g: 0f64,
     b: 0f64,
 };
 
 pub const GREEN: Color = Color {
     r: 0f64,
-    g: 255f64,
+    g: 1f64,
     b: 0f64,
 };
 
 pub const BLUE: Color = Color {
     r: 0f64,
     g: 0f64,
-    b: 255f64,
+    b: 1f64,
 };
 
 pub const WHITE: Color = Color {
-    r: 255f64,
-    b: 255f64,
-    g: 255f64,
+    r: 1f64,
+    b: 1f64,
+    g: 1f64,
 };
 
 pub const BLACK: Color = Color {
