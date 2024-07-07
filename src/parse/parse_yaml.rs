@@ -32,7 +32,6 @@ pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn
                         }
                         _ => todo!(),
                     }
-                    println!("{:?}:", key);
                 }
             }
             _ => {
