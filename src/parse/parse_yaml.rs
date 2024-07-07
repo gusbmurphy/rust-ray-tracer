@@ -176,4 +176,22 @@ mod test {
 
         assert_eq!(*material, expected_material);
     }
+
+    #[test]
+    fn a_sphere_with_every_transformation_is_parsed_correctly() {
+        let (world, _camera) =
+            parse_scene_from_yaml("tests/scenes/sphere_with_every_transform.yaml").unwrap();
+
+        let sphere = world.shapes().get(0).unwrap();
+        let transform = sphere.transform();
+
+        let expected_transform = Transform::translation(-0.5, 1.0, 0.5)
+            * Transform::scaling(0.5, 3.0, 0.5)
+            * Transform::x_rotation(1.57079)
+            * Transform::y_rotation(0.78539)
+            * Transform::z_rotation(2.51327)
+            * Transform::shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+
+        assert_eq!(*transform, expected_transform);
+    }
 }

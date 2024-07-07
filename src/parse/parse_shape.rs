@@ -149,6 +149,35 @@ fn parse_transform(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {
                     let rotation = Transform::x_rotation(radians);
                     transform = transform * rotation;
                 }
+                "rotate_y" => {
+                    let radians = parse_f32_from_integer_or_real(value)?;
+                    let rotation = Transform::y_rotation(radians);
+                    transform = transform * rotation;
+                }
+                "rotate_z" => {
+                    let radians = parse_f32_from_integer_or_real(value)?;
+                    let rotation = Transform::z_rotation(radians);
+                    transform = transform * rotation;
+                }
+                "shear" => {
+                    let mut shear_values = [0.0f32; 6];
+                    let value_vec = value.as_vec().unwrap();
+
+                    for (i, value) in value_vec.iter().enumerate() {
+                        shear_values[i] = parse_f32_from_integer_or_real(value)?;
+                    }
+
+                    let shearing = Transform::shearing(
+                        shear_values[0],
+                        shear_values[1],
+                        shear_values[2],
+                        shear_values[3],
+                        shear_values[4],
+                        shear_values[5],
+                    );
+
+                    transform = transform * shearing;
+                }
                 _ => todo!(),
             }
         }
