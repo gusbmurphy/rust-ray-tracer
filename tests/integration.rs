@@ -47,3 +47,13 @@ fn sphere_with_stripes_and_transforms() {
 
     insta::assert_yaml_snapshot!(ppm);
 }
+
+#[test]
+fn sphere_with_every_transform() {
+    let (world, camera) =
+        parse_scene_from_yaml("tests/scenes/sphere_with_every_transform.yaml").unwrap();
+
+    let ppm = create_ppm_from_canvas(camera.render(world));
+
+    insta::assert_yaml_snapshot!(ppm);
+}
