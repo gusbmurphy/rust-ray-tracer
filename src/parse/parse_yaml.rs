@@ -223,8 +223,9 @@ mod test {
         let sphere = world.shapes().get(0).unwrap();
         let material = sphere.material();
 
-        let expected_pattern =
-            RingPattern::new(Color::new(0.0, 0.0, 0.0), Color::new(1.0, 0.0, 0.5));
+        let mut expected_pattern =
+            RingPattern::new(Color::new(0.1, 0.8, 0.0), Color::new(1.0, 0.1, 0.5));
+        expected_pattern.set_transform(Transform::scaling(0.4, 1.0, 0.08));
 
         let mut expected_material = Material::new();
         expected_material.set_pattern(Box::new(expected_pattern));
