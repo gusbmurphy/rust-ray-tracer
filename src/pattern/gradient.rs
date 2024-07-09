@@ -15,10 +15,6 @@ impl GradientPattern {
             transform: Transform::new(IDENTITY_MATRIX),
         }
     }
-
-    pub fn set_transform(&mut self, transform: Transform) {
-        self.transform = transform;
-    }
 }
 
 impl Pattern for GradientPattern {
@@ -30,6 +26,12 @@ impl Pattern for GradientPattern {
         let color_difference = self.end - self.start;
 
         self.start + (color_difference * distance_from_beginning)
+    }
+}
+
+impl Transformable for GradientPattern {
+    fn set_transform(&mut self, transform: Transform) {
+        self.transform = transform;
     }
 }
 

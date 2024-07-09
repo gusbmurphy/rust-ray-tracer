@@ -15,10 +15,6 @@ impl Checker3DPattern {
             transform: Transform::new(IDENTITY_MATRIX),
         }
     }
-
-    pub fn set_transform(&mut self, transform: Transform) {
-        self.transform = transform;
-    }
 }
 
 impl Pattern for Checker3DPattern {
@@ -36,6 +32,12 @@ impl Pattern for Checker3DPattern {
         } else {
             self.checker.clone()
         }
+    }
+}
+
+impl Transformable for Checker3DPattern {
+    fn set_transform(&mut self, transform: Transform) {
+        self.transform = transform;
     }
 }
 

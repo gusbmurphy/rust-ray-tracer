@@ -19,10 +19,6 @@ impl StripePattern {
             transform,
         }
     }
-
-    pub fn set_transform(&mut self, transform: Transform) {
-        self.transform = transform;
-    }
 }
 
 impl Pattern for StripePattern {
@@ -39,6 +35,12 @@ impl Pattern for StripePattern {
 }
 
 impl Eq for StripePattern {}
+
+impl Transformable for StripePattern {
+    fn set_transform(&mut self, transform: Transform) {
+        self.transform = transform;
+    }
+}
 
 #[cfg(test)]
 mod test {

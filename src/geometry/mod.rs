@@ -18,6 +18,6 @@ pub use point::*;
 pub use ray::Ray;
 pub use shape::*;
 pub use sphere::Sphere;
-pub use transform::Transform;
+pub use transform::*;
 pub use tuple::Tuple;
 pub use vector::*;

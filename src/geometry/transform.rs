@@ -156,6 +156,10 @@ impl PartialEq<Matrix<4>> for Transform {
     }
 }
 
+pub trait Transformable {
+    fn set_transform(&mut self, transform: Transform);
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

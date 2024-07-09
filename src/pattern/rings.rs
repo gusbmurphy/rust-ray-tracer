@@ -17,10 +17,6 @@ impl RingPattern {
             transform,
         }
     }
-
-    pub fn set_transform(&mut self, transform: Transform) {
-        self.transform = transform;
-    }
 }
 
 impl Pattern for RingPattern {
@@ -36,6 +32,12 @@ impl Pattern for RingPattern {
         } else {
             self.stripe.clone()
         }
+    }
+}
+
+impl Transformable for RingPattern {
+    fn set_transform(&mut self, transform: Transform) {
+        self.transform = transform;
     }
 }
 
