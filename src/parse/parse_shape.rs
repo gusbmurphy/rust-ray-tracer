@@ -96,28 +96,15 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
 
 // TODO: Bunch of duplicated code between this and parse_gradient.
 fn parse_stripes(value: &Yaml) -> Result<StripePattern, Box<dyn Error>> {
-    let map = value.as_hash().unwrap();
+    let colors = parse_color_pair(value)?;
 
-    let mut background: Option<Color> = None;
-    let mut stripe: Option<Color> = None;
     let mut transform: Option<Transform> = None;
-
-    for (key, value) in map {
-        match key.as_str().unwrap() {
-            "colors" => {
-                let value_vec = value.as_vec().unwrap().to_owned();
-
-                background = Some(parse_color(value_vec.get(0).unwrap())?);
-                stripe = Some(parse_color(value_vec.get(1).unwrap())?);
-            }
-            "transform" => {
-                transform = Some(parse_transform(value)?);
-            }
-            _ => todo!(),
-        }
+    let transform_yaml = &value["transform"];
+    if !transform_yaml.is_badvalue() {
+        transform = parse_transform(&value["transform"]).ok();
     }
 
-    let mut pattern = StripePattern::new(background.unwrap(), stripe.unwrap());
+    let mut pattern = StripePattern::new(colors[0], colors[1]);
 
     if let Some(t) = transform {
         pattern.set_transform(t)
@@ -217,6 +204,15 @@ fn parse_rings(value: &Yaml) -> Result<RingPattern, Box<dyn Error>> {
     }
 
     Ok(pattern)
+}
+
+fn parse_color_pair(yaml: &Yaml) -> Result<[Color; 2], Box<dyn Error>> {
+    let value_vec = yaml["colors"].as_vec().unwrap().to_owned();
+
+    let first_color = parse_color(value_vec.get(0).unwrap())?;
+    let second_color = parse_color(value_vec.get(1).unwrap())?;
+
+    Ok([first_color, second_color])
 }
 
 fn parse_transform(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {
