@@ -64,12 +64,25 @@ fn parse_material(yaml: &Yaml) -> Result<Material, Box<dyn Error>> {
     Ok(material)
 }
 
-fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
-    let map = value.as_hash().unwrap();
+fn parse_pattern(yaml: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
+    if let Some(_map) = yaml.as_hash() {
+        parse_single_pattern(yaml)
+    } else {
+        let mut patterns: Vec<Rc<dyn Pattern>> = Vec::new();
 
+        for node in yaml.as_vec().unwrap() {
+            let pattern = parse_single_pattern(node).unwrap();
+            patterns.push(Rc::from(pattern));
+        }
+
+        Ok(Box::new(BlendedPattern::new(patterns)))
+    }
+}
+
+fn parse_single_pattern(yaml: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
     let mut pattern: Option<Box<dyn Pattern>> = None;
 
-    for (key, value) in map {
+    for (key, value) in yaml.as_hash().unwrap() {
         match key.as_str().unwrap() {
             "flat" => {
                 let color = parse_color(value)?;
