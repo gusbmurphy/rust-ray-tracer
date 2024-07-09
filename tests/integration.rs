@@ -75,3 +75,12 @@ fn sphere_with_rings() {
 
     insta::assert_yaml_snapshot!(ppm);
 }
+
+#[test]
+fn sphere_with_3d_checkers() {
+    let (world, camera) = parse_scene_from_yaml("tests/scenes/sphere_with_checkers.yaml").unwrap();
+
+    let ppm = create_ppm_from_canvas(camera.render(world));
+
+    insta::assert_yaml_snapshot!(ppm);
+}
