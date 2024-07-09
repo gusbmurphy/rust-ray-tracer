@@ -1,0 +1,25 @@
+- camera:
+    width: 1000
+    height: 1000
+    fov: 1.04719
+    from: [0, 1.5, -3]
+    to: [0, 0, 0]
+    up: [0, 1, 0]
+
+- light:
+    at: [-10, 10, -10]
+    intensity: [1, 1, 1]
+
+- sphere:
+    transform:
+      - rotate_y: 0.39269
+    material:
+      pattern: 
+        checkers:
+          transform:
+            - scale: [0.2, 0.2, 0.2]
+          colors:
+            - [1, 0, 0]
+            - [0.5, 1, 0.1]
+      diffuse: 0.7
+      specular: 0.3
