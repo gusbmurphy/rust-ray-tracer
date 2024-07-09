@@ -1,3 +1,4 @@
+mod blended;
 mod checkers;
 mod flat;
 mod gradient;
