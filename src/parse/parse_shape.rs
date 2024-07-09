@@ -76,16 +76,24 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
                 pattern = Some(Box::new(FlatPattern::new(color)));
             }
             "stripes" => {
-                pattern = Some(Box::new(parse_stripes(value)?));
+                pattern = Some(parse_transformable_pattern(value, |colors: [Color; 2]| {
+                    Box::new(StripePattern::new(colors[0], colors[1]))
+                })?);
             }
             "gradient" => {
-                pattern = Some(Box::new(parse_gradient(value)?));
+                pattern = Some(parse_transformable_pattern(value, |colors: [Color; 2]| {
+                    Box::new(GradientPattern::new(colors[0], colors[1]))
+                })?);
             }
             "checkers" => {
-                pattern = Some(Box::new(parse_checkers(value)?));
+                pattern = Some(parse_transformable_pattern(value, |colors: [Color; 2]| {
+                    Box::new(Checker3DPattern::new(colors[0], colors[1]))
+                })?);
             }
             "rings" => {
-                pattern = Some(Box::new(parse_rings(value)?));
+                pattern = Some(parse_transformable_pattern(value, |colors: [Color; 2]| {
+                    Box::new(RingPattern::new(colors[0], colors[1]))
+                })?);
             }
             _ => todo!(),
         }
@@ -94,46 +102,16 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
     Ok(pattern.unwrap())
 }
 
-fn parse_stripes(value: &Yaml) -> Result<StripePattern, Box<dyn Error>> {
+fn parse_transformable_pattern<F>(
+    value: &Yaml,
+    constructor: F,
+) -> Result<Box<dyn Pattern>, Box<dyn Error>>
+where
+    F: Fn([Color; 2]) -> Box<dyn Pattern>,
+{
     let (colors, transform) = parse_pattern_values(value)?;
 
-    let mut pattern = StripePattern::new(colors[0], colors[1]);
-
-    if let Some(t) = transform {
-        pattern.set_transform(t)
-    }
-
-    Ok(pattern)
-}
-
-fn parse_gradient(value: &Yaml) -> Result<GradientPattern, Box<dyn Error>> {
-    let (colors, transform) = parse_pattern_values(value)?;
-
-    let mut pattern = GradientPattern::new(colors[0], colors[1]);
-
-    if let Some(t) = transform {
-        pattern.set_transform(t)
-    }
-
-    Ok(pattern)
-}
-
-fn parse_checkers(value: &Yaml) -> Result<Checker3DPattern, Box<dyn Error>> {
-    let (colors, transform) = parse_pattern_values(value)?;
-
-    let mut pattern = Checker3DPattern::new(colors[0], colors[1]);
-
-    if let Some(t) = transform {
-        pattern.set_transform(t)
-    }
-
-    Ok(pattern)
-}
-
-fn parse_rings(value: &Yaml) -> Result<RingPattern, Box<dyn Error>> {
-    let (colors, transform) = parse_pattern_values(value)?;
-
-    let mut pattern = RingPattern::new(colors[0], colors[1]);
+    let mut pattern = constructor(colors);
 
     if let Some(t) = transform {
         pattern.set_transform(t)
