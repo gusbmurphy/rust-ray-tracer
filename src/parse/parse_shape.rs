@@ -81,6 +81,9 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
             "gradient" => {
                 pattern = Some(Box::new(parse_gradient(value)?));
             }
+            "checkers" => {
+                pattern = Some(Box::new(parse_checkers(value)?));
+            }
             "rings" => {
                 pattern = Some(Box::new(parse_rings(value)?));
             }
@@ -146,6 +149,37 @@ fn parse_gradient(value: &Yaml) -> Result<GradientPattern, Box<dyn Error>> {
     }
 
     let mut pattern = GradientPattern::new(starting_color.unwrap(), ending_color.unwrap());
+
+    if let Some(t) = transform {
+        pattern.set_transform(t)
+    }
+
+    Ok(pattern)
+}
+
+fn parse_checkers(value: &Yaml) -> Result<CheckerPattern, Box<dyn Error>> {
+    let map = value.as_hash().unwrap();
+
+    let mut background: Option<Color> = None;
+    let mut checker: Option<Color> = None;
+    let mut transform: Option<Transform> = None;
+
+    for (key, value) in map {
+        match key.as_str().unwrap() {
+            "colors" => {
+                let value_vec = value.as_vec().unwrap().to_owned();
+
+                background = Some(parse_color(value_vec.get(0).unwrap())?);
+                checker = Some(parse_color(value_vec.get(1).unwrap())?);
+            }
+            "transform" => {
+                transform = Some(parse_transform(value)?);
+            }
+            _ => todo!(),
+        }
+    }
+
+    let mut pattern = CheckerPattern::new(background.unwrap(), checker.unwrap());
 
     if let Some(t) = transform {
         pattern.set_transform(t)

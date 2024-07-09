@@ -1,9 +1,7 @@
 use crate::prelude::*;
 
-use super::pattern;
-
 #[derive(Debug, Clone, PartialEq)]
-struct CheckerPattern {
+pub struct CheckerPattern {
     background: Color,
     checker: Color,
     transform: Transform,
