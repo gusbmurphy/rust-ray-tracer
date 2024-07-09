@@ -218,6 +218,35 @@ mod test {
     }
 
     #[test]
+    fn hits_on_a_sphere_with_a_ring_pattern() {
+        let mut material = Material::new();
+        // Setting ambient to 1.0 to simplify the color of any hit...
+        material.set_specular(0.0);
+        material.set_diffuse(0.0);
+        material.set_ambient(1.0);
+
+        let mut pattern = RingPattern::new(WHITE, GREEN);
+        // Scaling it down so we see a few rings...
+        pattern.set_transform(Transform::scaling(0.25, 0.25, 0.25));
+
+        material.set_pattern(Box::new(pattern));
+
+        let mut sphere = Sphere::new();
+        sphere.set_material(material);
+
+        let mut world = World::new();
+        world.add_shape(Rc::new(sphere));
+
+        let ray_at_center = Ray::new(Point::new(0.0, 2.0, 0.0), NEGATIVE_Y);
+        let ray_on_ring_in_x = Ray::new(Point::new(0.25, 2.0, 0.0), NEGATIVE_Y);
+        let ray_on_ring_in_z = Ray::new(Point::new(0.0, 2.0, 0.25), NEGATIVE_Y);
+
+        assert_eq!(shade_ray(&world, &ray_at_center), WHITE);
+        assert_eq!(shade_ray(&world, &ray_on_ring_in_x), GREEN);
+        assert_eq!(shade_ray(&world, &ray_on_ring_in_z), GREEN);
+    }
+
+    #[test]
     fn color_for_a_ray_that_hits_but_originates_inside_a_different_object() {
         // Setting the ambient value of each sphere's material to 1 to simplify things...
         let mut first_sphere_material = Material::new();
