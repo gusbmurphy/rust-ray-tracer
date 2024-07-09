@@ -94,11 +94,46 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
     Ok(pattern.unwrap())
 }
 
-// TODO: Bunch of duplicated code between this and parse_gradient.
 fn parse_stripes(value: &Yaml) -> Result<StripePattern, Box<dyn Error>> {
     let (colors, transform) = parse_pattern_values(value)?;
 
     let mut pattern = StripePattern::new(colors[0], colors[1]);
+
+    if let Some(t) = transform {
+        pattern.set_transform(t)
+    }
+
+    Ok(pattern)
+}
+
+fn parse_gradient(value: &Yaml) -> Result<GradientPattern, Box<dyn Error>> {
+    let (colors, transform) = parse_pattern_values(value)?;
+
+    let mut pattern = GradientPattern::new(colors[0], colors[1]);
+
+    if let Some(t) = transform {
+        pattern.set_transform(t)
+    }
+
+    Ok(pattern)
+}
+
+fn parse_checkers(value: &Yaml) -> Result<Checker3DPattern, Box<dyn Error>> {
+    let (colors, transform) = parse_pattern_values(value)?;
+
+    let mut pattern = Checker3DPattern::new(colors[0], colors[1]);
+
+    if let Some(t) = transform {
+        pattern.set_transform(t)
+    }
+
+    Ok(pattern)
+}
+
+fn parse_rings(value: &Yaml) -> Result<RingPattern, Box<dyn Error>> {
+    let (colors, transform) = parse_pattern_values(value)?;
+
+    let mut pattern = RingPattern::new(colors[0], colors[1]);
 
     if let Some(t) = transform {
         pattern.set_transform(t)
@@ -117,99 +152,6 @@ fn parse_pattern_values(value: &Yaml) -> Result<([Color; 2], Option<Transform>),
     }
 
     Ok((colors, transform))
-}
-
-fn parse_gradient(value: &Yaml) -> Result<GradientPattern, Box<dyn Error>> {
-    let map = value.as_hash().unwrap();
-
-    let mut starting_color: Option<Color> = None;
-    let mut ending_color: Option<Color> = None;
-    let mut transform: Option<Transform> = None;
-
-    for (key, value) in map {
-        match key.as_str().unwrap() {
-            "colors" => {
-                let value_vec = value.as_vec().unwrap().to_owned();
-
-                starting_color = Some(parse_color(value_vec.get(0).unwrap())?);
-                ending_color = Some(parse_color(value_vec.get(1).unwrap())?);
-            }
-            "transform" => {
-                transform = Some(parse_transform(value)?);
-            }
-            _ => todo!(),
-        }
-    }
-
-    let mut pattern = GradientPattern::new(starting_color.unwrap(), ending_color.unwrap());
-
-    if let Some(t) = transform {
-        pattern.set_transform(t)
-    }
-
-    Ok(pattern)
-}
-
-fn parse_checkers(value: &Yaml) -> Result<Checker3DPattern, Box<dyn Error>> {
-    let map = value.as_hash().unwrap();
-
-    let mut background: Option<Color> = None;
-    let mut checker: Option<Color> = None;
-    let mut transform: Option<Transform> = None;
-
-    for (key, value) in map {
-        match key.as_str().unwrap() {
-            "colors" => {
-                let value_vec = value.as_vec().unwrap().to_owned();
-
-                background = Some(parse_color(value_vec.get(0).unwrap())?);
-                checker = Some(parse_color(value_vec.get(1).unwrap())?);
-            }
-            "transform" => {
-                transform = Some(parse_transform(value)?);
-            }
-            _ => todo!(),
-        }
-    }
-
-    let mut pattern = Checker3DPattern::new(background.unwrap(), checker.unwrap());
-
-    if let Some(t) = transform {
-        pattern.set_transform(t)
-    }
-
-    Ok(pattern)
-}
-
-fn parse_rings(value: &Yaml) -> Result<RingPattern, Box<dyn Error>> {
-    let map = value.as_hash().unwrap();
-
-    let mut starting_color: Option<Color> = None;
-    let mut ending_color: Option<Color> = None;
-    let mut transform: Option<Transform> = None;
-
-    for (key, value) in map {
-        match key.as_str().unwrap() {
-            "colors" => {
-                let value_vec = value.as_vec().unwrap().to_owned();
-
-                starting_color = Some(parse_color(value_vec.get(0).unwrap())?);
-                ending_color = Some(parse_color(value_vec.get(1).unwrap())?);
-            }
-            "transform" => {
-                transform = Some(parse_transform(value)?);
-            }
-            _ => todo!(),
-        }
-    }
-
-    let mut pattern = RingPattern::new(starting_color.unwrap(), ending_color.unwrap());
-
-    if let Some(t) = transform {
-        pattern.set_transform(t)
-    }
-
-    Ok(pattern)
 }
 
 fn parse_color_pair(yaml: &Yaml) -> Result<[Color; 2], Box<dyn Error>> {
