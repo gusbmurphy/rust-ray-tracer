@@ -1,6 +1,6 @@
 - camera:
-    width: 1000
-    height: 1000
+    width: 100
+    height: 100
     fov: 1.04719
     from: [0, 1.5, -3]
     to: [0, 0, 0]
