@@ -1,3 +1,4 @@
+mod checkers;
 mod flat;
 mod gradient;
 mod pattern;
