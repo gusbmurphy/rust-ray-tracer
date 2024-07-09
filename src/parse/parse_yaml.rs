@@ -244,7 +244,7 @@ mod test {
         let material = plane.material();
 
         let expected_pattern =
-            CheckerPattern::new(Color::new(1.0, 0.0, 0.0), Color::new(0.5, 1.0, 0.1));
+            Checker3DPattern::new(Color::new(1.0, 0.0, 0.0), Color::new(0.5, 1.0, 0.1));
 
         let mut expected_material = Material::new();
         expected_material.set_pattern(Box::new(expected_pattern));

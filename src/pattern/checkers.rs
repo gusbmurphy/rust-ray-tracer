@@ -1,15 +1,15 @@
 use crate::prelude::*;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct CheckerPattern {
+pub struct Checker3DPattern {
     background: Color,
     checker: Color,
     transform: Transform,
 }
 
-impl CheckerPattern {
+impl Checker3DPattern {
     pub fn new(background: Color, checker: Color) -> Self {
-        CheckerPattern {
+        Checker3DPattern {
             background,
             checker,
             transform: Transform::new(IDENTITY_MATRIX),
@@ -21,7 +21,7 @@ impl CheckerPattern {
     }
 }
 
-impl Pattern for CheckerPattern {
+impl Pattern for Checker3DPattern {
     fn color_at(&self, point: &Point) -> Color {
         let pattern_space_point = self.transform.invert().unwrap() * *point;
         let x = pattern_space_point.x();
@@ -39,7 +39,7 @@ impl Pattern for CheckerPattern {
     }
 }
 
-impl Eq for CheckerPattern {}
+impl Eq for Checker3DPattern {}
 
 #[cfg(test)]
 mod test {
@@ -47,7 +47,7 @@ mod test {
 
     #[test]
     fn the_pattern_repeats_in_the_x_direction() {
-        let pattern = CheckerPattern::new(WHITE, BLACK);
+        let pattern = Checker3DPattern::new(WHITE, BLACK);
 
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(0.9, 0.0, 0.0)), WHITE);
@@ -56,7 +56,7 @@ mod test {
 
     #[test]
     fn the_pattern_repeats_in_the_z_direction() {
-        let pattern = CheckerPattern::new(WHITE, BLACK);
+        let pattern = Checker3DPattern::new(WHITE, BLACK);
 
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.9)), WHITE);
@@ -65,7 +65,7 @@ mod test {
 
     #[test]
     fn the_pattern_repeats_in_the_y_direction() {
-        let pattern = CheckerPattern::new(WHITE, BLACK);
+        let pattern = Checker3DPattern::new(WHITE, BLACK);
 
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.9, 0.0)), WHITE);
@@ -74,7 +74,7 @@ mod test {
 
     #[test]
     fn the_color_is_constant_diagonally() {
-        let pattern = CheckerPattern::new(WHITE, BLACK);
+        let pattern = Checker3DPattern::new(WHITE, BLACK);
 
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(0.9, 0.0, 0.9)), WHITE);
@@ -84,7 +84,7 @@ mod test {
     }
     #[test]
     fn the_pattern_can_be_scaled() {
-        let mut pattern = CheckerPattern::new(WHITE, BLACK);
+        let mut pattern = Checker3DPattern::new(WHITE, BLACK);
         pattern.set_transform(Transform::scaling(0.5, 0.5, 0.5));
 
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);

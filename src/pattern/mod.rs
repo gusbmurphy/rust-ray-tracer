@@ -5,7 +5,7 @@ mod pattern;
 mod rings;
 mod stripes;
 
-pub use checkers::CheckerPattern;
+pub use checkers::Checker3DPattern;
 pub use flat::FlatPattern;
 pub use gradient::GradientPattern;
 pub use pattern::Pattern;

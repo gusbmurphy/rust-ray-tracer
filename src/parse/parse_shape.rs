@@ -157,7 +157,7 @@ fn parse_gradient(value: &Yaml) -> Result<GradientPattern, Box<dyn Error>> {
     Ok(pattern)
 }
 
-fn parse_checkers(value: &Yaml) -> Result<CheckerPattern, Box<dyn Error>> {
+fn parse_checkers(value: &Yaml) -> Result<Checker3DPattern, Box<dyn Error>> {
     let map = value.as_hash().unwrap();
 
     let mut background: Option<Color> = None;
@@ -179,7 +179,7 @@ fn parse_checkers(value: &Yaml) -> Result<CheckerPattern, Box<dyn Error>> {
         }
     }
 
-    let mut pattern = CheckerPattern::new(background.unwrap(), checker.unwrap());
+    let mut pattern = Checker3DPattern::new(background.unwrap(), checker.unwrap());
 
     if let Some(t) = transform {
         pattern.set_transform(t)
