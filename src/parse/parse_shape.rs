@@ -152,21 +152,11 @@ fn parse_transform(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {
         for (key, value) in map {
             match key.as_str().unwrap() {
                 "translate" => {
-                    let values = parse_values(value.as_vec().unwrap().to_owned()).unwrap();
-                    let translation = Transform::translation(
-                        values[0].unwrap(),
-                        values[1].unwrap(),
-                        values[2].unwrap(),
-                    );
+                    let translation = parse_translation(value);
                     transform = transform * translation;
                 }
                 "scale" => {
-                    let values = parse_values(value.as_vec().unwrap().to_owned()).unwrap();
-                    let scaling = Transform::scaling(
-                        values[0].unwrap(),
-                        values[1].unwrap(),
-                        values[2].unwrap(),
-                    );
+                    let scaling = parse_scaling(value);
                     transform = transform * scaling;
                 }
                 "rotate_x" => {
@@ -185,22 +175,7 @@ fn parse_transform(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {
                     transform = transform * rotation;
                 }
                 "shear" => {
-                    let mut shear_values = [0.0f64; 6];
-                    let value_vec = value.as_vec().unwrap();
-
-                    for (i, value) in value_vec.iter().enumerate() {
-                        shear_values[i] = parse_f64_from_integer_or_real(value)?;
-                    }
-
-                    let shearing = Transform::shearing(
-                        shear_values[0],
-                        shear_values[1],
-                        shear_values[2],
-                        shear_values[3],
-                        shear_values[4],
-                        shear_values[5],
-                    );
-
+                    let shearing = parse_shearing(value)?;
                     transform = transform * shearing;
                 }
                 _ => todo!(),
@@ -209,4 +184,32 @@ fn parse_transform(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {
     }
 
     Ok(transform)
+}
+
+fn parse_translation(yaml: &Yaml) -> Transform {
+    let values = parse_values(yaml.as_vec().unwrap().to_owned()).unwrap();
+    Transform::translation(values[0].unwrap(), values[1].unwrap(), values[2].unwrap())
+}
+
+fn parse_scaling(yaml: &Yaml) -> Transform {
+    let values = parse_values(yaml.as_vec().unwrap().to_owned()).unwrap();
+    Transform::scaling(values[0].unwrap(), values[1].unwrap(), values[2].unwrap())
+}
+
+fn parse_shearing(yaml: &Yaml) -> Result<Transform, Box<dyn Error>> {
+    let mut shear_values = [0.0f64; 6];
+    let value_vec = yaml.as_vec().unwrap();
+
+    for (i, value) in value_vec.iter().enumerate() {
+        shear_values[i] = parse_f64_from_integer_or_real(value)?;
+    }
+
+    Ok(Transform::shearing(
+        shear_values[0],
+        shear_values[1],
+        shear_values[2],
+        shear_values[3],
+        shear_values[4],
+        shear_values[5],
+    ))
 }
