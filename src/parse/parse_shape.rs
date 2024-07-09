@@ -96,13 +96,7 @@ fn parse_pattern(value: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
 
 // TODO: Bunch of duplicated code between this and parse_gradient.
 fn parse_stripes(value: &Yaml) -> Result<StripePattern, Box<dyn Error>> {
-    let colors = parse_color_pair(value)?;
-
-    let mut transform: Option<Transform> = None;
-    let transform_yaml = &value["transform"];
-    if !transform_yaml.is_badvalue() {
-        transform = parse_transform(&value["transform"]).ok();
-    }
+    let (colors, transform) = parse_pattern_values(value)?;
 
     let mut pattern = StripePattern::new(colors[0], colors[1]);
 
@@ -111,6 +105,18 @@ fn parse_stripes(value: &Yaml) -> Result<StripePattern, Box<dyn Error>> {
     }
 
     Ok(pattern)
+}
+
+fn parse_pattern_values(value: &Yaml) -> Result<([Color; 2], Option<Transform>), Box<dyn Error>> {
+    let colors = parse_color_pair(value)?;
+
+    let mut transform: Option<Transform> = None;
+    let transform_yaml = &value["transform"];
+    if !transform_yaml.is_badvalue() {
+        transform = parse_transform(&value["transform"]).ok();
+    }
+
+    Ok((colors, transform))
 }
 
 fn parse_gradient(value: &Yaml) -> Result<GradientPattern, Box<dyn Error>> {
