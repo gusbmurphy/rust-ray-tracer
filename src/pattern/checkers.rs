@@ -45,7 +45,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn the_pattern_repeats_in_the_x_and_z_directions() {
+    fn the_pattern_repeats_in_the_x_direction() {
         let pattern = CheckerPattern::new(WHITE, BLACK);
 
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
@@ -53,6 +53,11 @@ mod test {
         assert_eq!(pattern.color_at(&Point::new(1.0, 0.0, 0.0)), BLACK);
         assert_eq!(pattern.color_at(&Point::new(1.9, 0.0, 0.0)), BLACK);
         assert_eq!(pattern.color_at(&Point::new(2.0, 0.0, 0.0)), WHITE);
+    }
+
+    #[test]
+    fn the_pattern_repeats_in_the_z_direction() {
+        let pattern = CheckerPattern::new(WHITE, BLACK);
 
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.0)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(0.0, 0.0, 0.9)), WHITE);
