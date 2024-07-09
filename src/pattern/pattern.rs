@@ -4,7 +4,7 @@ use dyn_eq::DynEq;
 
 use crate::prelude::*;
 
-pub trait Pattern: DynEq + Debug {
+pub trait Pattern: DynEq + Debug + Transformable {
     fn color_at(&self, point: &Point) -> Color;
 }
 

@@ -19,6 +19,10 @@ impl Pattern for FlatPattern {
     }
 }
 
+impl Transformable for FlatPattern {
+    fn set_transform(&mut self, _transform: Transform) {}
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
