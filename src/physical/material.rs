@@ -10,6 +10,7 @@ pub struct Material {
     diffuse: f64,
     specular: f64,
     shininess: f64,
+    reflective: f64,
 }
 
 // TODO: What if there was a builder for this sort of thing? Instead of having a million setter
@@ -24,8 +25,10 @@ impl Material {
             diffuse: 0.9,
             specular: 0.9,
             shininess: 200.0,
+            reflective: 0.0,
         }
     }
+
     pub fn color_at(&self, point: &Point) -> Color {
         self.pattern.color_at(point)
     }
@@ -93,5 +96,6 @@ mod test {
         assert_eq!(default_material.diffuse, 0.9);
         assert_eq!(default_material.specular, 0.9);
         assert_eq!(default_material.shininess, 200.0);
+        assert_eq!(default_material.reflective, 0.0);
     }
 }
