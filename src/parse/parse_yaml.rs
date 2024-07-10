@@ -263,18 +263,18 @@ mod test {
         let material = plane.material();
 
         let mut gradient =
-            GradientPattern::new(Color::new(0.1, 1.0, 0.1), Color::new(1.0, 0.0, 0.5));
+            GradientPattern::new(Color::new(0.1, 1.0, 0.1), Color::new(1.0, 0.1, 0.5));
         gradient.set_transform(Transform::z_rotation(0.78539));
 
         let mut stripes = StripePattern::new(Color::new(0.1, 1.0, 0.5), Color::new(0.5, 1.0, 0.1));
-        stripes.set_transform(Transform::scaling(0.25, 0.25, 0.25));
+        stripes.set_transform(Transform::scaling(0.15, 0.15, 0.15));
 
         let expected_pattern = BlendedPattern::new(vec![Rc::new(gradient), Rc::new(stripes)]);
 
         let mut expected_material = Material::new();
         expected_material.set_pattern(Box::new(expected_pattern));
-        expected_material.set_diffuse(0.7);
-        expected_material.set_specular(0.3);
+        expected_material.set_diffuse(0.9);
+        expected_material.set_specular(0.7);
 
         assert_eq!(*material, expected_material);
     }
