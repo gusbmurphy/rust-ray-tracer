@@ -43,23 +43,33 @@ pub fn parse_shape(
 fn parse_material(yaml: &Yaml) -> Result<Material, Box<dyn Error>> {
     let map = yaml.as_hash().unwrap();
 
-    let mut pattern: Option<Box<dyn Pattern>> = None;
-    let mut diffuse: Option<f64> = None;
-    let mut specular: Option<f64> = None;
+    let mut material = Material::new();
 
     for (key, value) in map {
         match key.as_str().unwrap() {
-            "pattern" => pattern = Some(parse_pattern(value)?),
-            "diffuse" => diffuse = Some(parse_f64_from_integer_or_real(value)?),
-            "specular" => specular = Some(parse_f64_from_integer_or_real(value)?),
+            "pattern" => {
+                if let Ok(pattern) = parse_pattern(value) {
+                    material.set_pattern(pattern)
+                }
+            }
+            "diffuse" => {
+                if let Ok(diffuse) = parse_f64_from_integer_or_real(value) {
+                    material.set_diffuse(diffuse)
+                }
+            }
+            "specular" => {
+                if let Ok(specular) = parse_f64_from_integer_or_real(value) {
+                    material.set_specular(specular)
+                }
+            }
+            "shininess" => {
+                if let Ok(shininess) = parse_f64_from_integer_or_real(value) {
+                    material.set_shininess(shininess)
+                }
+            }
             _ => todo!(),
         }
     }
-
-    let mut material = Material::new();
-    material.set_pattern(pattern.unwrap());
-    material.set_diffuse(diffuse.unwrap());
-    material.set_specular(specular.unwrap());
 
     Ok(material)
 }

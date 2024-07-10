@@ -278,4 +278,14 @@ mod test {
 
         assert_eq!(*material, expected_material);
     }
+
+    #[test]
+    fn materials_can_have_shininess() {
+        let (world, _camera) = parse_scene_from_yaml("tests/scenes/shininess.yaml").unwrap();
+
+        let plane = world.shapes().get(0).unwrap();
+        let material = plane.material();
+
+        assert_eq!(*material.shininess(), 0.5)
+    }
 }
