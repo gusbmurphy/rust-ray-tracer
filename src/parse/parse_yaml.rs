@@ -291,7 +291,8 @@ mod test {
 
     #[test]
     fn the_checkered_pattern_can_have_subpatterns() {
-        let (world, _camera) = parse_scene_from_yaml("tests/scenes/twin_peaks_floor.yaml").unwrap();
+        let (world, _camera) =
+            parse_scene_from_yaml("tests/scenes/floor_with_nested_checkers.yaml").unwrap();
 
         let mut subpattern_a = Box::new(StripePattern::new(BLACK, WHITE));
         subpattern_a.set_transform(Transform::y_rotation(0.78539));
