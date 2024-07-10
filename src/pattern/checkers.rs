@@ -84,6 +84,7 @@ mod test {
         assert_eq!(pattern.color_at(&Point::new(1.9, 0.0, 1.9)), WHITE);
         assert_eq!(pattern.color_at(&Point::new(2.0, 0.0, 2.0)), WHITE);
     }
+
     #[test]
     fn the_pattern_can_be_scaled() {
         let mut pattern = Checker3DPattern::new(WHITE, BLACK);
