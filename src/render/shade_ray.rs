@@ -1,14 +1,26 @@
 use crate::prelude::*;
 
 pub fn shade_ray(world: &World, ray: &Ray) -> Color {
-    if let Some(hit) = world.hit_for(ray) {
-        shade_hit(world, &hit)
+    shade_ray_with_maximum_recursion(world, ray, 0)
+}
+
+pub fn shade_ray_with_maximum_recursion(
+    world: &World,
+    ray: &Ray,
+    current_recursion_count: i8,
+) -> Color {
+    if current_recursion_count <= 5 {
+        if let Some(hit) = world.hit_for(ray) {
+            shade_hit(world, &hit, current_recursion_count)
+        } else {
+            BLACK
+        }
     } else {
         BLACK
     }
 }
 
-fn shade_hit(world: &World, hit: &Intersection) -> Color {
+fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> Color {
     let eye_vector = -hit.ray().direction().to_owned();
 
     let adjusted_hit = adjust_hit(&hit);
@@ -53,8 +65,11 @@ fn shade_hit(world: &World, hit: &Intersection) -> Color {
 
     if reflective > 0.0 {
         let reflection_vector = hit.ray().direction().reflect_around(&hit.normal_vector());
-        reflected_contribution =
-            shade_ray(world, &Ray::new(adjusted_hit, reflection_vector)) * *material.reflective();
+        reflected_contribution = shade_ray_with_maximum_recursion(
+            world,
+            &Ray::new(adjusted_hit, reflection_vector),
+            current_recursion_count + 1,
+        ) * *material.reflective();
     }
 
     return ambient_contribution
@@ -339,5 +354,30 @@ mod test {
         let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.87675, 0.92434, 0.82917))
+    }
+
+    #[test]
+    fn two_reflective_surfaces_do_not_cause_the_program_to_fail() {
+        let mut world = World::new();
+        world.set_light(PointLight::new(WHITE, ORIGIN));
+
+        let mut material_a = Material::new();
+        let mut material_b = Material::new();
+        material_a.set_reflective(1.0);
+        material_b.set_reflective(1.0);
+
+        let mut lower_plane = Plane::new();
+        lower_plane.set_material(material_a);
+        lower_plane.set_transform(Transform::translation(0.0, -1.0, 0.0));
+
+        let mut upper_plane = Plane::new();
+        upper_plane.set_material(material_b);
+        upper_plane.set_transform(Transform::translation(0.0, 1.0, 0.0));
+
+        world.add_shape(Rc::new(lower_plane));
+        world.add_shape(Rc::new(upper_plane));
+
+        shade_ray(&world, &Ray::new(ORIGIN, POSITIVE_Y));
+        // No assertion here because we just shouldn't get a stack overflow...
     }
 }
