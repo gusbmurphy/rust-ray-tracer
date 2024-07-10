@@ -93,3 +93,12 @@ fn sphere_with_blended_pattern() {
 
     insta::assert_yaml_snapshot!(ppm);
 }
+
+#[test]
+fn small_reflective_scene() {
+    let (world, camera) = parse_scene_from_yaml("tests/scenes/reflective_floor.yaml").unwrap();
+
+    let ppm = create_ppm_from_canvas(camera.render(world));
+
+    insta::assert_yaml_snapshot!(ppm);
+}
