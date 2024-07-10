@@ -109,9 +109,7 @@ fn parse_single_pattern(yaml: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>>
                 })?);
             }
             "checkers" => {
-                pattern = Some(parse_transformable_pattern(value, |colors: [Color; 2]| {
-                    Box::new(Checker3DPattern::new(colors[0], colors[1]))
-                })?);
+                pattern = Some(parse_checkers(value)?);
             }
             "rings" => {
                 pattern = Some(parse_transformable_pattern(value, |colors: [Color; 2]| {
@@ -123,6 +121,23 @@ fn parse_single_pattern(yaml: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>>
     }
 
     Ok(pattern.unwrap())
+}
+
+fn parse_checkers(yaml: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {
+    if !yaml["subpatterns"].is_badvalue() {
+        let subpattern_nodes = yaml["subpatterns"].as_vec().unwrap();
+
+        let pattern_a = parse_single_pattern(subpattern_nodes.get(0).unwrap())?;
+        let pattern_b = parse_single_pattern(subpattern_nodes.get(1).unwrap())?;
+
+        Ok(Box::new(Checker3DPattern::new_with_patterns(
+            pattern_a, pattern_b,
+        )))
+    } else {
+        parse_transformable_pattern(yaml, |colors: [Color; 2]| {
+            Box::new(Checker3DPattern::new(colors[0], colors[1]))
+        })
+    }
 }
 
 fn parse_transformable_pattern<F>(

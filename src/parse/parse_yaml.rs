@@ -288,4 +288,22 @@ mod test {
 
         assert_eq!(*material.shininess(), 0.5)
     }
+
+    #[test]
+    fn the_checkered_pattern_can_have_subpatterns() {
+        let (world, _camera) = parse_scene_from_yaml("tests/scenes/twin_peaks_floor.yaml").unwrap();
+
+        let mut subpattern_a = Box::new(StripePattern::new(BLACK, WHITE));
+        subpattern_a.set_transform(Transform::y_rotation(0.78539));
+        let mut subpattern_b = Box::new(StripePattern::new(WHITE, BLACK));
+        subpattern_b.set_transform(Transform::y_rotation(-0.78539));
+        let expected_pattern = Checker3DPattern::new_with_patterns(subpattern_a, subpattern_b);
+
+        let mut expected_material = Material::new();
+        expected_material.set_pattern(Box::new(expected_pattern));
+
+        let material = world.shapes().get(0).unwrap().material();
+
+        assert_eq!(*material, expected_material);
+    }
 }

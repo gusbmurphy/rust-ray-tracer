@@ -15,6 +15,14 @@ impl Checker3DPattern {
             transform: Transform::new(IDENTITY_MATRIX),
         }
     }
+
+    pub fn new_with_patterns(background: Box<dyn Pattern>, checker: Box<dyn Pattern>) -> Self {
+        Checker3DPattern {
+            background,
+            checker,
+            transform: Transform::new(IDENTITY_MATRIX),
+        }
+    }
 }
 
 impl Pattern for Checker3DPattern {
@@ -45,6 +53,8 @@ impl Eq for Checker3DPattern {}
 
 #[cfg(test)]
 mod test {
+    use std::f64::consts::PI;
+
     use super::*;
 
     #[test]

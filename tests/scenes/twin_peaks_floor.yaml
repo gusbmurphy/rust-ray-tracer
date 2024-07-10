@@ -1,0 +1,29 @@
+- camera:
+    width: 100
+    height: 100
+    fov: 1.04719
+    from: [0, 1.5, -5]
+    to: [0, 1, 0]
+    up: [0, 1, 0]
+
+- light:
+    at: [-10, 10, -10]
+    intensity: [1, 1, 1]
+
+- plane:
+    material:
+      pattern:
+        checkers:
+          subpatterns:
+            - stripes:
+                colors:
+                  - [0, 0, 0]
+                  - [1, 1, 1]
+                transform:
+                  - rotate_y: 0.78539
+            - stripes:
+                colors:
+                  - [1, 1, 1]
+                  - [0, 0, 0]
+                transform:
+                  - rotate_y: -0.78539
