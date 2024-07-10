@@ -72,6 +72,14 @@ impl Material {
     pub fn set_shininess(&mut self, shininess: f64) {
         self.shininess = shininess;
     }
+
+    pub fn reflective(&self) -> &f64 {
+        &self.reflective
+    }
+
+    pub fn set_reflective(&mut self, reflective: f64) {
+        self.reflective = reflective;
+    }
 }
 
 impl PartialEq for Material {
