@@ -48,7 +48,19 @@ fn shade_hit(world: &World, hit: &Intersection) -> Color {
         );
     }
 
-    return ambient_contribution + diffuse_contribution + specular_contribution;
+    let reflective = *material.reflective();
+    let mut reflected_contribution = BLACK;
+
+    if reflective > 0.0 {
+        let reflection_vector = hit.ray().direction().reflect_around(&hit.normal_vector());
+        reflected_contribution =
+            shade_ray(world, &Ray::new(adjusted_hit, reflection_vector)) * *material.reflective();
+    }
+
+    return ambient_contribution
+        + diffuse_contribution
+        + specular_contribution
+        + reflected_contribution;
 }
 
 fn calculate_specular_contribution(
@@ -303,5 +315,29 @@ mod test {
         let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.1, 0.1, 0.1));
+    }
+
+    #[test]
+    fn shading_a_hit_on_a_reflective_surface() {
+        let mut world = World::create_default();
+
+        let mut plane = Plane::new();
+        let mut plane_material = Material::new();
+        plane_material.set_reflective(0.5);
+        plane.set_material(plane_material);
+        plane.set_transform(Transform::translation(0.0, -1.0, 0.0));
+
+        world.add_shape(Rc::new(plane));
+
+        // This ray hits the plane we just added, which should reflect the green color of one of
+        // the spheres.
+        let ray = Ray::new(
+            Point::new(0.0, 0.0, -3.0),
+            Vector::new(0.0, -2f64.sqrt() / 2.0, 2f64.sqrt() / 2.0),
+        );
+
+        let result = shade_ray(&world, &ray);
+
+        assert_eq!(result, Color::new(0.87675, 0.92434, 0.82917))
     }
 }
