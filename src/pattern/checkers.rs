@@ -1,17 +1,17 @@
 use crate::prelude::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct Checker3DPattern {
-    background: Color,
-    checker: Color,
+    background: Box<dyn Pattern>,
+    checker: Box<dyn Pattern>,
     transform: Transform,
 }
 
 impl Checker3DPattern {
     pub fn new(background: Color, checker: Color) -> Self {
         Checker3DPattern {
-            background,
-            checker,
+            background: Box::new(FlatPattern::new(background)),
+            checker: Box::new(FlatPattern::new(checker)),
             transform: Transform::new(IDENTITY_MATRIX),
         }
     }
@@ -28,9 +28,9 @@ impl Pattern for Checker3DPattern {
             (x.floor() + y.floor() + z.floor()).rem_euclid(2.0) == 0.0;
 
         if sum_of_coodinates_floors_is_even {
-            self.background.clone()
+            self.background.color_at(&pattern_space_point)
         } else {
-            self.checker.clone()
+            self.checker.color_at(&pattern_space_point)
         }
     }
 }
