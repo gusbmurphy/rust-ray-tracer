@@ -44,21 +44,6 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         return ambient_contribution;
     }
 
-    let specular_contribution: Color;
-
-    if light_dot_normal < 0.0 {
-        // This means the light is opposite the normal vector...
-        specular_contribution = BLACK;
-    } else {
-        specular_contribution = calculate_specular_contribution(
-            light_vector,
-            &hit.normal_vector(),
-            &eye_vector,
-            hit.material(),
-            light,
-        );
-    }
-
     let material_reflective = *material.reflective();
     let mut reflective_contribution = BLACK;
 
@@ -79,7 +64,14 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
             &light_vector,
             hit,
         )
-        + specular_contribution
+        + calculate_specular_contribution(
+            light_vector,
+            &hit.normal_vector(),
+            &eye_vector,
+            hit.material(),
+            light,
+            hit,
+        )
         + reflective_contribution;
 }
 
@@ -89,7 +81,14 @@ fn calculate_specular_contribution(
     eye_vector: &Vector,
     material: &Material,
     light: &PointLight,
+    hit: &Intersection,
 ) -> Color {
+    let light_dot_normal = dot(&light_vector, &hit.normal_vector());
+
+    if light_dot_normal < 0.0 {
+        return BLACK;
+    }
+
     let reflection_vector = (-light_vector).reflect_around(normal_vector);
     let reflection_dot_eye = dot(&reflection_vector, eye_vector);
 
