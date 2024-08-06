@@ -26,7 +26,6 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
     let adjusted_hit = adjust_hit(&hit);
     let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
 
-    let material = hit.material();
     let light = world.light();
 
     let ambient_contribution = calculate_ambient_contribution(light, hit);
@@ -38,13 +37,7 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
     return ambient_contribution
         + calculate_diffuse_contribution(light, hit)
         + calculate_specular_contribution(light, hit)
-        + calculate_reflective_contribution(
-            hit,
-            world,
-            &adjusted_hit,
-            current_recursion_count,
-            material,
-        );
+        + calculate_reflective_contribution(hit, world, current_recursion_count);
 }
 
 fn calculate_specular_contribution(light: &PointLight, hit: &Intersection) -> Color {
@@ -75,15 +68,16 @@ fn calculate_specular_contribution(light: &PointLight, hit: &Intersection) -> Co
 fn calculate_reflective_contribution(
     hit: &Intersection,
     world: &World,
-    adjusted_hit: &Point,
     current_recursion_count: i8,
-    material: &Material,
 ) -> Color {
+    let adjusted_hit = adjust_hit(&hit);
+    let material = hit.material();
+
     let reflection_vector = hit.ray().direction().reflect_around(&hit.normal_vector());
 
     shade_ray_with_maximum_recursion(
         world,
-        &Ray::new(*adjusted_hit, reflection_vector),
+        &Ray::new(adjusted_hit, reflection_vector),
         current_recursion_count + 1,
     ) * *material.reflective()
 }
