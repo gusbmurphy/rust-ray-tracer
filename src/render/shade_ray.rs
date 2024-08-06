@@ -23,8 +23,6 @@ fn shade_ray_with_maximum_recursion(
 }
 
 fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> Color {
-    let eye_vector = -hit.ray().direction().to_owned();
-
     let adjusted_hit = adjust_hit(&hit);
     let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
 
@@ -53,7 +51,6 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         + calculate_specular_contribution(
             light_vector,
             &hit.normal_vector(),
-            &eye_vector,
             hit.material(),
             light,
             hit,
@@ -70,11 +67,12 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
 fn calculate_specular_contribution(
     light_vector: Vector,
     normal_vector: &Vector,
-    eye_vector: &Vector,
     material: &Material,
     light: &PointLight,
     hit: &Intersection,
 ) -> Color {
+    let eye_vector = -hit.ray().direction().to_owned();
+
     let light_dot_normal = dot(&light_vector, &hit.normal_vector());
 
     if light_dot_normal < 0.0 {
@@ -82,7 +80,7 @@ fn calculate_specular_contribution(
     }
 
     let reflection_vector = (-light_vector).reflect_around(normal_vector);
-    let reflection_dot_eye = dot(&reflection_vector, eye_vector);
+    let reflection_dot_eye = dot(&reflection_vector, &eye_vector);
 
     if reflection_dot_eye < 0.0 {
         // This means the light reflects away from the eye...
