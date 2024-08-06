@@ -36,8 +36,6 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
 
     let light_vector = (*light.position() - hit.point()).normalize();
 
-    let light_dot_normal = dot(&light_vector, &hit.normal_vector());
-
     let ambient_contribution = effective_color * material.ambient();
 
     if hit_is_in_shadow {
