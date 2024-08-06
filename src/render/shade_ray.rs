@@ -62,22 +62,22 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         );
     }
 
-    let reflective = *material.reflective();
-    let mut reflected_contribution = BLACK;
+    let material_reflective = *material.reflective();
+    let mut reflective_contribution = BLACK;
 
-    if reflective > 0.0 {
+    if material_reflective > 0.0 {
         let reflection_vector = hit.ray().direction().reflect_around(&hit.normal_vector());
-        reflected_contribution = shade_ray_with_maximum_recursion(
+        reflective_contribution = shade_ray_with_maximum_recursion(
             world,
             &Ray::new(adjusted_hit, reflection_vector),
             current_recursion_count + 1,
-        ) * *material.reflective();
+        ) * material_reflective;
     }
 
     return ambient_contribution
         + diffuse_contribution
         + specular_contribution
-        + reflected_contribution;
+        + reflective_contribution;
 }
 
 fn calculate_specular_contribution(
