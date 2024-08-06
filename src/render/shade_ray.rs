@@ -4,12 +4,14 @@ pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     shade_ray_with_maximum_recursion(world, ray, 0)
 }
 
+const MAX_RECURSION: i8 = 5;
+
 fn shade_ray_with_maximum_recursion(
     world: &World,
     ray: &Ray,
     current_recursion_count: i8,
 ) -> Color {
-    if current_recursion_count <= 5 {
+    if current_recursion_count <= MAX_RECURSION {
         if let Some(hit) = world.hit_for(ray) {
             shade_hit(world, &hit, current_recursion_count)
         } else {
