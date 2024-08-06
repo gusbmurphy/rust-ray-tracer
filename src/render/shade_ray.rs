@@ -23,14 +23,11 @@ fn shade_ray_with_maximum_recursion(
 }
 
 fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> Color {
-    let adjusted_hit = adjust_hit(&hit);
-    let hit_is_in_shadow = world.is_point_shadowed(&adjusted_hit);
-
     let light = world.light();
 
     let ambient_contribution = calculate_ambient_contribution(light, hit);
 
-    if hit_is_in_shadow {
+    if world.is_point_shadowed(&adjust_hit(&hit)) {
         return ambient_contribution;
     }
 
