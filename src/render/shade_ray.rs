@@ -44,15 +44,12 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         return ambient_contribution;
     }
 
-    let diffuse_contribution: Color;
     let specular_contribution: Color;
 
     if light_dot_normal < 0.0 {
         // This means the light is opposite the normal vector...
-        diffuse_contribution = BLACK;
         specular_contribution = BLACK;
     } else {
-        diffuse_contribution = effective_color * *material.diffuse() * light_dot_normal;
         specular_contribution = calculate_specular_contribution(
             light_vector,
             &hit.normal_vector(),
@@ -75,7 +72,13 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
     }
 
     return ambient_contribution
-        + diffuse_contribution
+        + calculate_diffuse_contribution(
+            &hit_in_object_space,
+            light,
+            material,
+            &light_vector,
+            hit,
+        )
         + specular_contribution
         + reflective_contribution;
 }
@@ -97,6 +100,26 @@ fn calculate_specular_contribution(
         let specular_factor = reflection_dot_eye.powf(*material.shininess());
         return *light.intensity() * *material.specular() * specular_factor;
     }
+}
+
+fn calculate_diffuse_contribution(
+    hit_in_object_space: &Point,
+    light: &PointLight,
+    material: &Material,
+    light_vector: &Vector,
+    hit: &Intersection,
+) -> Color {
+    let light_dot_normal = dot(&light_vector, &hit.normal_vector());
+
+    if light_dot_normal < 0.0 {
+        return BLACK;
+    }
+
+    let effective_color = material.color_at(&hit_in_object_space) * *light.intensity();
+
+    let light_dot_normal = dot(light_vector, &hit.normal_vector());
+
+    effective_color * *material.diffuse() * light_dot_normal
 }
 
 fn adjust_hit(hit: &Intersection) -> Point {
