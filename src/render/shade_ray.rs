@@ -37,7 +37,7 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
 
     return ambient_contribution
         + calculate_diffuse_contribution(light, hit)
-        + calculate_specular_contribution(&hit.normal_vector(), hit.material(), light, hit)
+        + calculate_specular_contribution(light, hit)
         + calculate_reflective_contribution(
             hit,
             world,
@@ -47,12 +47,9 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         );
 }
 
-fn calculate_specular_contribution(
-    normal_vector: &Vector,
-    material: &Material,
-    light: &PointLight,
-    hit: &Intersection,
-) -> Color {
+fn calculate_specular_contribution(light: &PointLight, hit: &Intersection) -> Color {
+    let normal_vector = &hit.normal_vector();
+    let material = hit.material();
     let light_vector = (*light.position() - hit.point()).normalize();
 
     let eye_vector = -hit.ray().direction().to_owned();
