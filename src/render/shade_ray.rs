@@ -39,7 +39,7 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
     }
 
     return calculate_ambient_contribution(material, &hit_in_object_space, light)
-        + calculate_diffuse_contribution(&hit_in_object_space, light, material, hit)
+        + calculate_diffuse_contribution(&hit_in_object_space, light, hit)
         + calculate_specular_contribution(&hit.normal_vector(), hit.material(), light, hit)
         + calculate_reflective_contribution(
             hit,
@@ -107,7 +107,6 @@ fn calculate_ambient_contribution(
 fn calculate_diffuse_contribution(
     hit_in_object_space: &Point,
     light: &PointLight,
-    material: &Material,
     hit: &Intersection,
 ) -> Color {
     let light_vector = (*light.position() - hit.point()).normalize();
@@ -118,11 +117,11 @@ fn calculate_diffuse_contribution(
         return BLACK;
     }
 
-    let effective_color = material.color_at(&hit_in_object_space) * *light.intensity();
+    let effective_color = hit.material().color_at(&hit_in_object_space) * *light.intensity();
 
     let light_dot_normal = dot(&light_vector, &hit.normal_vector());
 
-    effective_color * *material.diffuse() * light_dot_normal
+    effective_color * *hit.material().diffuse() * light_dot_normal
 }
 
 fn adjust_hit(hit: &Intersection) -> Point {
