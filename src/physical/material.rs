@@ -13,8 +13,6 @@ pub struct Material {
     reflective: f64,
 }
 
-// TODO: What if there was a builder for this sort of thing? Instead of having a million setter
-// methods...
 impl Material {
     pub fn new() -> Self {
         let pattern = Box::new(FlatPattern::new(Color::new(1.0, 1.0, 1.0)));
@@ -79,6 +77,69 @@ impl Material {
 
     pub fn set_reflective(&mut self, reflective: f64) {
         self.reflective = reflective;
+    }
+}
+
+pub struct MaterialBuilder {
+    pattern: Box<dyn Pattern>,
+    ambient: f64,
+    diffuse: f64,
+    specular: f64,
+    shininess: f64,
+    reflective: f64,
+}
+
+impl MaterialBuilder {
+    pub fn new() -> Self {
+        MaterialBuilder {
+            pattern: Box::new(FlatPattern::new(Color::new(1.0, 1.0, 1.0))),
+            ambient: 0.1,
+            diffuse: 0.9,
+            specular: 0.9,
+            shininess: 200.0,
+            reflective: 0.0,
+        }
+    }
+
+    pub fn pattern(mut self, pattern: Box<dyn Pattern>) -> Self {
+        self.pattern = pattern;
+        self
+    }
+
+    pub fn ambient(mut self, ambient: f64) -> Self {
+        self.ambient = ambient;
+        self
+    }
+
+    pub fn diffuse(mut self, diffuse: f64) -> Self {
+        self.diffuse = diffuse;
+        self
+    }
+
+    pub fn specular(mut self, specular: f64) -> Self {
+        self.specular = specular;
+        self
+    }
+
+    pub fn shininess(mut self, shininess: f64) -> Self {
+        self.shininess = shininess;
+        self
+    }
+
+    pub fn reflective(mut self, reflective: f64) -> Self {
+        self.reflective = reflective;
+        self
+    }
+
+    pub fn build(self) -> Material {
+        Material {
+            pattern: self.pattern,
+            ambient: self.ambient,
+            diffuse: self.diffuse,
+            specular: self.specular,
+            shininess: self.shininess,
+            reflective: self.reflective,
+        }
     }
 }
 
