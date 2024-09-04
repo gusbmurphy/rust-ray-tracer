@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use crate::render::shading::shade_ray;
 
 pub struct Camera {
     horizontal_size: u64,
