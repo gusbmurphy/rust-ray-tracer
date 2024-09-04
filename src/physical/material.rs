@@ -11,6 +11,7 @@ pub struct Material {
     specular: f64,
     shininess: f64,
     reflective: f64,
+    refractive_index: f64,
 }
 
 impl Material {
@@ -37,6 +38,10 @@ impl Material {
     pub fn reflective(&self) -> &f64 {
         &self.reflective
     }
+
+    pub fn refractive_index(&self) -> &f64 {
+        &self.refractive_index
+    }
 }
 
 pub struct MaterialBuilder {
@@ -46,6 +51,7 @@ pub struct MaterialBuilder {
     specular: f64,
     shininess: f64,
     reflective: f64,
+    refractive_index: f64,
 }
 
 impl MaterialBuilder {
@@ -57,6 +63,7 @@ impl MaterialBuilder {
             specular: 0.9,
             shininess: 200.0,
             reflective: 0.0,
+            refractive_index: 1.0,
         }
     }
 
@@ -103,6 +110,7 @@ impl MaterialBuilder {
             specular: self.specular,
             shininess: self.shininess,
             reflective: self.reflective,
+            refractive_index: self.refractive_index,
         }
     }
 }
@@ -130,5 +138,6 @@ mod test {
         assert_eq!(default_material.specular, 0.9);
         assert_eq!(default_material.shininess, 200.0);
         assert_eq!(default_material.reflective, 0.0);
+        assert_eq!(default_material.refractive_index, 1.0);
     }
 }
