@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use crate::render::shading::diffuse::calculate_diffuse_contribution;
+use crate::render::shading::specular::calculate_specular_contribution;
 
 pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     shade_ray_with_maximum_recursion(world, ray, 0)
@@ -36,31 +37,6 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         + calculate_diffuse_contribution(light, hit)
         + calculate_specular_contribution(light, hit)
         + calculate_reflective_contribution(hit, world, current_recursion_count);
-}
-
-fn calculate_specular_contribution(light: &PointLight, hit: &Intersection) -> Color {
-    let normal_vector = &hit.normal_vector();
-    let material = hit.material();
-    let light_vector = (*light.position() - hit.point()).normalize();
-
-    let eye_vector = -hit.ray().direction().to_owned();
-
-    let light_dot_normal = dot(&light_vector, &hit.normal_vector());
-
-    if light_dot_normal < 0.0 {
-        return BLACK;
-    }
-
-    let reflection_vector = (-light_vector).reflect_around(normal_vector);
-    let reflection_dot_eye = dot(&reflection_vector, &eye_vector);
-
-    if reflection_dot_eye < 0.0 {
-        // This means the light reflects away from the eye...
-        return BLACK;
-    } else {
-        let specular_factor = reflection_dot_eye.powf(*material.shininess());
-        return *light.intensity() * *material.specular() * specular_factor;
-    }
 }
 
 fn calculate_reflective_contribution(
