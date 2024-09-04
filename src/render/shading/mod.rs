@@ -1,3 +1,4 @@
+mod ambient;
 mod diffuse;
 mod reflective;
 mod shade_ray;

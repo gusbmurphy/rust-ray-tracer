@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use crate::render::shading::ambient::calculate_ambient_contribution;
 use crate::render::shading::diffuse::calculate_diffuse_contribution;
 use crate::render::shading::reflective::calculate_reflective_contribution;
 use crate::render::shading::specular::calculate_specular_contribution;
@@ -38,15 +39,6 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         + calculate_diffuse_contribution(light, hit)
         + calculate_specular_contribution(light, hit)
         + calculate_reflective_contribution(hit, world, current_recursion_count);
-}
-
-fn calculate_ambient_contribution(light: &PointLight, hit: &Intersection) -> Color {
-    let adjusted_hit = adjust_hit(&hit);
-    let hit_in_object_space = hit.object().transform().invert().unwrap() * adjusted_hit;
-
-    let effective_color = hit.material().color_at(&hit_in_object_space) * *light.intensity();
-
-    effective_color * hit.material().ambient()
 }
 
 // This adjusts the hit so that it's ever so slightly on the outside of the intersected shape.
