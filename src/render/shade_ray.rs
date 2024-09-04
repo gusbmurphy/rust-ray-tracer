@@ -107,7 +107,7 @@ fn calculate_ambient_contribution(light: &PointLight, hit: &Intersection) -> Col
     effective_color * hit.material().ambient()
 }
 
-// This adjusts the hit so it's ever so slightly on the outside of the intersected shape.
+// This adjusts the hit so that it's ever so slightly on the outside of the intersected shape.
 fn adjust_hit(hit: &Intersection) -> Point {
     hit.point() + hit.normal_vector() * EPSILON
 }
