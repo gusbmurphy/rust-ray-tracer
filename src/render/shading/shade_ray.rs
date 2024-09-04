@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use crate::render::shading::diffuse::calculate_diffuse_contribution;
+use crate::render::shading::reflective::calculate_reflective_contribution;
 use crate::render::shading::specular::calculate_specular_contribution;
 
 pub fn shade_ray(world: &World, ray: &Ray) -> Color {
@@ -8,7 +9,7 @@ pub fn shade_ray(world: &World, ray: &Ray) -> Color {
 
 const MAX_RECURSION: i8 = 5;
 
-fn shade_ray_with_maximum_recursion(
+pub fn shade_ray_with_maximum_recursion(
     world: &World,
     ray: &Ray,
     current_recursion_count: i8,
@@ -37,23 +38,6 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         + calculate_diffuse_contribution(light, hit)
         + calculate_specular_contribution(light, hit)
         + calculate_reflective_contribution(hit, world, current_recursion_count);
-}
-
-fn calculate_reflective_contribution(
-    hit: &Intersection,
-    world: &World,
-    current_recursion_count: i8,
-) -> Color {
-    let adjusted_hit = adjust_hit(&hit);
-    let material = hit.material();
-
-    let reflection_vector = hit.ray().direction().reflect_around(&hit.normal_vector());
-
-    shade_ray_with_maximum_recursion(
-        world,
-        &Ray::new(adjusted_hit, reflection_vector),
-        current_recursion_count + 1,
-    ) * *material.reflective()
 }
 
 fn calculate_ambient_contribution(light: &PointLight, hit: &Intersection) -> Color {
