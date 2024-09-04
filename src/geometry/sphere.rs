@@ -14,7 +14,7 @@ impl Sphere {
             center: Point::new(0.0, 0.0, 0.0),
             radius: 1.0,
             transform: Transform::new(IDENTITY_MATRIX),
-            material: Material::new(),
+            material: MaterialBuilder::new().build(),
         }
     }
 
@@ -96,7 +96,7 @@ mod test {
     #[test]
     fn a_sphere_has_a_default_material() {
         let sphere = Sphere::new();
-        assert_eq!(sphere.material, Material::new())
+        assert_eq!(sphere.material, MaterialBuilder::new().build())
     }
 
     #[test]

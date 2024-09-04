@@ -163,14 +163,14 @@ mod test {
 
     #[test]
     fn color_for_a_ray_hitting_a_sphere_with_a_striped_pattern() {
-        let mut material = Material::new();
-        // Setting ambient to 1.0 to simplify the color of any hit...
-        material.set_specular(0.0);
-        material.set_diffuse(0.0);
-        material.set_ambient(1.0);
-
         let pattern = StripePattern::new(WHITE, BLACK);
-        material.set_pattern(Box::new(pattern));
+
+        let material = MaterialBuilder::new()
+            .specular(0.0) // Setting ambient to 1.0 to simplify the color of any hit...
+            .diffuse(0.0)
+            .ambient(1.0)
+            .pattern(Box::new(pattern))
+            .build();
 
         let mut sphere = Sphere::new();
         sphere.set_material(material);
@@ -187,15 +187,15 @@ mod test {
 
     #[test]
     fn hits_on_a_sphere_with_a_transform_and_stripes_with_their_own_transform() {
-        let mut material = Material::new();
-        // Setting ambient to 1.0 to simplify the color of any hit...
-        material.set_specular(0.0);
-        material.set_diffuse(0.0);
-        material.set_ambient(1.0);
-
         let mut pattern = StripePattern::new(WHITE, GREEN);
         pattern.set_transform(Transform::translation(1.0, 0.0, 0.0));
-        material.set_pattern(Box::new(pattern));
+
+        let material = MaterialBuilder::new()
+            .specular(0.0)
+            .diffuse(0.0)
+            .ambient(1.0) // Setting ambient to 1.0 to simplify the color of any hit...
+            .pattern(Box::new(pattern))
+            .build();
 
         let mut sphere = Sphere::new();
         sphere.set_transform(Transform::scaling(2.0, 2.0, 2.0));
@@ -211,14 +211,13 @@ mod test {
 
     #[test]
     fn hits_on_a_sphere_with_a_transform_and_stripes() {
-        let mut material = Material::new();
-        // Setting ambient to 1.0 to simplify the color of any hit...
-        material.set_specular(0.0);
-        material.set_diffuse(0.0);
-        material.set_ambient(1.0);
-
         let pattern = StripePattern::new(WHITE, GREEN);
-        material.set_pattern(Box::new(pattern));
+        let material = MaterialBuilder::new()
+            .specular(0.0)
+            .diffuse(0.0)
+            .ambient(1.0)
+            .pattern(Box::new(pattern))
+            .build();
 
         let mut sphere = Sphere::new();
         sphere.set_transform(Transform::scaling(2.0, 2.0, 2.0));
@@ -234,14 +233,13 @@ mod test {
 
     #[test]
     fn hits_on_a_sphere_with_a_gradient_pattern() {
-        let mut material = Material::new();
-        // Setting ambient to 1.0 to simplify the color of any hit...
-        material.set_specular(0.0);
-        material.set_diffuse(0.0);
-        material.set_ambient(1.0);
-
         let pattern = GradientPattern::new(WHITE, GREEN);
-        material.set_pattern(Box::new(pattern));
+        let material = MaterialBuilder::new()
+            .specular(0.0)
+            .diffuse(0.0)
+            .ambient(1.0) // Setting ambient to 1.0 to simplify the color of any hit...
+            .pattern(Box::new(pattern))
+            .build();
 
         let mut sphere = Sphere::new();
         sphere.set_material(material);
@@ -257,17 +255,16 @@ mod test {
 
     #[test]
     fn hits_on_a_sphere_with_a_ring_pattern() {
-        let mut material = Material::new();
-        // Setting ambient to 1.0 to simplify the color of any hit...
-        material.set_specular(0.0);
-        material.set_diffuse(0.0);
-        material.set_ambient(1.0);
-
         let mut pattern = RingPattern::new(WHITE, GREEN);
         // Scaling it down so we see a few rings...
         pattern.set_transform(Transform::scaling(0.25, 0.25, 0.25));
 
-        material.set_pattern(Box::new(pattern));
+        let material = MaterialBuilder::new()
+            .specular(0.0)
+            .diffuse(0.0)
+            .ambient(1.0) // Setting ambient to 1.0 to simplify the color of any hit...
+            .pattern(Box::new(pattern))
+            .build();
 
         let mut sphere = Sphere::new();
         sphere.set_material(material);
@@ -287,17 +284,17 @@ mod test {
     #[test]
     fn color_for_a_ray_that_hits_but_originates_inside_a_different_object() {
         // Setting the ambient value of each sphere's material to 1 to simplify things...
-        let mut first_sphere_material = Material::new();
-        first_sphere_material.set_flat_color(Color::new(0.8, 1.0, 0.6));
-        first_sphere_material.set_specular(0.2);
-        first_sphere_material.set_diffuse(0.7);
-        first_sphere_material.set_ambient(1.0);
+        let first_sphere_material = MaterialBuilder::new()
+            .flat_color(Color::new(0.8, 1.0, 0.6))
+            .specular(0.2)
+            .diffuse(0.7)
+            .ambient(1.0)
+            .build();
 
         let mut first_sphere = Sphere::new();
         first_sphere.set_material(first_sphere_material);
 
-        let mut second_sphere_material = Material::new();
-        second_sphere_material.set_ambient(1.0);
+        let second_sphere_material = MaterialBuilder::new().ambient(1.0).build();
 
         let second_sphere_scaling = Transform::scaling(0.5, 0.5, 0.5);
 
@@ -348,8 +345,7 @@ mod test {
         let mut world = World::create_default();
 
         let mut plane = Plane::new();
-        let mut plane_material = Material::new();
-        plane_material.set_reflective(0.5);
+        let plane_material = MaterialBuilder::new().reflective(0.5).build();
         plane.set_material(plane_material);
         plane.set_transform(Transform::translation(0.0, -1.0, 0.0));
 
@@ -372,10 +368,8 @@ mod test {
         let mut world = World::new();
         world.set_light(PointLight::new(WHITE, ORIGIN));
 
-        let mut material_a = Material::new();
-        let mut material_b = Material::new();
-        material_a.set_reflective(1.0);
-        material_b.set_reflective(1.0);
+        let material_a = MaterialBuilder::new().reflective(1.0).build();
+        let material_b = MaterialBuilder::new().reflective(1.0).build();
 
         let mut lower_plane = Plane::new();
         lower_plane.set_material(material_a);

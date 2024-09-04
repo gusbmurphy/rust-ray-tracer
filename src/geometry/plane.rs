@@ -10,7 +10,7 @@ impl Plane {
     pub fn new() -> Self {
         Plane {
             transform: Transform::new(IDENTITY_MATRIX),
-            material: Material::new(),
+            material: MaterialBuilder::new().build(),
         }
     }
 }

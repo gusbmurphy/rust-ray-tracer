@@ -69,10 +69,11 @@ mod test {
         let only_shape = shapes.get(0).unwrap().to_owned();
         assert_eq!(only_shape.shape_type(), ShapeType::Sphere);
 
-        let mut expected_material = Material::new();
-        expected_material.set_diffuse(0.7);
-        expected_material.set_specular(0.3);
-        expected_material.set_flat_color(Color::new(0.1, 1.0, 0.5));
+        let expected_material = MaterialBuilder::new()
+            .diffuse(0.7)
+            .specular(0.3)
+            .flat_color(Color::new(0.1, 1.0, 0.5))
+            .build();
         assert_eq!(*only_shape.material(), expected_material);
 
         let expected_transform =
@@ -108,10 +109,11 @@ mod test {
         let plane = shapes.get(1).unwrap().to_owned();
         assert_eq!(plane.shape_type(), ShapeType::Plane);
 
-        let mut expected_material = Material::new();
-        expected_material.set_diffuse(1.1);
-        expected_material.set_specular(0.2);
-        expected_material.set_flat_color(Color::new(0.8, 2.0, 10.0));
+        let expected_material = MaterialBuilder::new()
+            .diffuse(1.1)
+            .specular(0.2)
+            .flat_color(Color::new(0.8, 2.0, 10.0))
+            .build();
         assert_eq!(*plane.material(), expected_material);
 
         let expected_transform =
@@ -136,7 +138,7 @@ mod test {
 
         // The plane should just have the default transform and material...
         assert_eq!(*plane.transform(), Transform::new(IDENTITY_MATRIX));
-        assert_eq!(*plane.material(), Material::new());
+        assert_eq!(*plane.material(), MaterialBuilder::new().build());
     }
 
     #[test]
@@ -147,13 +149,14 @@ mod test {
         let sphere = world.shapes().get(0).unwrap();
         let material = sphere.material();
 
-        let mut expected_material = Material::new();
-        expected_material.set_pattern(Box::new(StripePattern::new(
-            Color::new(0.1, 1.0, 0.5),
-            Color::new(0.5, 1.0, 0.1),
-        )));
-        expected_material.set_diffuse(0.7);
-        expected_material.set_specular(0.3);
+        let expected_material = MaterialBuilder::new()
+            .pattern(Box::new(StripePattern::new(
+                Color::new(0.1, 1.0, 0.5),
+                Color::new(0.5, 1.0, 0.1),
+            )))
+            .diffuse(0.7)
+            .specular(0.3)
+            .build();
 
         assert_eq!(*material, expected_material);
     }
@@ -170,10 +173,11 @@ mod test {
             StripePattern::new(Color::new(0.1, 1.0, 0.5), Color::new(0.5, 1.0, 0.1));
         expected_pattern.set_transform(Transform::scaling(0.25, 0.25, 0.25));
 
-        let mut expected_material = Material::new();
-        expected_material.set_pattern(Box::new(expected_pattern));
-        expected_material.set_diffuse(0.7);
-        expected_material.set_specular(0.3);
+        let expected_material = MaterialBuilder::new()
+            .pattern(Box::new(expected_pattern))
+            .diffuse(0.7)
+            .specular(0.3)
+            .build();
 
         assert_eq!(*material, expected_material);
     }
@@ -208,10 +212,11 @@ mod test {
             GradientPattern::new(Color::new(0.1, 1.0, 0.1), Color::new(1.0, 0.0, 0.5));
         expected_pattern.set_transform(Transform::z_rotation(0.78539));
 
-        let mut expected_material = Material::new();
-        expected_material.set_pattern(Box::new(expected_pattern));
-        expected_material.set_diffuse(0.7);
-        expected_material.set_specular(0.3);
+        let expected_material = MaterialBuilder::new()
+            .pattern(Box::new(expected_pattern))
+            .diffuse(0.7)
+            .specular(0.3)
+            .build();
 
         assert_eq!(*material, expected_material);
     }
@@ -228,10 +233,11 @@ mod test {
             RingPattern::new(Color::new(0.1, 0.8, 0.0), Color::new(1.0, 0.1, 0.5));
         expected_pattern.set_transform(Transform::scaling(0.4, 1.0, 0.08));
 
-        let mut expected_material = Material::new();
-        expected_material.set_pattern(Box::new(expected_pattern));
-        expected_material.set_diffuse(0.7);
-        expected_material.set_specular(0.3);
+        let expected_material = MaterialBuilder::new()
+            .pattern(Box::new(expected_pattern))
+            .diffuse(0.7)
+            .specular(0.3)
+            .build();
 
         assert_eq!(*material, expected_material);
     }
@@ -247,10 +253,11 @@ mod test {
         let expected_pattern =
             Checker3DPattern::new(Color::new(1.0, 0.0, 0.0), Color::new(0.5, 1.0, 0.1));
 
-        let mut expected_material = Material::new();
-        expected_material.set_pattern(Box::new(expected_pattern));
-        expected_material.set_diffuse(0.7);
-        expected_material.set_specular(0.3);
+        let expected_material = MaterialBuilder::new()
+            .pattern(Box::new(expected_pattern))
+            .diffuse(0.7)
+            .specular(0.3)
+            .build();
 
         assert_eq!(*material, expected_material);
     }
@@ -271,10 +278,11 @@ mod test {
 
         let expected_pattern = BlendedPattern::new(vec![Rc::new(gradient), Rc::new(stripes)]);
 
-        let mut expected_material = Material::new();
-        expected_material.set_pattern(Box::new(expected_pattern));
-        expected_material.set_diffuse(0.9);
-        expected_material.set_specular(0.7);
+        let expected_material = MaterialBuilder::new()
+            .pattern(Box::new(expected_pattern))
+            .diffuse(0.9)
+            .specular(0.7)
+            .build();
 
         assert_eq!(*material, expected_material);
     }
@@ -300,8 +308,9 @@ mod test {
         subpattern_b.set_transform(Transform::y_rotation(-0.78539));
         let expected_pattern = Checker3DPattern::new_with_patterns(subpattern_a, subpattern_b);
 
-        let mut expected_material = Material::new();
-        expected_material.set_pattern(Box::new(expected_pattern));
+        let expected_material = MaterialBuilder::new()
+            .pattern(Box::new(expected_pattern))
+            .build();
 
         let material = world.shapes().get(0).unwrap().material();
 

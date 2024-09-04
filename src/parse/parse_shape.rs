@@ -43,45 +43,45 @@ pub fn parse_shape(
 fn parse_material(yaml: &Yaml) -> Result<Material, Box<dyn Error>> {
     let map = yaml.as_hash().unwrap();
 
-    let mut material = Material::new();
+    let mut material_builder = MaterialBuilder::new();
 
     for (key, value) in map {
         match key.as_str().unwrap() {
             "pattern" => {
                 if let Ok(pattern) = parse_pattern(value) {
-                    material.set_pattern(pattern)
+                    material_builder = material_builder.pattern(pattern);
                 }
             }
             "diffuse" => {
                 if let Ok(diffuse) = parse_f64_from_integer_or_real(value) {
-                    material.set_diffuse(diffuse)
+                    material_builder = material_builder.diffuse(diffuse);
                 }
             }
             "specular" => {
                 if let Ok(specular) = parse_f64_from_integer_or_real(value) {
-                    material.set_specular(specular)
+                    material_builder = material_builder.specular(specular);
                 }
             }
             "shininess" => {
                 if let Ok(shininess) = parse_f64_from_integer_or_real(value) {
-                    material.set_shininess(shininess)
+                    material_builder = material_builder.shininess(shininess);
                 }
             }
             "ambient" => {
                 if let Ok(ambient) = parse_f64_from_integer_or_real(value) {
-                    material.set_shininess(ambient)
+                    material_builder = material_builder.ambient(ambient);
                 }
             }
             "reflective" => {
                 if let Ok(reflective) = parse_f64_from_integer_or_real(value) {
-                    material.set_reflective(reflective)
+                    material_builder = material_builder.reflective(reflective);
                 }
             }
             _ => todo!(),
         }
     }
 
-    Ok(material)
+    Ok(material_builder.build())
 }
 
 fn parse_pattern(yaml: &Yaml) -> Result<Box<dyn Pattern>, Box<dyn Error>> {

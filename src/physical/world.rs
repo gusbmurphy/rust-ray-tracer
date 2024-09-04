@@ -15,10 +15,11 @@ impl World {
     }
 
     pub fn create_default() -> Self {
-        let mut first_sphere_material = Material::new();
-        first_sphere_material.set_flat_color(Color::new(0.8, 1.0, 0.6));
-        first_sphere_material.set_specular(0.2);
-        first_sphere_material.set_diffuse(0.7);
+        let first_sphere_material = MaterialBuilder::new()
+            .flat_color(Color::new(0.8, 1.0, 0.6))
+            .specular(0.2)
+            .diffuse(0.7)
+            .build();
 
         let mut first_sphere = Sphere::new();
         first_sphere.set_material(first_sphere_material);
