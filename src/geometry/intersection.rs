@@ -13,6 +13,19 @@ impl<'r> Intersection<'r> {
         Intersection { time, object, ray }
     }
 
+    pub fn of(object: &Rc<dyn Shape>, ray: &'r Ray) -> Vec<Self> {
+        let mut intersections = Vec::new();
+
+        let intersection_times = object.times_of_intersections_with(&ray);
+
+        for time in intersection_times {
+            let intersection = Intersection::new(time, object.to_owned(), ray);
+            intersections.push(intersection)
+        }
+
+        intersections
+    }
+
     pub fn object(&self) -> Rc<dyn Shape> {
         self.object.clone()
     }
