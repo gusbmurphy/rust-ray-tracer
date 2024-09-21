@@ -42,15 +42,11 @@ impl World {
     where
         'b: 'a,
     {
-        let mut intersections = Vec::new();
+        let mut intersections: Vec<Intersection<'_>> = Vec::new();
 
         for object in &self.shapes {
-            let intersection_times = object.times_of_intersections_with(&ray);
-
-            for time in intersection_times {
-                let intersection = Intersection::new(time, object.to_owned(), ray);
-                intersections.push(intersection)
-            }
+            let mut these_intersections = Intersection::of(object, ray);
+            intersections.append(&mut these_intersections);
         }
 
         intersections.sort_by(|a, b| a.t().total_cmp(&b.t()));
