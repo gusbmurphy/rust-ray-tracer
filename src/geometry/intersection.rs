@@ -9,7 +9,7 @@ pub struct Intersection<'r> {
 }
 
 impl<'r> Intersection<'r> {
-    pub fn new(time: f64, object: Rc<dyn Shape>, ray: &'r Ray) -> Self {
+    fn new(time: f64, object: Rc<dyn Shape>, ray: &'r Ray) -> Self {
         Intersection { time, object, ray }
     }
 
