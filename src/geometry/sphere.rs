@@ -18,6 +18,15 @@ impl Sphere {
         }
     }
 
+    pub fn new_with_material(material: Material) -> Self {
+        Sphere {
+            center: Point::new(0.0, 0.0, 0.0),
+            radius: 1.0,
+            transform: Transform::new(IDENTITY_MATRIX),
+            material,
+        }
+    }
+
     pub fn center(&self) -> &Point {
         &self.center
     }
