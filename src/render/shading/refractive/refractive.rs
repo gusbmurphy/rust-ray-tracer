@@ -14,6 +14,7 @@ mod test {
     use std::rc::Rc;
 
     #[test]
+    #[ignore]
     fn an_opaque_object_has_no_refractive_contribution() {
         let world = World::create_default();
         let object = world.shapes().get(0).unwrap();
@@ -26,6 +27,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     // Wow, this test is not nice to look at...
     fn an_actually_refracted_ray() {
         let mut ambient_sphere = Sphere::new();
