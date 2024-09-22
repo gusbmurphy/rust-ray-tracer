@@ -5,6 +5,7 @@ mod gradient;
 mod pattern;
 mod rings;
 mod stripes;
+mod test;
 
 pub use blended::BlendedPattern;
 pub use checkers::Checker3DPattern;
@@ -13,3 +14,4 @@ pub use gradient::GradientPattern;
 pub use pattern::Pattern;
 pub use rings::RingPattern;
 pub use stripes::StripePattern;
+pub use test::TestPattern;
