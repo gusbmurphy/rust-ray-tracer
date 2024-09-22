@@ -12,6 +12,7 @@ pub struct Material {
     shininess: f64,
     reflective: f64,
     refractive_index: f64,
+    transparency: f64,
 }
 
 impl Material {
@@ -52,6 +53,7 @@ pub struct MaterialBuilder {
     shininess: f64,
     reflective: f64,
     refractive_index: f64,
+    transparency: f64,
 }
 
 impl MaterialBuilder {
@@ -64,6 +66,7 @@ impl MaterialBuilder {
             shininess: 200.0,
             reflective: 0.0,
             refractive_index: 1.0,
+            transparency: 0.0,
         }
     }
 
@@ -102,6 +105,16 @@ impl MaterialBuilder {
         self
     }
 
+    pub fn transparency(mut self, transparency: f64) -> Self {
+        self.transparency = transparency;
+        self
+    }
+
+    pub fn refractive_index(mut self, refractive_index: f64) -> Self {
+        self.refractive_index = refractive_index;
+        self
+    }
+
     pub fn build(self) -> Material {
         Material {
             pattern: self.pattern,
@@ -111,6 +124,7 @@ impl MaterialBuilder {
             shininess: self.shininess,
             reflective: self.reflective,
             refractive_index: self.refractive_index,
+            transparency: self.transparency,
         }
     }
 }
@@ -139,5 +153,6 @@ mod test {
         assert_eq!(default_material.shininess, 200.0);
         assert_eq!(default_material.reflective, 0.0);
         assert_eq!(default_material.refractive_index, 1.0);
+        assert_eq!(default_material.transparency, 0.0);
     }
 }
