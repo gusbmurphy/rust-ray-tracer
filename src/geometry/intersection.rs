@@ -2,10 +2,19 @@ use std::rc::Rc;
 
 use crate::prelude::*;
 
+#[derive(Clone)]
 pub struct Intersection<'r> {
     time: f64,
     object: Rc<dyn Shape>,
     ray: &'r Ray,
+}
+
+impl<'r> Eq for Intersection<'r> {}
+
+impl<'r> PartialEq for Intersection<'r> {
+    fn eq(&self, other: &Intersection) -> bool {
+        self.time == other.time && self.ray == other.ray && Rc::ptr_eq(&self.object, &other.object)
+    }
 }
 
 impl<'r> Intersection<'r> {
