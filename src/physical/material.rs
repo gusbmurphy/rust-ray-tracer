@@ -43,6 +43,10 @@ impl Material {
     pub fn refractive_index(&self) -> &f64 {
         &self.refractive_index
     }
+
+    pub fn transparency(&self) -> &f64 {
+        &self.transparency
+    }
 }
 
 pub struct MaterialBuilder {
