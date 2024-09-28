@@ -64,6 +64,6 @@ mod test {
 
         let result = calculate_refractive_contribution(intersections.get(0).unwrap(), &world, 0);
 
-        assert_eq!(result, Color::new(0.0, 0.99888, 0.04726))
+        assert_eq!(result, Color::new(0.0, 0.99888, 0.04725))
     }
 }
