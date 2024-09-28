@@ -31,7 +31,7 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
 
     let ambient_contribution = calculate_ambient_contribution(light, hit);
 
-    if world.is_point_shadowed(&adjust_hit(&hit)) {
+    if world.is_point_shadowed(&adjust_hit_over(&hit)) {
         return ambient_contribution;
     }
 
@@ -42,8 +42,13 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
 }
 
 // This adjusts the hit so that it's ever so slightly on the outside of the intersected shape.
-pub fn adjust_hit(hit: &Intersection) -> Point {
+pub fn adjust_hit_over(hit: &Intersection) -> Point {
     hit.point() + hit.normal_vector() * EPSILON
+}
+
+// This adjusts the hit so that it's ever so slightly on the underside of the intersected shape.
+pub fn adjust_hit_under(hit: &Intersection) -> Point {
+    hit.point() - hit.normal_vector() * EPSILON
 }
 
 #[cfg(test)]
