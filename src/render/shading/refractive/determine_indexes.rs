@@ -7,29 +7,44 @@ use std::rc::Rc;
 ///
 /// In the returned array, the first value is the refractive index of the exited object, and the second is of the entered one.
 pub fn determine_refractive_indexes(
-    t: &f64,
-    ray: &Ray,
-    all_intersections: &Vec<Intersection>,
+    target_t: &f64,
+    mut all_intersections: Vec<Intersection>,
 ) -> [f64; 2] {
+    all_intersections.sort_by(|a, b| a.t().partial_cmp(b.t()).unwrap());
+
     let mut exited_ri = 1.0;
     let mut entered_ri = 1.0;
 
-    let hit = determine_hit(all_intersections.to_owned().to_vec());
+    let hit = all_intersections
+        .iter()
+        .find(|intersection| intersection.t() == target_t);
     let mut shapes_entered: Vec<Rc<dyn Shape>> = Vec::new();
 
-    for (index, intersection) in all_intersections.iter().enumerate() {
-        shapes_entered.push(intersection.object());
+    for (_index, intersection) in all_intersections.iter().enumerate() {
+        if hit.as_ref().is_some_and(|hit| *hit == intersection) {
+            if let Some(last_shape_entered) = shapes_entered.last() {
+                exited_ri = *last_shape_entered.material().refractive_index();
+            } else {
+                exited_ri = 1.0;
+            }
+        }
 
-        if let Some(ref h) = hit {
-            if h == intersection {
-                entered_ri = *intersection.object().material().refractive_index();
+        let this_shape = intersection.object();
+        if let Some(record_of_shape_being_entered) = shapes_entered
+            .iter()
+            .enumerate()
+            .find(|&shape| shape.1 == this_shape)
+        {
+            shapes_entered.remove(record_of_shape_being_entered.0);
+        } else {
+            shapes_entered.push(this_shape.clone());
+        }
 
-                // A bit of a yikes here...
-                if let Some(last_index) = index.checked_sub(1) {
-                    if let Some(last_object_exited) = shapes_entered.get(last_index) {
-                        exited_ri = *last_object_exited.material().refractive_index();
-                    }
-                }
+        if hit.as_ref().is_some_and(|hit| *hit == intersection) {
+            if let Some(last_shape_entered) = shapes_entered.last() {
+                entered_ri = *last_shape_entered.material().refractive_index();
+            } else {
+                entered_ri = 1.0;
             }
         }
     }
@@ -51,7 +66,7 @@ mod test {
         let intersections = Intersection::of(&sphere, &ray);
         let t = intersections.get(0).unwrap().t();
 
-        let result = determine_refractive_indexes(t, &ray, &intersections);
+        let result = determine_refractive_indexes(t, intersections.clone());
         assert_eq!(result[0], 1.0); // 1.0 since there is no material being exited.
         assert_eq!(result[1], 3.0);
     }
@@ -68,12 +83,23 @@ mod test {
         let outer_rc = Rc::new(outer) as Rc<dyn Shape>;
         let inner_rc = Rc::new(inner) as Rc<dyn Shape>;
 
-        let mut intersections = Intersection::of(&outer_rc, &ray);
-        intersections.append(&mut Intersection::of(&inner_rc, &ray));
+        let intersections_with_outer = Intersection::of(&outer_rc, &ray);
+        let intersections_with_inner = Intersection::of(&inner_rc, &ray);
+        let mut all_intersections = intersections_with_outer.clone();
+        all_intersections.append(&mut intersections_with_inner.clone());
 
-        let result = determine_refractive_indexes(&1.5, &ray, &intersections);
-        assert_eq!(result[0], 3.0);
-        assert_eq!(result[1], 9.7);
+        let result = determine_refractive_indexes(
+            intersections_with_inner.get(0).unwrap().t(),
+            all_intersections,
+        );
+        assert_eq!(
+            result[0], 3.0,
+            "the exited index should be the outer sphere's"
+        );
+        assert_eq!(
+            result[1], 9.7,
+            "the entered index should be the inner sphere's"
+        );
     }
 
     #[test]
@@ -85,7 +111,7 @@ mod test {
         let mut b = Sphere::new_with_material(MaterialBuilder::new().refractive_index(2.0).build());
         b.set_transform(Transform::translation(0.0, 0.0, -0.5));
 
-        let mut c = Sphere::new_with_material(MaterialBuilder::new().refractive_index(1.0).build());
+        let mut c = Sphere::new_with_material(MaterialBuilder::new().refractive_index(5.0).build());
         c.set_transform(Transform::translation(0.0, 0.0, 0.5));
 
         let ray = Ray::new(Point::new(0.0, 0.0, -3.0), Vector::new(0.0, 0.0, 1.0));
@@ -100,10 +126,10 @@ mod test {
 
         let t = b_intersections.get(1).unwrap().t();
 
-        let result = determine_refractive_indexes(t, &ray, &intersections);
+        let result = determine_refractive_indexes(t, intersections);
         // For this intersection, the "C" sphere will be on both sides of the intersection, so it's
         // refractive index will be both values.
-        assert_eq!(result[0], 1.0);
-        assert_eq!(result[1], 1.0);
+        assert_eq!(result[0], 5.0, "the first index should be \"C\"s");
+        assert_eq!(result[1], 5.0, "and the second index should be \"C\"s");
     }
 }

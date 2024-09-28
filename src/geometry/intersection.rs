@@ -35,8 +35,8 @@ impl<'r> Intersection<'r> {
         intersections
     }
 
-    pub fn object(&self) -> Rc<dyn Shape> {
-        self.object.clone()
+    pub fn object(&self) -> &Rc<dyn Shape> {
+        &self.object
     }
 
     pub fn material(&self) -> &Material {
