@@ -75,4 +75,35 @@ mod test {
         assert_eq!(result[0], 3.0);
         assert_eq!(result[1], 9.7);
     }
+
+    #[test]
+    fn complex_intersection_with_three_spheres() {
+        // This is a scene with two spheres inside of one larger one, the two spheres also overlap.
+        let mut a = Sphere::new_with_material(MaterialBuilder::new().refractive_index(3.0).build());
+        a.set_transform(Transform::scaling(3.0, 3.0, 3.0));
+
+        let mut b = Sphere::new_with_material(MaterialBuilder::new().refractive_index(2.0).build());
+        b.set_transform(Transform::translation(0.0, 0.0, -0.5));
+
+        let mut c = Sphere::new_with_material(MaterialBuilder::new().refractive_index(1.0).build());
+        c.set_transform(Transform::translation(0.0, 0.0, 0.5));
+
+        let ray = Ray::new(Point::new(0.0, 0.0, -3.0), Vector::new(0.0, 0.0, 1.0));
+        let a_rc = Rc::new(a) as Rc<dyn Shape>;
+        let b_rc = Rc::new(b) as Rc<dyn Shape>;
+        let c_rc = Rc::new(c) as Rc<dyn Shape>;
+
+        let mut intersections = Intersection::of(&a_rc, &ray);
+        let b_intersections = Intersection::of(&b_rc, &ray);
+        intersections.append(&mut b_intersections.clone());
+        intersections.append(&mut Intersection::of(&c_rc, &ray));
+
+        let t = b_intersections.get(1).unwrap().t();
+
+        let result = determine_refractive_indexes(t, &ray, &intersections);
+        // For this intersection, the "C" sphere will be on both sides of the intersection, so it's
+        // refractive index will be both values.
+        assert_eq!(result[0], 1.0);
+        assert_eq!(result[1], 1.0);
+    }
 }
