@@ -38,7 +38,7 @@ impl World {
         }
     }
 
-    fn intersections_for<'a, 'b>(&'a self, ray: &'b Ray) -> Vec<Intersection>
+    pub fn intersections_for<'a, 'b>(&'a self, ray: &'b Ray) -> Vec<Intersection>
     where
         'b: 'a,
     {
