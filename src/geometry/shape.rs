@@ -12,6 +12,12 @@ pub trait Shape {
     fn shape_type(&self) -> ShapeType;
 }
 
+impl PartialEq for dyn Shape {
+    fn eq(&self, other: &dyn Shape) -> bool {
+        self.shape_type() == other.shape_type() && self.transform() == other.transform()
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub enum ShapeType {
     Sphere,
