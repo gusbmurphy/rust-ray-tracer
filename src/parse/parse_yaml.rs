@@ -305,7 +305,7 @@ mod test {
         let sphere = world.shapes().get(0).unwrap();
         let material = sphere.material();
 
-        assert_eq!(*material.transparency(), 0.5)
+        assert_eq!(*material.transparency(), 0.9)
     }
 
     #[test]

@@ -102,3 +102,12 @@ fn small_reflective_scene() {
 
     insta::assert_yaml_snapshot!(ppm);
 }
+
+#[test]
+fn transparent_sphere() {
+    let (world, camera) = parse_scene_from_yaml("tests/scenes/transparent_sphere.yaml").unwrap();
+
+    let ppm = create_ppm_from_canvas(camera.render(world));
+
+    insta::assert_yaml_snapshot!(ppm);
+}
