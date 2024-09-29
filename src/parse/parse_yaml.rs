@@ -305,7 +305,7 @@ mod test {
         let sphere = world.shapes().get(0).unwrap();
         let material = sphere.material();
 
-        assert_eq!(*material.transparency(), 0.8)
+        assert_eq!(*material.transparency(), 0.7)
     }
 
     #[test]
@@ -316,7 +316,7 @@ mod test {
         let sphere = world.shapes().get(0).unwrap();
         let material = sphere.material();
 
-        assert_eq!(*material.refractive_index(), 1.52)
+        assert_eq!(*material.refractive_index(), 2.417)
     }
 
     #[test]
