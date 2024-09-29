@@ -4,6 +4,8 @@ use crate::render::shading::diffuse::calculate_diffuse_contribution;
 use crate::render::shading::reflective::calculate_reflective_contribution;
 use crate::render::shading::specular::calculate_specular_contribution;
 
+use super::refractive::calculate_refractive_contribution;
+
 pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     shade_ray_with_maximum_recursion(world, ray, 0)
 }
@@ -38,7 +40,8 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
     return ambient_contribution
         + calculate_diffuse_contribution(light, hit)
         + calculate_specular_contribution(light, hit)
-        + calculate_reflective_contribution(hit, world, current_recursion_count);
+        + calculate_reflective_contribution(hit, world, current_recursion_count)
+        + calculate_refractive_contribution(hit, world, current_recursion_count);
 }
 
 // This adjusts the hit so that it's ever so slightly on the outside of the intersected shape.
@@ -323,5 +326,40 @@ mod test {
 
         shade_ray(&world, &Ray::new(ORIGIN, POSITIVE_Y));
         // No assertion here because we just shouldn't get a stack overflow...
+    }
+
+    #[test]
+    fn introducing_a_transparent_material() {
+        let mut world = World::create_default();
+
+        let mut new_floor = Plane::new();
+        new_floor.set_transform(Transform::translation(0.0, -1.0, 0.0));
+        new_floor.set_material(
+            MaterialBuilder::new()
+                .transparency(0.5)
+                .refractive_index(1.5)
+                .build(),
+        );
+
+        let mut ball = Sphere::new();
+        ball.set_transform(Transform::translation(0.0, -3.5, -0.5));
+        ball.set_material(
+            MaterialBuilder::new()
+                .flat_color(Color::new(1.0, 0.0, 0.0))
+                .ambient(0.5)
+                .build(),
+        );
+
+        world.add_shape(Rc::new(ball));
+        world.add_shape(Rc::new(new_floor));
+
+        let ray = Ray::new(
+            Point::new(0.0, 0.0, -3.0),
+            Vector::new(0.0, -2f64.sqrt() / 2.0, 2f64.sqrt() / 2.0),
+        );
+
+        let result = shade_ray(&world, &ray);
+
+        assert_eq!(result, Color::new(0.93642, 0.68642, 0.68642))
     }
 }
