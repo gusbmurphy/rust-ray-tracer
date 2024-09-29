@@ -32,17 +32,7 @@ pub fn shade_ray_with_maximum_recursion(
 }
 
 fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> Color {
-    let light = world.light();
-
-    let ambient_contribution = calculate_ambient_contribution(light, hit);
-
-    if world.is_point_shadowed(&adjust_hit_over(&hit)) {
-        return ambient_contribution;
-    }
-
-    let mut color = ambient_contribution
-        + calculate_diffuse_contribution(light, hit)
-        + calculate_specular_contribution(light, hit);
+    let mut color = calculate_surface_color(world, hit);
 
     let reflective_contribution =
         calculate_reflective_contribution(hit, world, current_recursion_count);
@@ -62,6 +52,20 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
     }
 
     color
+}
+
+fn calculate_surface_color(world: &World, hit: &Intersection) -> Color {
+    let light = world.light();
+
+    let ambient_contribution = calculate_ambient_contribution(light, hit);
+
+    if world.is_point_shadowed(&adjust_hit_over(&hit)) {
+        return ambient_contribution;
+    }
+
+    ambient_contribution
+        + calculate_diffuse_contribution(light, hit)
+        + calculate_specular_contribution(light, hit)
 }
 
 // This adjusts the hit so that it's ever so slightly on the outside of the intersected shape.
@@ -417,5 +421,42 @@ mod test {
         let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.93391, 0.69643, 0.69243))
+    }
+
+    #[test]
+    fn fully_transparent_sphere() {
+        let mut world = World::create_default();
+
+        let mut transparent_sphere = Sphere::new();
+        transparent_sphere.set_material(
+            MaterialBuilder::new()
+                .flat_color(BLACK)
+                .transparency(1.0)
+                .refractive_index(1.5)
+                .specular(0.0)
+                .diffuse(0.0)
+                .build(),
+        );
+        let transparent_rc = Rc::new(transparent_sphere);
+
+        let mut red_sphere = Sphere::new();
+        red_sphere.set_transform(Transform::translation(0.0, 0.0, 3.0));
+        red_sphere.set_material(
+            MaterialBuilder::new()
+                .flat_color(RED)
+                .specular(0.0)
+                .diffuse(0.0)
+                .ambient(1.0)
+                .build(),
+        );
+        let red_rc = Rc::new(red_sphere);
+
+        world.set_shapes(vec![transparent_rc, red_rc]);
+
+        let ray = Ray::new(Point::new(0.0, 0.0, -3.0), POSITIVE_Z);
+
+        let result = shade_ray(&world, &ray);
+
+        assert_eq!(result, RED)
     }
 }
