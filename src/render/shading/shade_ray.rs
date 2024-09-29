@@ -4,7 +4,10 @@ use crate::render::shading::diffuse::calculate_diffuse_contribution;
 use crate::render::shading::reflective::calculate_reflective_contribution;
 use crate::render::shading::specular::calculate_specular_contribution;
 
-use super::refractive::calculate_refractive_contribution;
+use super::{
+    refractive::{self, calculate_refractive_contribution},
+    schlick::schlick_approximation,
+};
 
 pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     shade_ray_with_maximum_recursion(world, ray, 0)
@@ -37,11 +40,28 @@ fn shade_hit(world: &World, hit: &Intersection, current_recursion_count: i8) -> 
         return ambient_contribution;
     }
 
-    return ambient_contribution
+    let mut color = ambient_contribution
         + calculate_diffuse_contribution(light, hit)
-        + calculate_specular_contribution(light, hit)
-        + calculate_reflective_contribution(hit, world, current_recursion_count)
-        + calculate_refractive_contribution(hit, world, current_recursion_count);
+        + calculate_specular_contribution(light, hit);
+
+    let reflective_contribution =
+        calculate_reflective_contribution(hit, world, current_recursion_count);
+    let refractive_contribution =
+        calculate_refractive_contribution(hit, world, current_recursion_count);
+
+    let material = hit.material();
+
+    if material.reflective() > &0.0 && material.transparency() > &0.0 {
+        let reflectance = schlick_approximation(hit);
+
+        color = color
+            + reflective_contribution * reflectance
+            + refractive_contribution * (1.0 - reflectance);
+    } else {
+        color = color + reflective_contribution + refractive_contribution;
+    }
+
+    color
 }
 
 // This adjusts the hit so that it's ever so slightly on the outside of the intersected shape.
@@ -361,5 +381,41 @@ mod test {
         let result = shade_ray(&world, &ray);
 
         assert_eq!(result, Color::new(0.93642, 0.68642, 0.68642))
+    }
+
+    #[test]
+    fn transparent_and_reflective_material() {
+        let mut world = World::create_default();
+
+        let mut new_floor = Plane::new();
+        new_floor.set_transform(Transform::translation(0.0, -1.0, 0.0));
+        new_floor.set_material(
+            MaterialBuilder::new()
+                .transparency(0.5)
+                .reflective(0.5)
+                .refractive_index(1.5)
+                .build(),
+        );
+
+        let mut ball = Sphere::new();
+        ball.set_transform(Transform::translation(0.0, -3.5, -0.5));
+        ball.set_material(
+            MaterialBuilder::new()
+                .flat_color(Color::new(1.0, 0.0, 0.0))
+                .ambient(0.5)
+                .build(),
+        );
+
+        world.add_shape(Rc::new(ball));
+        world.add_shape(Rc::new(new_floor));
+
+        let ray = Ray::new(
+            Point::new(0.0, 0.0, -3.0),
+            Vector::new(0.0, -2f64.sqrt() / 2.0, 2f64.sqrt() / 2.0),
+        );
+
+        let result = shade_ray(&world, &ray);
+
+        assert_eq!(result, Color::new(0.93391, 0.69643, 0.69243))
     }
 }
