@@ -77,6 +77,11 @@ fn parse_material(yaml: &Yaml) -> Result<Material, Box<dyn Error>> {
                     material_builder = material_builder.reflective(reflective);
                 }
             }
+            "transparency" => {
+                if let Ok(transparency) = parse_f64_from_integer_or_real(value) {
+                    material_builder = material_builder.transparency(transparency);
+                }
+            }
             _ => todo!(),
         }
     }
