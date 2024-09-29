@@ -98,6 +98,10 @@ impl World {
         &self.shapes
     }
 
+    pub fn set_shapes(&mut self, shapes: Vec<Rc<dyn Shape>>) {
+        self.shapes = shapes;
+    }
+
     pub fn add_shape(&mut self, shape: Rc<dyn Shape>) {
         self.shapes.push(shape);
     }
