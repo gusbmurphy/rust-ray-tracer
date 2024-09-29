@@ -15,12 +15,8 @@
       - translate: [0, 1, 0]
     material:
       pattern: { flat: [1, 0, 0.5] }
-      ambient: 0.9
-      diffuse: 0.7
-      specular: 0.1
-      shininess: 50
-      reflective: 0.05
       transparency: 0.5
+      refractive_index: 1.5
 
 - plane:
     material:

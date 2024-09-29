@@ -309,6 +309,17 @@ mod test {
     }
 
     #[test]
+    fn materials_can_have_a_refractive_index() {
+        let (world, _camera) =
+            parse_scene_from_yaml("tests/scenes/transparent_sphere.yaml").unwrap();
+
+        let sphere = world.shapes().get(0).unwrap();
+        let material = sphere.material();
+
+        assert_eq!(*material.refractive_index(), 1.5)
+    }
+
+    #[test]
     fn the_checkered_pattern_can_have_subpatterns() {
         let (world, _camera) =
             parse_scene_from_yaml("tests/scenes/floor_with_nested_checkers.yaml").unwrap();

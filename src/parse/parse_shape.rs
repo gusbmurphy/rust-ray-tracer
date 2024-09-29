@@ -82,6 +82,11 @@ fn parse_material(yaml: &Yaml) -> Result<Material, Box<dyn Error>> {
                     material_builder = material_builder.transparency(transparency);
                 }
             }
+            "refractive_index" => {
+                if let Ok(refractive_index) = parse_f64_from_integer_or_real(value) {
+                    material_builder = material_builder.refractive_index(refractive_index);
+                }
+            }
             _ => todo!(),
         }
     }
