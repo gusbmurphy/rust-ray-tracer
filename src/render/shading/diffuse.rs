@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::render::shading::shade_ray::adjust_hit;
+use crate::render::shading::shade_ray::adjust_hit_over;
 
 pub fn calculate_diffuse_contribution(light: &PointLight, hit: &Intersection) -> Color {
     let light_vector = (*light.position() - hit.point()).normalize();
@@ -10,7 +10,7 @@ pub fn calculate_diffuse_contribution(light: &PointLight, hit: &Intersection) ->
         return BLACK;
     }
 
-    let adjusted_hit = adjust_hit(&hit);
+    let adjusted_hit = adjust_hit_over(&hit);
     let hit_in_object_space = hit.object().transform().invert().unwrap() * adjusted_hit;
 
     let effective_color = hit.material().color_at(&hit_in_object_space) * *light.intensity();
