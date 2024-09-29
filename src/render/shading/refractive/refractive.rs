@@ -25,6 +25,9 @@ pub fn calculate_refractive_contribution(
     let cos_i = dot(&eye_vector, &normal_vector);
 
     let sin2_t = refractive_ratio.powi(2) * (1.0 - cos_i.powi(2));
+    if sin2_t > 1.0f64 {
+        return BLACK;
+    }
 
     let cos_t = (1.0 - sin2_t).sqrt();
 
@@ -40,6 +43,7 @@ pub fn calculate_refractive_contribution(
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::rc::Rc;
 
     #[test]
     fn an_opaque_object_has_no_refractive_contribution() {
@@ -50,6 +54,27 @@ mod test {
 
         let result = calculate_refractive_contribution(intersections.get(0).unwrap(), &world, 0);
 
+        assert_eq!(result, BLACK);
+    }
+
+    #[test]
+    fn black_is_returned_at_total_internal_reflection() {
+        let mut world = World::create_default();
+        let sphere = Sphere::new_with_material(
+            MaterialBuilder::new()
+                .transparency(1.0)
+                .refractive_index(1.5)
+                .build(),
+        );
+        let sphere_rc = Rc::new(sphere) as Rc<dyn Shape>;
+        world.set_shapes(vec![sphere_rc.clone()]);
+
+        let ray = Ray::new(Point::new(0.0, 0.0, 2f64.sqrt() / 2f64), POSITIVE_Y);
+
+        let intersections = Intersection::of(&sphere_rc, &ray);
+        let hit = intersections.get(1).unwrap();
+
+        let result = calculate_refractive_contribution(hit, &world, 0);
         assert_eq!(result, BLACK);
     }
 }
