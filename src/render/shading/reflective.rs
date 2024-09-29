@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::render::shading::shade_ray::adjust_hit;
+use crate::render::shading::shade_ray::adjust_hit_over;
 use crate::render::shading::shade_ray::shade_ray_with_maximum_recursion;
 
 pub fn calculate_reflective_contribution(
@@ -7,7 +7,7 @@ pub fn calculate_reflective_contribution(
     world: &World,
     current_recursion_count: i8,
 ) -> Color {
-    let adjusted_hit = adjust_hit(&hit);
+    let adjusted_hit = adjust_hit_over(&hit);
     let material = hit.material();
 
     let reflection_vector = hit.ray().direction().reflect_around(&hit.normal_vector());
