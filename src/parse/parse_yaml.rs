@@ -7,6 +7,8 @@ use crate::{
     prelude::*,
 };
 
+use super::parse_little_things::parse_color;
+
 pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn Error>> {
     let text = read_to_string(file_path)?;
     let nodes = YamlLoader::load_from_str(text.as_str())?
@@ -18,18 +20,19 @@ pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn
 
     let mut world = World::new();
     let mut camera = Camera::new(100, 100, 100.0);
+    let mut background = BLACK;
 
     for node in nodes {
         match node {
             yaml_rust::Yaml::Hash(ref h) => {
                 for (key, value) in h {
-                    let value_hash = value.as_hash();
                     match key.as_str().unwrap() {
-                        "camera" => camera = parse_camera(value_hash.unwrap())?,
-                        "light" => world.set_light(parse_light(value_hash.unwrap())?),
+                        "camera" => camera = parse_camera(value.as_hash().unwrap())?,
+                        "light" => world.set_light(parse_light(value.as_hash().unwrap())?),
                         "sphere" | "plane" => {
-                            world.add_shape(parse_shape(value_hash, key.as_str().unwrap())?)
+                            world.add_shape(parse_shape(value.as_hash(), key.as_str().unwrap())?)
                         }
+                        "background" => background = parse_color(value).unwrap(),
                         _ => todo!(),
                     }
                 }
@@ -39,6 +42,8 @@ pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn
             }
         }
     }
+
+    world.set_background(background);
 
     return Ok((world, camera));
 }
@@ -337,5 +342,15 @@ mod test {
         let material = world.shapes().get(0).unwrap().material();
 
         assert_eq!(*material, expected_material);
+    }
+
+    #[test]
+    fn you_can_set_the_background() {
+        let (world, _camera) =
+            parse_scene_from_yaml("tests/scenes/reflective_floor_with_bg_color.yaml").unwrap();
+
+        let bg = *world.background();
+
+        assert_eq!(bg, RED);
     }
 }
