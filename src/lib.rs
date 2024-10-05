@@ -1,3 +1,5 @@
+mod app;
+pub use app::SceneBuilder;
 mod geometry;
 pub mod parse;
 mod pattern;
