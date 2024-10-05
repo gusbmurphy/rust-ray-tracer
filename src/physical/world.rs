@@ -16,6 +16,7 @@ impl World {
         }
     }
 
+    // TODO: I think we can use the `Default` trait maybe...
     pub fn create_default() -> Self {
         let first_sphere_material = MaterialBuilder::new()
             .flat_color(Color::new(0.8, 1.0, 0.6))
