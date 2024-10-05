@@ -4,10 +4,7 @@ use crate::render::shading::diffuse::calculate_diffuse_contribution;
 use crate::render::shading::reflective::calculate_reflective_contribution;
 use crate::render::shading::specular::calculate_specular_contribution;
 
-use super::{
-    refractive::{self, calculate_refractive_contribution},
-    schlick::schlick_approximation,
-};
+use super::{refractive::calculate_refractive_contribution, schlick::schlick_approximation};
 
 pub fn shade_ray(world: &World, ray: &Ray) -> Color {
     shade_ray_with_maximum_recursion(world, ray, 0)
