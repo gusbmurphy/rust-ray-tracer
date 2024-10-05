@@ -4,6 +4,7 @@ use std::rc::Rc;
 pub struct World {
     light: PointLight,
     shapes: Vec<Rc<dyn Shape>>,
+    background: Color,
 }
 
 impl World {
@@ -11,6 +12,7 @@ impl World {
         World {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(-10.0, 10.0, -10.0)),
             shapes: Vec::new(),
+            background: BLACK,
         }
     }
 
@@ -35,6 +37,7 @@ impl World {
         World {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(-10.0, 10.0, -10.0)),
             shapes,
+            background: BLACK,
         }
     }
 
@@ -104,6 +107,14 @@ impl World {
 
     pub fn add_shape(&mut self, shape: Rc<dyn Shape>) {
         self.shapes.push(shape);
+    }
+
+    pub fn set_background(&mut self, background: Color) {
+        self.background = background;
+    }
+
+    pub fn background(&self) -> &Color {
+        &self.background
     }
 }
 

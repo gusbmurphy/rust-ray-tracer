@@ -24,7 +24,7 @@ pub fn shade_ray_with_maximum_recursion(
         if let Some(hit) = world.hit_for(ray) {
             shade_hit(world, &hit, current_recursion_count)
         } else {
-            BLACK
+            *world.background()
         }
     } else {
         BLACK
@@ -108,13 +108,14 @@ mod test {
     }
 
     #[test]
-    fn color_when_ray_misses_everything() {
-        let world = World::create_default();
+    fn when_a_ray_misses_the_background_color_is_returned() {
+        let mut world = World::create_default();
+        world.set_background(RED);
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 1.0, 0.0));
 
         let result = shade_ray(&world, &ray);
 
-        assert_eq!(result, BLACK);
+        assert_eq!(result, RED);
     }
 
     #[test]
