@@ -7,7 +7,6 @@ use crate::prelude::POSITIVE_Y;
 use crate::render::create_ppm_from_canvas;
 use eframe::App;
 use egui::emath::Numeric;
-use egui::UiBuilder;
 use std::fs::File;
 use std::io::Write;
 
@@ -79,17 +78,15 @@ impl App for SceneBuilder {
             // The central panel the region left after adding TopPanel's and SidePanel's
             ui.heading("Scene Builder");
 
-            ui.scope_builder(UiBuilder::new(), |ui| {
-                egui::Grid::new("my_grid")
-                    .num_columns(2)
-                    .spacing([40.0, 4.0])
-                    .striped(true)
-                    .show(ui, |ui| {
-                        ui.label("Color");
-                        ui.color_edit_button_rgb(&mut self.color);
-                        ui.end_row();
-                    });
-            });
+            egui::Grid::new("my_grid")
+                .num_columns(2)
+                .spacing([40.0, 4.0])
+                .striped(true)
+                .show(ui, |ui| {
+                    ui.label("Color");
+                    ui.color_edit_button_rgb(&mut self.color);
+                    ui.end_row();
+                });
         });
     }
 }
