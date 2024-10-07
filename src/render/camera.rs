@@ -2,14 +2,14 @@ use crate::prelude::*;
 use crate::render::shading::shade_ray;
 
 pub struct Camera {
-    horizontal_size: u64,
-    vertical_size: u64,
+    horizontal_size: u32,
+    vertical_size: u32,
     field_of_view: f64,
     transform: Transform,
 }
 
 impl Camera {
-    pub fn new(horizontal_size: u64, vertical_size: u64, field_of_view: f64) -> Self {
+    pub fn new(horizontal_size: u32, vertical_size: u32, field_of_view: f64) -> Self {
         Camera {
             horizontal_size,
             vertical_size,
@@ -19,8 +19,8 @@ impl Camera {
     }
 
     pub fn new_with_transform(
-        horizontal_size: u64,
-        vertical_size: u64,
+        horizontal_size: u32,
+        vertical_size: u32,
         field_of_view: f64,
         transform: Transform,
     ) -> Self {
@@ -52,7 +52,7 @@ impl Camera {
         (self.half_width() * 2.0) / (self.horizontal_size as f64)
     }
 
-    pub fn get_ray_for_pixel(&self, pixel_x: u64, pixel_y: u64) -> Ray {
+    pub fn get_ray_for_pixel(&self, pixel_x: u32, pixel_y: u32) -> Ray {
         let x_offset = (pixel_x as f64 + 0.5) * self.get_pixel_size();
         let y_offset = (pixel_y as f64 + 0.5) * self.get_pixel_size();
 
@@ -95,11 +95,11 @@ impl Camera {
         (self.horizontal_size as f64) / (self.vertical_size as f64)
     }
 
-    pub fn width(&self) -> &u64 {
+    pub fn width(&self) -> &u32 {
         &self.horizontal_size
     }
 
-    pub fn height(&self) -> &u64 {
+    pub fn height(&self) -> &u32 {
         &self.vertical_size
     }
 

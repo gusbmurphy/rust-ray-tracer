@@ -6,8 +6,8 @@ use linked_hash_map::LinkedHashMap;
 use yaml_rust::Yaml;
 
 pub fn parse_camera(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Camera, Box<dyn Error>> {
-    let mut width: Option<u64> = None;
-    let mut height: Option<u64> = None;
+    let mut width: Option<u32> = None;
+    let mut height: Option<u32> = None;
     let mut fov: Option<f64> = None;
     let mut from: Option<Point> = None;
     let mut to: Option<Point> = None;
@@ -15,8 +15,8 @@ pub fn parse_camera(map: &LinkedHashMap<Yaml, Yaml>) -> Result<Camera, Box<dyn E
 
     for (key, value) in map {
         match key.as_str().unwrap() {
-            "width" => width = Some(value.as_i64().unwrap() as u64),
-            "height" => height = Some(value.as_i64().unwrap() as u64),
+            "width" => width = Some(value.as_i64().unwrap() as u32),
+            "height" => height = Some(value.as_i64().unwrap() as u32),
             "fov" => fov = Some(parse_f64_from_integer_or_real(value)?),
             "from" => from = Some(parse_point(value.as_vec().unwrap().to_owned()).unwrap()),
             "to" => to = Some(parse_point(value.as_vec().unwrap().to_owned()).unwrap()),

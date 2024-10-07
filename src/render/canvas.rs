@@ -1,13 +1,13 @@
 use crate::render::color::Color;
 
 pub struct Canvas {
-    width: u64,
-    height: u64,
+    width: u32,
+    height: u32,
     pixels: Vec<Vec<Color>>,
 }
 
 impl Canvas {
-    pub fn new(width: u64, height: u64) -> Self {
+    pub fn new(width: u32, height: u32) -> Self {
         Canvas {
             width,
             height,
@@ -15,11 +15,11 @@ impl Canvas {
         }
     }
 
-    pub fn width(&self) -> &u64 {
+    pub fn width(&self) -> &u32 {
         &self.width
     }
 
-    pub fn height(&self) -> &u64 {
+    pub fn height(&self) -> &u32 {
         &self.height
     }
 
@@ -36,7 +36,7 @@ impl Canvas {
     }
 }
 
-fn create_all_default_rows(width: u64, height: u64) -> Vec<Vec<Color>> {
+fn create_all_default_rows(width: u32, height: u32) -> Vec<Vec<Color>> {
     let mut rows = Vec::new();
 
     for _i in 0..height {
@@ -46,7 +46,7 @@ fn create_all_default_rows(width: u64, height: u64) -> Vec<Vec<Color>> {
     rows
 }
 
-fn create_default_row(length: u64) -> Vec<Color> {
+fn create_default_row(length: u32) -> Vec<Color> {
     let mut row = Vec::new();
 
     for _i in 0..length {
