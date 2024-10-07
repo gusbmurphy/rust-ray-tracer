@@ -24,6 +24,31 @@ impl Color {
     pub fn g(&self) -> &f64 {
         &self.g
     }
+
+    pub fn to_rgb(&self) -> [u8; 3] {
+        [
+            to_rgb_value(self.r),
+            to_rgb_value(self.b),
+            to_rgb_value(self.g),
+        ]
+    }
+}
+
+const MAX_RGB_VALUE: u8 = 255;
+
+// TODO: This looks exactly like `convert_color_value_to_ppm_value`.
+fn to_rgb_value(value: f64) -> u8 {
+    let rgb_value = ((MAX_RGB_VALUE as f64) * value) as f64;
+
+    if rgb_value < 0.0 {
+        return 0;
+    }
+
+    if rgb_value > MAX_RGB_VALUE as f64 {
+        return MAX_RGB_VALUE;
+    }
+
+    rgb_value.round() as u8
 }
 
 pub const RED: Color = Color {
@@ -137,5 +162,14 @@ mod test {
         let result = c1 * c2;
 
         assert_eq!(result, Color::new(0.9, 0.2, 0.04));
+    }
+
+    #[test]
+    fn converting_color_to_rbg_array() {
+        assert_eq!(RED.to_rgb(), [255, 0, 0]);
+        assert_eq!(BLUE.to_rgb(), [0, 255, 0]);
+        assert_eq!(GREEN.to_rgb(), [0, 0, 255]);
+        assert_eq!(BLACK.to_rgb(), [0, 0, 0]);
+        assert_eq!(WHITE.to_rgb(), [255, 255, 255]);
     }
 }
