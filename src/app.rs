@@ -49,23 +49,6 @@ impl App for SceneBuilder {
             });
         });
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            // The central panel the region left after adding TopPanel's and SidePanel's
-            ui.heading("Scene Builder");
-
-            ui.scope_builder(UiBuilder::new(), |ui| {
-                egui::Grid::new("my_grid")
-                    .num_columns(2)
-                    .spacing([40.0, 4.0])
-                    .striped(true)
-                    .show(ui, |ui| {
-                        ui.label("Color");
-                        ui.color_edit_button_rgb(&mut self.color);
-                        ui.end_row();
-                    });
-            });
-        });
-
         egui::TopBottomPanel::bottom("bottom_panel").show(ctx, |ui| {
             egui::menu::bar(ui, |ui| {
                 if ui.button("Build").clicked() {
@@ -89,6 +72,23 @@ impl App for SceneBuilder {
                     let mut file = File::create("output/trying.ppm").unwrap();
                     let _ = file.write_all(ppm.as_bytes());
                 };
+            });
+        });
+
+        egui::CentralPanel::default().show(ctx, |ui| {
+            // The central panel the region left after adding TopPanel's and SidePanel's
+            ui.heading("Scene Builder");
+
+            ui.scope_builder(UiBuilder::new(), |ui| {
+                egui::Grid::new("my_grid")
+                    .num_columns(2)
+                    .spacing([40.0, 4.0])
+                    .striped(true)
+                    .show(ui, |ui| {
+                        ui.label("Color");
+                        ui.color_edit_button_rgb(&mut self.color);
+                        ui.end_row();
+                    });
             });
         });
     }
