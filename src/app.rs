@@ -1,5 +1,6 @@
 use crate::prelude::Camera;
 use crate::prelude::Point;
+use crate::prelude::Shape;
 use crate::prelude::Transform;
 use crate::prelude::Tuple;
 use crate::prelude::ORIGIN;
@@ -17,6 +18,9 @@ use crate::render::Color;
 
 pub struct SceneBuilder {
     color: [f32; 3],
+    x: f64,
+    y: f64,
+    z: f64,
     image_texture: Option<TextureHandle>,
 }
 
@@ -24,6 +28,9 @@ impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
             color: [0.1, 0.1, 0.1],
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
             image_texture: None,
         }
     }
@@ -54,7 +61,7 @@ impl App for SceneBuilder {
             egui::menu::bar(ui, |ui| {
                 if ui.button("Build").clicked() {
                     let mut world = World::new();
-                    let sphere = Sphere::new_with_material(
+                    let mut sphere = Sphere::new_with_material(
                         MaterialBuilder::new()
                             .flat_color(Color::new(
                                 self.color[0].to_f64(),
@@ -63,6 +70,7 @@ impl App for SceneBuilder {
                             ))
                             .build(),
                     );
+                    sphere.set_transform(Transform::translation(self.x, self.y, self.z));
                     world.add_sphere(sphere);
 
                     let camera_transform =
@@ -110,6 +118,12 @@ impl App for SceneBuilder {
                 .show(ui, |ui| {
                     ui.label("Color");
                     ui.color_edit_button_rgb(&mut self.color);
+                    ui.end_row();
+
+                    ui.label("Position");
+                    ui.add(egui::DragValue::new(&mut self.x).speed(0.1));
+                    ui.add(egui::DragValue::new(&mut self.y).speed(0.1));
+                    ui.add(egui::DragValue::new(&mut self.z).speed(0.1));
                     ui.end_row();
                 });
 
