@@ -4,7 +4,6 @@ use crate::prelude::Transform;
 use crate::prelude::Tuple;
 use crate::prelude::ORIGIN;
 use crate::prelude::POSITIVE_Y;
-use crate::render::Canvas;
 use eframe::App;
 use egui::emath::Numeric;
 use egui::Color32;
@@ -18,7 +17,6 @@ use crate::render::Color;
 
 pub struct SceneBuilder {
     color: [f32; 3],
-    canvas: Option<Canvas>,
     image_texture: Option<TextureHandle>,
 }
 
@@ -26,7 +24,6 @@ impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
             color: [0.1, 0.1, 0.1],
-            canvas: None,
             image_texture: None,
         }
     }
@@ -81,7 +78,24 @@ impl App for SceneBuilder {
                     );
                     let canvas = camera.render(world);
 
-                    self.canvas = Some(canvas);
+                    let mut image = ColorImage::new(
+                        [image_height as usize, image_width as usize],
+                        Color32::BLACK,
+                    );
+
+                    for y in 0..image_height as usize {
+                        for x in 0..image_width as usize {
+                            let rgb_values = canvas.pixel_at(x, y).to_rgb();
+                            let color =
+                                Color32::from_rgb(rgb_values[0], rgb_values[1], rgb_values[2]);
+
+                            let pixel_index = x + (y * image_width as usize);
+                            image.pixels[pixel_index] = color;
+                        }
+                    }
+
+                    self.image_texture =
+                        Some(ctx.load_texture("result_image", image, Default::default()));
                 };
             });
         });
@@ -99,29 +113,7 @@ impl App for SceneBuilder {
                     ui.end_row();
                 });
 
-            if let Some(c) = &self.canvas {
-                let image_height = *c.height() as usize;
-                let image_width = *c.width() as usize;
-
-                let mut image = ColorImage::new(
-                    [image_height as usize, image_width as usize],
-                    Color32::BLACK,
-                );
-
-                for y in 0..image_height as usize {
-                    for x in 0..image_width as usize {
-                        let rgb_values = c.pixel_at(x, y).to_rgb();
-                        let color = Color32::from_rgb(rgb_values[0], rgb_values[1], rgb_values[2]);
-
-                        let pixel_index = x + (y * image_width as usize);
-                        image.pixels[pixel_index] = color;
-                    }
-                }
-
-                let texture = self.image_texture.get_or_insert_with(|| {
-                    ctx.load_texture("result_image", image, Default::default())
-                });
-
+            if let Some(texture) = &self.image_texture {
                 ui.image((texture.id(), texture.size_vec2()));
             };
         });
