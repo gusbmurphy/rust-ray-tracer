@@ -87,7 +87,6 @@ impl App for SceneBuilder {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            // The central panel the region left after adding TopPanel's and SidePanel's
             ui.heading("Scene Builder");
 
             egui::Grid::new("my_grid")
