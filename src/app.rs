@@ -17,7 +17,7 @@ use crate::prelude::World;
 use crate::render::Color;
 
 pub struct SceneBuilder {
-    sphere_info: SphereInfo,
+    sphere_info: Vec<SphereInfo>,
     image_texture: Option<TextureHandle>,
 }
 
@@ -31,12 +31,12 @@ struct SphereInfo {
 impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
-            sphere_info: SphereInfo {
+            sphere_info: vec![SphereInfo {
                 color: [0.1, 0.1, 0.1],
                 x: 0.0,
                 y: 0.0,
                 z: 0.0,
-            },
+            }],
             image_texture: None,
         }
     }
@@ -67,21 +67,20 @@ impl App for SceneBuilder {
             egui::menu::bar(ui, |ui| {
                 if ui.button("Build").clicked() {
                     let mut world = World::new();
-                    let mut sphere = Sphere::new_with_material(
-                        MaterialBuilder::new()
-                            .flat_color(Color::new(
-                                self.sphere_info.color[0].to_f64(),
-                                self.sphere_info.color[1].to_f64(),
-                                self.sphere_info.color[2].to_f64(),
-                            ))
-                            .build(),
-                    );
-                    sphere.set_transform(Transform::translation(
-                        self.sphere_info.x,
-                        self.sphere_info.y,
-                        self.sphere_info.z,
-                    ));
-                    world.add_sphere(sphere);
+
+                    for info in &self.sphere_info {
+                        let mut sphere = Sphere::new_with_material(
+                            MaterialBuilder::new()
+                                .flat_color(Color::new(
+                                    info.color[0].to_f64(),
+                                    info.color[1].to_f64(),
+                                    info.color[2].to_f64(),
+                                ))
+                                .build(),
+                        );
+                        sphere.set_transform(Transform::translation(info.x, info.y, info.z));
+                        world.add_sphere(sphere);
+                    }
 
                     let camera_transform =
                         Transform::view(Point::new(0.0, 0.0, -5.0), ORIGIN, POSITIVE_Y);
@@ -126,15 +125,17 @@ impl App for SceneBuilder {
                 .spacing([40.0, 4.0])
                 .striped(true)
                 .show(ui, |ui| {
-                    ui.label("Color");
-                    ui.color_edit_button_rgb(&mut self.sphere_info.color);
-                    ui.end_row();
+                    for info in &mut self.sphere_info {
+                        ui.label("Color");
+                        ui.color_edit_button_rgb(&mut info.color);
+                        ui.end_row();
 
-                    ui.label("Position");
-                    ui.add(egui::DragValue::new(&mut self.sphere_info.x).speed(0.1));
-                    ui.add(egui::DragValue::new(&mut self.sphere_info.y).speed(0.1));
-                    ui.add(egui::DragValue::new(&mut self.sphere_info.z).speed(0.1));
-                    ui.end_row();
+                        ui.label("Position");
+                        ui.add(egui::DragValue::new(&mut info.x).speed(0.1));
+                        ui.add(egui::DragValue::new(&mut info.y).speed(0.1));
+                        ui.add(egui::DragValue::new(&mut info.z).speed(0.1));
+                        ui.end_row();
+                    }
                 });
 
             if let Some(texture) = &self.image_texture {
