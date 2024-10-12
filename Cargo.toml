@@ -10,7 +10,7 @@ duplicate = "1.0.0"
 dyn-eq = "0.1.3"
 eframe = "0.29.1"
 egui = "0.29.1"
-egui_extras = { version = "0.29.1", features = ["all_loaders"] }
+egui_extras = { version = "0.29.1", features = ["default", "all_loaders"] }
 env_logger = "0.11.5"
 image = { version = "0.25.2", features = ["png"] }
 linked-hash-map = "0.5.6"

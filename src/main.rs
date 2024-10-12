@@ -7,6 +7,9 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "eframe template",
         native_options,
-        Box::new(|cc| Ok(Box::new(ray_tracer::SceneBuilder::new(cc)))),
+        Box::new(|cc| {
+            egui_extras::install_image_loaders(&cc.egui_ctx);
+            Ok(Box::new(ray_tracer::SceneBuilder::new(cc)))
+        }),
     )
 }

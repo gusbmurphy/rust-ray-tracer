@@ -4,11 +4,12 @@ use crate::prelude::Transform;
 use crate::prelude::Tuple;
 use crate::prelude::ORIGIN;
 use crate::prelude::POSITIVE_Y;
-use crate::render::create_ppm_from_canvas;
+use crate::render::Canvas;
 use eframe::App;
 use egui::emath::Numeric;
-use std::fs::File;
-use std::io::Write;
+use egui::Color32;
+use egui::ColorImage;
+use egui::TextureHandle;
 
 use crate::prelude::MaterialBuilder;
 use crate::prelude::Sphere;
@@ -17,12 +18,16 @@ use crate::render::Color;
 
 pub struct SceneBuilder {
     color: [f32; 3],
+    canvas: Option<Canvas>,
+    image_texture: Option<TextureHandle>,
 }
 
 impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
             color: [0.1, 0.1, 0.1],
+            canvas: None,
+            image_texture: None,
         }
     }
 }
@@ -65,11 +70,18 @@ impl App for SceneBuilder {
 
                     let camera_transform =
                         Transform::view(Point::new(0.0, 0.0, -5.0), ORIGIN, POSITIVE_Y);
-                    let camera = Camera::new_with_transform(100, 100, 100.0, camera_transform);
 
-                    let ppm = create_ppm_from_canvas(camera.render(world));
-                    let mut file = File::create("output/trying.ppm").unwrap();
-                    let _ = file.write_all(ppm.as_bytes());
+                    let image_height = 100;
+                    let image_width = 100;
+                    let camera = Camera::new_with_transform(
+                        image_height,
+                        image_width,
+                        100.0,
+                        camera_transform,
+                    );
+                    let canvas = camera.render(world);
+
+                    self.canvas = Some(canvas);
                 };
             });
         });
@@ -87,6 +99,32 @@ impl App for SceneBuilder {
                     ui.color_edit_button_rgb(&mut self.color);
                     ui.end_row();
                 });
+
+            if let Some(c) = &self.canvas {
+                let image_height = *c.height() as usize;
+                let image_width = *c.width() as usize;
+
+                let mut image = ColorImage::new(
+                    [image_height as usize, image_width as usize],
+                    Color32::BLACK,
+                );
+
+                for y in 0..image_height as usize {
+                    for x in 0..image_width as usize {
+                        let rgb_values = c.pixel_at(x, y).to_rgb();
+                        let color = Color32::from_rgb(rgb_values[0], rgb_values[1], rgb_values[2]);
+
+                        let pixel_index = x + (y * image_width as usize);
+                        image.pixels[pixel_index] = color;
+                    }
+                }
+
+                let texture = self.image_texture.get_or_insert_with(|| {
+                    ctx.load_texture("result_image", image, Default::default())
+                });
+
+                ui.image((texture.id(), texture.size_vec2()));
+            };
         });
     }
 }
