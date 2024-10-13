@@ -18,7 +18,7 @@ use crate::prelude::World;
 use crate::render::Color;
 
 pub struct SceneBuilder {
-    sphere_info: Vec<SphereInfo>,
+    sphere_infos: Vec<SphereInfo>,
     image_texture: Option<TextureHandle>,
 }
 
@@ -45,7 +45,7 @@ impl Default for SphereInfo {
 impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
-            sphere_info: vec![SphereInfo::default()],
+            sphere_infos: vec![SphereInfo::default()],
             image_texture: None,
         }
     }
@@ -83,7 +83,7 @@ impl App for SceneBuilder {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Scene Builder");
 
-            for info in &mut self.sphere_info {
+            for info in &mut self.sphere_infos {
                 ui.label(info.name.to_owned());
 
                 egui::Grid::new(info.name.to_owned() + "-grid")
@@ -106,8 +106,8 @@ impl App for SceneBuilder {
             if ui.button("Add sphere").clicked() {
                 let mut new_info = SphereInfo::default();
                 new_info.name =
-                    "Sphere ".to_string() + (self.sphere_info.len() + 1).to_string().as_str();
-                self.sphere_info.push(new_info);
+                    "Sphere ".to_string() + (self.sphere_infos.len() + 1).to_string().as_str();
+                self.sphere_infos.push(new_info);
             }
 
             if let Some(texture) = &self.image_texture {
@@ -121,7 +121,7 @@ impl SceneBuilder {
     fn build_image(&mut self, ctx: &Context) {
         let mut world = World::new();
 
-        for info in &self.sphere_info {
+        for info in &self.sphere_infos {
             let mut sphere = Sphere::new_with_material(
                 MaterialBuilder::new()
                     .flat_color(Color::new(
