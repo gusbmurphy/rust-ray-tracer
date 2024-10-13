@@ -22,6 +22,7 @@ pub struct SceneBuilder {
 }
 
 struct SphereInfo {
+    name: String,
     color: [f32; 3],
     x: f64,
     y: f64,
@@ -31,6 +32,7 @@ struct SphereInfo {
 impl Default for SphereInfo {
     fn default() -> Self {
         Self {
+            name: "Sphere 1".to_string(),
             color: [0.1, 0.1, 0.1],
             x: 0.0,
             y: 0.0,
@@ -126,12 +128,14 @@ impl App for SceneBuilder {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Scene Builder");
 
-            egui::Grid::new("my_grid")
-                .num_columns(2)
-                .spacing([40.0, 4.0])
-                .striped(true)
-                .show(ui, |ui| {
-                    for info in &mut self.sphere_info {
+            for info in &mut self.sphere_info {
+                ui.label(info.name.to_owned());
+
+                egui::Grid::new(info.name.to_owned() + "-grid")
+                    .num_columns(2)
+                    .spacing([40.0, 4.0])
+                    .striped(true)
+                    .show(ui, |ui| {
                         ui.label("Color");
                         ui.color_edit_button_rgb(&mut info.color);
                         ui.end_row();
@@ -141,8 +145,15 @@ impl App for SceneBuilder {
                         ui.add(egui::DragValue::new(&mut info.y).speed(0.1));
                         ui.add(egui::DragValue::new(&mut info.z).speed(0.1));
                         ui.end_row();
-                    }
-                });
+                    });
+            }
+
+            if ui.button("Add sphere").clicked() {
+                let mut new_info = SphereInfo::default();
+                new_info.name =
+                    "Sphere ".to_string() + (self.sphere_info.len() + 1).to_string().as_str();
+                self.sphere_info.push(new_info);
+            }
 
             if let Some(texture) = &self.image_texture {
                 ui.image((texture.id(), texture.size_vec2()));
