@@ -9,6 +9,7 @@ use eframe::App;
 use egui::emath::Numeric;
 use egui::Color32;
 use egui::ColorImage;
+use egui::Context;
 use egui::TextureHandle;
 
 use crate::prelude::MaterialBuilder;
@@ -74,53 +75,7 @@ impl App for SceneBuilder {
         egui::TopBottomPanel::bottom("bottom_panel").show(ctx, |ui| {
             egui::menu::bar(ui, |ui| {
                 if ui.button("Build").clicked() {
-                    let mut world = World::new();
-
-                    for info in &self.sphere_info {
-                        let mut sphere = Sphere::new_with_material(
-                            MaterialBuilder::new()
-                                .flat_color(Color::new(
-                                    info.color[0].to_f64(),
-                                    info.color[1].to_f64(),
-                                    info.color[2].to_f64(),
-                                ))
-                                .build(),
-                        );
-                        sphere.set_transform(Transform::translation(info.x, info.y, info.z));
-                        world.add_sphere(sphere);
-                    }
-
-                    let camera_transform =
-                        Transform::view(Point::new(0.0, 0.0, -5.0), ORIGIN, POSITIVE_Y);
-
-                    let image_height = 100;
-                    let image_width = 100;
-                    let camera = Camera::new_with_transform(
-                        image_height,
-                        image_width,
-                        100.0,
-                        camera_transform,
-                    );
-                    let canvas = camera.render(world);
-
-                    let mut image = ColorImage::new(
-                        [image_height as usize, image_width as usize],
-                        Color32::BLACK,
-                    );
-
-                    for y in 0..image_height as usize {
-                        for x in 0..image_width as usize {
-                            let rgb_values = canvas.pixel_at(x, y).to_rgb();
-                            let color =
-                                Color32::from_rgb(rgb_values[0], rgb_values[1], rgb_values[2]);
-
-                            let pixel_index = x + (y * image_width as usize);
-                            image.pixels[pixel_index] = color;
-                        }
-                    }
-
-                    self.image_texture =
-                        Some(ctx.load_texture("result_image", image, Default::default()));
+                    self.build_image(ctx);
                 };
             });
         });
@@ -159,5 +114,49 @@ impl App for SceneBuilder {
                 ui.image((texture.id(), texture.size_vec2()));
             };
         });
+    }
+}
+
+impl SceneBuilder {
+    fn build_image(&mut self, ctx: &Context) {
+        let mut world = World::new();
+
+        for info in &self.sphere_info {
+            let mut sphere = Sphere::new_with_material(
+                MaterialBuilder::new()
+                    .flat_color(Color::new(
+                        info.color[0].to_f64(),
+                        info.color[1].to_f64(),
+                        info.color[2].to_f64(),
+                    ))
+                    .build(),
+            );
+            sphere.set_transform(Transform::translation(info.x, info.y, info.z));
+            world.add_sphere(sphere);
+        }
+
+        let camera_transform = Transform::view(Point::new(0.0, 0.0, -5.0), ORIGIN, POSITIVE_Y);
+
+        let image_height = 100;
+        let image_width = 100;
+        let camera = Camera::new_with_transform(image_height, image_width, 100.0, camera_transform);
+        let canvas = camera.render(world);
+
+        let mut image = ColorImage::new(
+            [image_height as usize, image_width as usize],
+            Color32::BLACK,
+        );
+
+        for y in 0..image_height as usize {
+            for x in 0..image_width as usize {
+                let rgb_values = canvas.pixel_at(x, y).to_rgb();
+                let color = Color32::from_rgb(rgb_values[0], rgb_values[1], rgb_values[2]);
+
+                let pixel_index = x + (y * image_width as usize);
+                image.pixels[pixel_index] = color;
+            }
+        }
+
+        self.image_texture = Some(ctx.load_texture("result_image", image, Default::default()));
     }
 }
