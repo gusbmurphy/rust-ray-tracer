@@ -28,15 +28,21 @@ struct SphereInfo {
     z: f64,
 }
 
+impl Default for SphereInfo {
+    fn default() -> Self {
+        Self {
+            color: [0.1, 0.1, 0.1],
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
+    }
+}
+
 impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
-            sphere_info: vec![SphereInfo {
-                color: [0.1, 0.1, 0.1],
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            }],
+            sphere_info: vec![SphereInfo::default()],
             image_texture: None,
         }
     }
