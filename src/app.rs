@@ -31,7 +31,7 @@ struct SphereInfo {
     shininess: f64,
     reflective: f64,
     refractive_index: f64,
-    transparency: f64,
+    transparency_percentage: f64,
     x: f64,
     y: f64,
     z: f64,
@@ -48,7 +48,7 @@ impl Default for SphereInfo {
             shininess: 200.0,
             reflective: 0.0,
             refractive_index: 1.0,
-            transparency: 0.0,
+            transparency_percentage: 0.0,
             x: 0.0,
             y: 0.0,
             z: 0.0,
@@ -134,7 +134,10 @@ impl App for SceneBuilder {
                         ui.end_row();
 
                         ui.label("Transparency");
-                        ui.add(egui::DragValue::new(&mut info.transparency).speed(0.1));
+                        ui.add(
+                            egui::Slider::new(&mut info.transparency_percentage, 0.0..=100.0)
+                                .suffix("%"),
+                        );
                         ui.end_row();
 
                         ui.label("Position");
@@ -177,7 +180,7 @@ impl SceneBuilder {
                     .shininess(info.shininess)
                     .reflective(info.reflective)
                     .refractive_index(info.refractive_index)
-                    .transparency(info.transparency)
+                    .transparency(info.transparency_percentage / 100.0)
                     .build(),
             );
             sphere.set_transform(Transform::translation(info.x, info.y, info.z));
