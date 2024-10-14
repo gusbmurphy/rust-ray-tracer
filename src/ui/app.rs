@@ -96,19 +96,20 @@ impl App for SceneBuilder {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Scene Builder");
+            ui.horizontal(|ui| {
+                ui.label("Add shape: ");
+                if ui.button("Sphere").clicked() {
+                    let mut new_info = SphereInfo::default();
+                    new_info.name =
+                        "Sphere ".to_string() + (self.sphere_infos.len() + 1).to_string().as_str();
+                    self.sphere_infos.push(new_info);
+                }
+            });
 
             for info in &mut self.sphere_infos {
                 ui.collapsing(info.name.clone(), |ui| {
                     sphere_menu(ui, info);
                 });
-            }
-
-            if ui.button("Add sphere").clicked() {
-                let mut new_info = SphereInfo::default();
-                new_info.name =
-                    "Sphere ".to_string() + (self.sphere_infos.len() + 1).to_string().as_str();
-                self.sphere_infos.push(new_info);
             }
 
             if let Some(texture) = &self.image_texture {
