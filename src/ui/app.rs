@@ -19,11 +19,11 @@ use crate::prelude::World;
 use crate::render::Color;
 
 pub struct SceneBuilder {
-    sphere_infos: Vec<SphereInfo>,
+    sphere_infos: Vec<ShapeInfo>,
     image_texture: Option<TextureHandle>,
 }
 
-pub struct SphereInfo {
+pub struct ShapeInfo {
     pub name: String,
     pub color: [f32; 3],
     pub ambient: f64,
@@ -38,7 +38,7 @@ pub struct SphereInfo {
     pub z: f64,
 }
 
-impl Default for SphereInfo {
+impl Default for ShapeInfo {
     fn default() -> Self {
         Self {
             name: "Sphere 1".to_string(),
@@ -60,7 +60,7 @@ impl Default for SphereInfo {
 impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
-            sphere_infos: vec![SphereInfo::default()],
+            sphere_infos: vec![ShapeInfo::default()],
             image_texture: None,
         }
     }
@@ -98,8 +98,9 @@ impl App for SceneBuilder {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
                 ui.label("Add shape: ");
+
                 if ui.button("Sphere").clicked() {
-                    let mut new_info = SphereInfo::default();
+                    let mut new_info = ShapeInfo::default();
                     new_info.name =
                         "Sphere ".to_string() + (self.sphere_infos.len() + 1).to_string().as_str();
                     self.sphere_infos.push(new_info);
