@@ -25,6 +25,13 @@ pub struct SceneBuilder {
 struct SphereInfo {
     name: String,
     color: [f32; 3],
+    ambient: f64,
+    diffuse: f64,
+    specular: f64,
+    shininess: f64,
+    reflective: f64,
+    refractive_index: f64,
+    transparency: f64,
     x: f64,
     y: f64,
     z: f64,
@@ -35,6 +42,13 @@ impl Default for SphereInfo {
         Self {
             name: "Sphere 1".to_string(),
             color: [0.1, 0.1, 0.1],
+            ambient: 0.1,
+            diffuse: 0.9,
+            specular: 0.9,
+            shininess: 200.0,
+            reflective: 0.0,
+            refractive_index: 1.0,
+            transparency: 0.0,
             x: 0.0,
             y: 0.0,
             z: 0.0,
@@ -95,6 +109,34 @@ impl App for SceneBuilder {
                         ui.color_edit_button_rgb(&mut info.color);
                         ui.end_row();
 
+                        ui.label("Ambient");
+                        ui.add(egui::DragValue::new(&mut info.ambient).speed(0.1));
+                        ui.end_row();
+
+                        ui.label("Diffuse");
+                        ui.add(egui::DragValue::new(&mut info.diffuse).speed(0.1));
+                        ui.end_row();
+
+                        ui.label("Specular");
+                        ui.add(egui::DragValue::new(&mut info.specular).speed(0.1));
+                        ui.end_row();
+
+                        ui.label("Shininess");
+                        ui.add(egui::DragValue::new(&mut info.shininess).speed(0.1));
+                        ui.end_row();
+
+                        ui.label("Reflective");
+                        ui.add(egui::DragValue::new(&mut info.reflective).speed(0.1));
+                        ui.end_row();
+
+                        ui.label("Refractive index");
+                        ui.add(egui::DragValue::new(&mut info.refractive_index).speed(0.1));
+                        ui.end_row();
+
+                        ui.label("Transparency");
+                        ui.add(egui::DragValue::new(&mut info.transparency).speed(0.1));
+                        ui.end_row();
+
                         ui.label("Position");
                         ui.add(egui::DragValue::new(&mut info.x).speed(0.1));
                         ui.add(egui::DragValue::new(&mut info.y).speed(0.1));
@@ -129,6 +171,13 @@ impl SceneBuilder {
                         info.color[1].to_f64(),
                         info.color[2].to_f64(),
                     ))
+                    .ambient(info.ambient)
+                    .diffuse(info.diffuse)
+                    .specular(info.specular)
+                    .shininess(info.shininess)
+                    .reflective(info.reflective)
+                    .refractive_index(info.refractive_index)
+                    .transparency(info.transparency)
                     .build(),
             );
             sphere.set_transform(Transform::translation(info.x, info.y, info.z));
