@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+// TODO: Would be nice to have a `ShapeBuilder` that could make any shape...
 pub trait Shape {
     fn normal_at(&self, world_space_point: Point) -> Vector;
     fn times_of_intersections_with<'s, 'r>(&'s self, ray: &'r Ray) -> Vec<f64>
