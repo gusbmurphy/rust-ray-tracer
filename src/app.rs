@@ -198,7 +198,10 @@ impl SceneBuilder {
 
         for y in 0..image_height as usize {
             for x in 0..image_width as usize {
-                let rgb_values = canvas.pixel_at(x, y).to_rgb();
+                let inverted_x = (image_width - 1) as usize - x;
+                let inverted_y = (image_height - 1) as usize - y;
+
+                let rgb_values = canvas.pixel_at(inverted_x, inverted_y).to_rgb();
                 let color = Color32::from_rgb(rgb_values[0], rgb_values[1], rgb_values[2]);
 
                 let pixel_index = x + (y * image_width as usize);
