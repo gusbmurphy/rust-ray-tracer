@@ -1,3 +1,5 @@
+use ray_tracer::ui::SceneBuilder;
+
 fn main() -> eframe::Result {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 
@@ -9,7 +11,7 @@ fn main() -> eframe::Result {
         native_options,
         Box::new(|cc| {
             egui_extras::install_image_loaders(&cc.egui_ctx);
-            Ok(Box::new(ray_tracer::SceneBuilder::new(cc)))
+            Ok(Box::new(SceneBuilder::new(cc)))
         }),
     )
 }
