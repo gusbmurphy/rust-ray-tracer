@@ -141,9 +141,14 @@ impl App for SceneBuilder {
                         ui.end_row();
 
                         ui.label("Position");
-                        ui.add(egui::DragValue::new(&mut info.x).speed(0.1));
-                        ui.add(egui::DragValue::new(&mut info.y).speed(0.1));
-                        ui.add(egui::DragValue::new(&mut info.z).speed(0.1));
+                        ui.horizontal(|ui| {
+                            ui.label("X:");
+                            ui.add(egui::DragValue::new(&mut info.x).speed(0.1));
+                            ui.label("Y:");
+                            ui.add(egui::DragValue::new(&mut info.y).speed(0.1));
+                            ui.label("Z:");
+                            ui.add(egui::DragValue::new(&mut info.z).speed(0.1));
+                        });
                         ui.end_row();
                     });
             }
