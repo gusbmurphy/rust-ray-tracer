@@ -1,3 +1,3 @@
 mod app;
-mod sphere_menu;
+mod shape_menu;
 pub use app::SceneBuilder;

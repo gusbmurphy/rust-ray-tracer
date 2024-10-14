@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::ui::sphere_menu::sphere_menu;
+use crate::ui::shape_menu::shape_menu;
 use eframe::App;
 use egui::emath::Numeric;
 use egui::Color32;
@@ -107,7 +107,7 @@ impl App for SceneBuilder {
 
             for info in &mut self.shapes {
                 ui.collapsing(info.name.clone(), |ui| {
-                    sphere_menu(ui, info);
+                    shape_menu(ui, info);
                 });
             }
 

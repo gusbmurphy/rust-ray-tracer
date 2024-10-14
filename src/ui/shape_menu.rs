@@ -1,7 +1,7 @@
 use crate::ui::app::ShapeInfo;
 use egui::Ui;
 
-pub fn sphere_menu(ui: &mut Ui, info: &mut ShapeInfo) {
+pub fn shape_menu(ui: &mut Ui, info: &mut ShapeInfo) {
     egui::Grid::new(info.name.to_owned() + "-grid")
         .num_columns(2)
         .spacing([40.0, 4.0])
