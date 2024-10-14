@@ -26,9 +26,12 @@ pub struct ShapeInfo {
     pub reflective: f64,
     pub refractive_index: f64,
     pub transparency_percentage: f64,
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
+    pub pos_x: f64,
+    pub pos_y: f64,
+    pub pos_z: f64,
+    pub rot_x: f64,
+    pub rot_y: f64,
+    pub rot_z: f64,
 }
 
 impl Default for ShapeInfo {
@@ -44,9 +47,12 @@ impl Default for ShapeInfo {
             reflective: 0.0,
             refractive_index: 1.0,
             transparency_percentage: 0.0,
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
+            pos_x: 0.0,
+            pos_y: 0.0,
+            pos_z: 0.0,
+            rot_x: 0.0,
+            rot_y: 0.0,
+            rot_z: 0.0,
         }
     }
 }
@@ -143,7 +149,10 @@ impl SceneBuilder {
                 .transparency(info.transparency_percentage / 100.0)
                 .build();
 
-            let transform = Transform::translation(info.x, info.y, info.z);
+            let transform = Transform::translation(info.pos_x, info.pos_y, info.pos_z)
+                * Transform::x_rotation(info.rot_x)
+                * Transform::y_rotation(info.rot_y)
+                * Transform::z_rotation(info.rot_z);
 
             let shape: Rc<dyn Shape> = match info.shape_type {
                 ShapeType::Plane => {

@@ -42,11 +42,22 @@ pub fn sphere_menu(ui: &mut Ui, info: &mut ShapeInfo) {
             ui.label("Position");
             ui.horizontal(|ui| {
                 ui.label("X:");
-                ui.add(egui::DragValue::new(&mut info.x).speed(0.1));
+                ui.add(egui::DragValue::new(&mut info.pos_x).speed(0.1));
                 ui.label("Y:");
-                ui.add(egui::DragValue::new(&mut info.y).speed(0.1));
+                ui.add(egui::DragValue::new(&mut info.pos_y).speed(0.1));
                 ui.label("Z:");
-                ui.add(egui::DragValue::new(&mut info.z).speed(0.1));
+                ui.add(egui::DragValue::new(&mut info.pos_z).speed(0.1));
+            });
+            ui.end_row();
+
+            ui.label("Rotation");
+            ui.horizontal(|ui| {
+                ui.label("X:");
+                ui.add(egui::DragValue::new(&mut info.rot_x).speed(0.1));
+                ui.label("Y:");
+                ui.add(egui::DragValue::new(&mut info.rot_y).speed(0.1));
+                ui.label("Z:");
+                ui.add(egui::DragValue::new(&mut info.rot_z).speed(0.1));
             });
             ui.end_row();
         });
