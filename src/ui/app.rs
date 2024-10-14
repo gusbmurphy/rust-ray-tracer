@@ -6,6 +6,7 @@ use egui::Color32;
 use egui::ColorImage;
 use egui::Context;
 use egui::TextureHandle;
+use std::rc::Rc;
 
 use crate::render::Color;
 
@@ -94,8 +95,17 @@ impl App for SceneBuilder {
 
                 if ui.button("Sphere").clicked() {
                     let mut new_info = ShapeInfo::default();
+                    new_info.shape_type = ShapeType::Sphere;
                     new_info.name =
                         "Sphere ".to_string() + (self.shapes.len() + 1).to_string().as_str();
+                    self.shapes.push(new_info);
+                }
+
+                if ui.button("Plane").clicked() {
+                    let mut new_info = ShapeInfo::default();
+                    new_info.shape_type = ShapeType::Plane;
+                    new_info.name =
+                        "Plane ".to_string() + (self.shapes.len() + 1).to_string().as_str();
                     self.shapes.push(new_info);
                 }
             });
@@ -118,24 +128,37 @@ impl SceneBuilder {
         let mut world = World::new();
 
         for info in &self.shapes {
-            let mut sphere = Sphere::new_with_material(
-                MaterialBuilder::new()
-                    .flat_color(Color::new(
-                        info.color[0].to_f64(),
-                        info.color[1].to_f64(),
-                        info.color[2].to_f64(),
-                    ))
-                    .ambient(info.ambient)
-                    .diffuse(info.diffuse)
-                    .specular(info.specular)
-                    .shininess(info.shininess)
-                    .reflective(info.reflective)
-                    .refractive_index(info.refractive_index)
-                    .transparency(info.transparency_percentage / 100.0)
-                    .build(),
-            );
-            sphere.set_transform(Transform::translation(info.x, info.y, info.z));
-            world.add_sphere(sphere);
+            let material = MaterialBuilder::new()
+                .flat_color(Color::new(
+                    info.color[0].to_f64(),
+                    info.color[1].to_f64(),
+                    info.color[2].to_f64(),
+                ))
+                .ambient(info.ambient)
+                .diffuse(info.diffuse)
+                .specular(info.specular)
+                .shininess(info.shininess)
+                .reflective(info.reflective)
+                .refractive_index(info.refractive_index)
+                .transparency(info.transparency_percentage / 100.0)
+                .build();
+
+            let transform = Transform::translation(info.x, info.y, info.z);
+
+            let shape: Rc<dyn Shape> = match info.shape_type {
+                ShapeType::Plane => {
+                    let mut plane = Plane::new_with_material(material);
+                    plane.set_transform(transform);
+                    Rc::new(plane)
+                }
+                ShapeType::Sphere => {
+                    let mut sphere = Sphere::new_with_material(material);
+                    sphere.set_transform(transform);
+                    Rc::new(sphere)
+                }
+            };
+
+            world.add_shape(shape);
         }
 
         let camera_transform = Transform::view(Point::new(0.0, 0.0, -5.0), ORIGIN, POSITIVE_Y);
