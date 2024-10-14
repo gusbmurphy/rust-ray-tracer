@@ -2,8 +2,6 @@ use crate::ui::app::SphereInfo;
 use egui::Ui;
 
 pub fn sphere_menu(ui: &mut Ui, info: &mut SphereInfo) {
-    ui.label(info.name.to_owned());
-
     egui::Grid::new(info.name.to_owned() + "-grid")
         .num_columns(2)
         .spacing([40.0, 4.0])

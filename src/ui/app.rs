@@ -99,7 +99,9 @@ impl App for SceneBuilder {
             ui.heading("Scene Builder");
 
             for info in &mut self.sphere_infos {
-                sphere_menu(ui, info);
+                ui.collapsing(info.name.clone(), |ui| {
+                    sphere_menu(ui, info);
+                });
             }
 
             if ui.button("Add sphere").clicked() {
