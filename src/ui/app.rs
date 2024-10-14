@@ -1,10 +1,4 @@
-use crate::prelude::Camera;
-use crate::prelude::Point;
-use crate::prelude::Shape;
-use crate::prelude::Transform;
-use crate::prelude::Tuple;
-use crate::prelude::ORIGIN;
-use crate::prelude::POSITIVE_Y;
+use crate::prelude::*;
 use crate::ui::sphere_menu::sphere_menu;
 use eframe::App;
 use egui::emath::Numeric;
@@ -13,18 +7,16 @@ use egui::ColorImage;
 use egui::Context;
 use egui::TextureHandle;
 
-use crate::prelude::MaterialBuilder;
-use crate::prelude::Sphere;
-use crate::prelude::World;
 use crate::render::Color;
 
 pub struct SceneBuilder {
-    sphere_infos: Vec<ShapeInfo>,
+    shapes: Vec<ShapeInfo>,
     image_texture: Option<TextureHandle>,
 }
 
 pub struct ShapeInfo {
     pub name: String,
+    pub shape_type: ShapeType,
     pub color: [f32; 3],
     pub ambient: f64,
     pub diffuse: f64,
@@ -42,6 +34,7 @@ impl Default for ShapeInfo {
     fn default() -> Self {
         Self {
             name: "Sphere 1".to_string(),
+            shape_type: ShapeType::Sphere,
             color: [0.1, 0.1, 0.1],
             ambient: 0.1,
             diffuse: 0.9,
@@ -60,7 +53,7 @@ impl Default for ShapeInfo {
 impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
-            sphere_infos: vec![ShapeInfo::default()],
+            shapes: vec![ShapeInfo::default()],
             image_texture: None,
         }
     }
@@ -102,12 +95,12 @@ impl App for SceneBuilder {
                 if ui.button("Sphere").clicked() {
                     let mut new_info = ShapeInfo::default();
                     new_info.name =
-                        "Sphere ".to_string() + (self.sphere_infos.len() + 1).to_string().as_str();
-                    self.sphere_infos.push(new_info);
+                        "Sphere ".to_string() + (self.shapes.len() + 1).to_string().as_str();
+                    self.shapes.push(new_info);
                 }
             });
 
-            for info in &mut self.sphere_infos {
+            for info in &mut self.shapes {
                 ui.collapsing(info.name.clone(), |ui| {
                     sphere_menu(ui, info);
                 });
@@ -124,7 +117,7 @@ impl SceneBuilder {
     fn build_image(&mut self, ctx: &Context) {
         let mut world = World::new();
 
-        for info in &self.sphere_infos {
+        for info in &self.shapes {
             let mut sphere = Sphere::new_with_material(
                 MaterialBuilder::new()
                     .flat_color(Color::new(
