@@ -13,6 +13,13 @@ impl Plane {
             material: MaterialBuilder::new().build(),
         }
     }
+
+    pub fn new_with_material(material: Material) -> Self {
+        Plane {
+            transform: Transform::new(IDENTITY_MATRIX),
+            material,
+        }
+    }
 }
 
 impl Shape for Plane {
