@@ -5,6 +5,7 @@ use crate::prelude::Transform;
 use crate::prelude::Tuple;
 use crate::prelude::ORIGIN;
 use crate::prelude::POSITIVE_Y;
+use crate::ui::sphere_menu::sphere_menu;
 use eframe::App;
 use egui::emath::Numeric;
 use egui::Color32;
@@ -22,19 +23,19 @@ pub struct SceneBuilder {
     image_texture: Option<TextureHandle>,
 }
 
-struct SphereInfo {
-    name: String,
-    color: [f32; 3],
-    ambient: f64,
-    diffuse: f64,
-    specular: f64,
-    shininess: f64,
-    reflective: f64,
-    refractive_index: f64,
-    transparency_percentage: f64,
-    x: f64,
-    y: f64,
-    z: f64,
+pub struct SphereInfo {
+    pub name: String,
+    pub color: [f32; 3],
+    pub ambient: f64,
+    pub diffuse: f64,
+    pub specular: f64,
+    pub shininess: f64,
+    pub reflective: f64,
+    pub refractive_index: f64,
+    pub transparency_percentage: f64,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 
 impl Default for SphereInfo {
@@ -98,59 +99,7 @@ impl App for SceneBuilder {
             ui.heading("Scene Builder");
 
             for info in &mut self.sphere_infos {
-                ui.label(info.name.to_owned());
-
-                egui::Grid::new(info.name.to_owned() + "-grid")
-                    .num_columns(2)
-                    .spacing([40.0, 4.0])
-                    .striped(true)
-                    .show(ui, |ui| {
-                        ui.label("Color");
-                        ui.color_edit_button_rgb(&mut info.color);
-                        ui.end_row();
-
-                        ui.label("Ambient");
-                        ui.add(egui::DragValue::new(&mut info.ambient).speed(0.1));
-                        ui.end_row();
-
-                        ui.label("Diffuse");
-                        ui.add(egui::DragValue::new(&mut info.diffuse).speed(0.1));
-                        ui.end_row();
-
-                        ui.label("Specular");
-                        ui.add(egui::DragValue::new(&mut info.specular).speed(0.1));
-                        ui.end_row();
-
-                        ui.label("Shininess");
-                        ui.add(egui::DragValue::new(&mut info.shininess).speed(0.1));
-                        ui.end_row();
-
-                        ui.label("Reflective");
-                        ui.add(egui::DragValue::new(&mut info.reflective).speed(0.1));
-                        ui.end_row();
-
-                        ui.label("Refractive index");
-                        ui.add(egui::DragValue::new(&mut info.refractive_index).speed(0.1));
-                        ui.end_row();
-
-                        ui.label("Transparency");
-                        ui.add(
-                            egui::Slider::new(&mut info.transparency_percentage, 0.0..=100.0)
-                                .suffix("%"),
-                        );
-                        ui.end_row();
-
-                        ui.label("Position");
-                        ui.horizontal(|ui| {
-                            ui.label("X:");
-                            ui.add(egui::DragValue::new(&mut info.x).speed(0.1));
-                            ui.label("Y:");
-                            ui.add(egui::DragValue::new(&mut info.y).speed(0.1));
-                            ui.label("Z:");
-                            ui.add(egui::DragValue::new(&mut info.z).speed(0.1));
-                        });
-                        ui.end_row();
-                    });
+                sphere_menu(ui, info);
             }
 
             if ui.button("Add sphere").clicked() {
