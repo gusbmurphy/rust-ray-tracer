@@ -6,6 +6,7 @@ use egui::Color32;
 use egui::ColorImage;
 use egui::Context;
 use egui::TextureHandle;
+use egui::Ui;
 use std::rc::Rc;
 
 use crate::render::Color;
@@ -99,21 +100,9 @@ impl App for SceneBuilder {
             ui.horizontal(|ui| {
                 ui.label("Add shape: ");
 
-                if ui.button("Sphere").clicked() {
-                    let mut new_info = ShapeInfo::default();
-                    new_info.shape_type = ShapeType::Sphere;
-                    new_info.name =
-                        "Sphere ".to_string() + (self.shapes.len() + 1).to_string().as_str();
-                    self.shapes.push(new_info);
-                }
-
-                if ui.button("Plane").clicked() {
-                    let mut new_info = ShapeInfo::default();
-                    new_info.shape_type = ShapeType::Plane;
-                    new_info.name =
-                        "Plane ".to_string() + (self.shapes.len() + 1).to_string().as_str();
-                    self.shapes.push(new_info);
-                }
+                // TODO: Couldn't this string come from the `ShapeType`?
+                self.shape_button(ui, "Sphere", ShapeType::Sphere);
+                self.shape_button(ui, "Plane", ShapeType::Plane);
             });
 
             for info in &mut self.shapes {
@@ -130,6 +119,16 @@ impl App for SceneBuilder {
 }
 
 impl SceneBuilder {
+    fn shape_button(&mut self, ui: &mut Ui, description: &str, shape_type: ShapeType) {
+        if ui.button(description).clicked() {
+            let mut new_info = ShapeInfo::default();
+            new_info.shape_type = shape_type;
+            new_info.name =
+                description.to_string() + " " + (self.shapes.len() + 1).to_string().as_str();
+            self.shapes.push(new_info);
+        }
+    }
+
     fn build_image(&mut self, ctx: &Context) {
         let mut world = World::new();
 
