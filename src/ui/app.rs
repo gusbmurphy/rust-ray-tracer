@@ -13,7 +13,37 @@ use crate::render::Color;
 
 pub struct SceneBuilder {
     shapes: Vec<ShapeInfo>,
+    camera: CameraInfo,
     image_texture: Option<TextureHandle>,
+}
+
+struct CameraInfo {
+    horizontal_size: u32,
+    vertical_size: u32,
+    field_of_view: f64,
+    // TODO: How about instead of 3 different fields we just use a [f32; 3]?
+    pub pos_x: f64,
+    pub pos_y: f64,
+    pub pos_z: f64,
+    pub to_x: f64,
+    pub to_y: f64,
+    pub to_z: f64,
+}
+
+impl Default for CameraInfo {
+    fn default() -> Self {
+        Self {
+            horizontal_size: 100,
+            vertical_size: 100,
+            field_of_view: 100.0,
+            pos_x: 0.0,
+            pos_y: 0.0,
+            pos_z: -5.0,
+            to_x: 0.0,
+            to_y: 0.0,
+            to_z: 0.0,
+        }
+    }
 }
 
 pub struct ShapeInfo {
@@ -62,6 +92,7 @@ impl Default for SceneBuilder {
     fn default() -> Self {
         Self {
             shapes: vec![ShapeInfo::default()],
+            camera: CameraInfo::default(),
             image_texture: None,
         }
     }
@@ -97,6 +128,37 @@ impl App for SceneBuilder {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
+            ui.collapsing("Camera", |ui| {
+                egui::Grid::new("camera-grid")
+                    .num_columns(2)
+                    .spacing([40.0, 4.0])
+                    .striped(true)
+                    .show(ui, |ui| {
+                        ui.label("Position");
+                        ui.horizontal(|ui| {
+                            ui.label("X:");
+                            ui.add(egui::DragValue::new(&mut self.camera.pos_x).speed(0.1));
+                            ui.label("Y:");
+                            ui.add(egui::DragValue::new(&mut self.camera.pos_y).speed(0.1));
+                            ui.label("Z:");
+                            ui.add(egui::DragValue::new(&mut self.camera.pos_z).speed(0.1));
+                        });
+                        ui.end_row();
+
+                        // TODO: Feels like there could be a better label than "To"
+                        ui.label("To");
+                        ui.horizontal(|ui| {
+                            ui.label("X:");
+                            ui.add(egui::DragValue::new(&mut self.camera.to_x).speed(0.1));
+                            ui.label("Y:");
+                            ui.add(egui::DragValue::new(&mut self.camera.to_y).speed(0.1));
+                            ui.label("Z:");
+                            ui.add(egui::DragValue::new(&mut self.camera.to_z).speed(0.1));
+                        });
+                        ui.end_row();
+                    });
+            });
+
             ui.horizontal(|ui| {
                 ui.label("Add shape: ");
 
@@ -169,7 +231,11 @@ impl SceneBuilder {
             world.add_shape(shape);
         }
 
-        let camera_transform = Transform::view(Point::new(0.0, 0.0, -5.0), ORIGIN, POSITIVE_Y);
+        let camera_transform = Transform::view(
+            Point::new(self.camera.pos_x, self.camera.pos_y, self.camera.pos_z),
+            Point::new(self.camera.to_x, self.camera.to_y, self.camera.to_z),
+            POSITIVE_Y,
+        );
 
         let image_height = 100;
         let image_width = 100;
