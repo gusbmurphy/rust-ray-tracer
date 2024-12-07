@@ -1,7 +1,6 @@
 use crate::prelude::*;
 use crate::ui::shape_menu::shape_menu;
 use eframe::App;
-use egui::emath::Numeric;
 use egui::Color32;
 use egui::ColorImage;
 use egui::Context;
