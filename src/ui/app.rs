@@ -16,17 +16,18 @@ pub struct SceneBuilder {
     image_texture: Option<TextureHandle>,
 }
 
+struct Position {
+    x: f64,
+    y: f64,
+    z: f64,
+}
+
 struct CameraInfo {
     horizontal_size: u32,
     vertical_size: u32,
     field_of_view: f64,
-    // TODO: How about instead of 3 different fields we just use a [f32; 3]?
-    pub pos_x: f64,
-    pub pos_y: f64,
-    pub pos_z: f64,
-    pub to_x: f64,
-    pub to_y: f64,
-    pub to_z: f64,
+    pub position: Position,
+    pub target: Position,
 }
 
 impl Default for CameraInfo {
@@ -35,12 +36,16 @@ impl Default for CameraInfo {
             horizontal_size: 100,
             vertical_size: 100,
             field_of_view: 100.0,
-            pos_x: 0.0,
-            pos_y: 0.0,
-            pos_z: -5.0,
-            to_x: 0.0,
-            to_y: 0.0,
-            to_z: 0.0,
+            position: Position {
+                x: 0.0,
+                y: 0.0,
+                z: -5.0,
+            },
+            target: Position {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+            },
         }
     }
 }
@@ -136,11 +141,11 @@ impl App for SceneBuilder {
                         ui.label("Position");
                         ui.horizontal(|ui| {
                             ui.label("X:");
-                            ui.add(egui::DragValue::new(&mut self.camera.pos_x).speed(0.1));
+                            ui.add(egui::DragValue::new(&mut self.camera.position.x).speed(0.1));
                             ui.label("Y:");
-                            ui.add(egui::DragValue::new(&mut self.camera.pos_y).speed(0.1));
+                            ui.add(egui::DragValue::new(&mut self.camera.position.y).speed(0.1));
                             ui.label("Z:");
-                            ui.add(egui::DragValue::new(&mut self.camera.pos_z).speed(0.1));
+                            ui.add(egui::DragValue::new(&mut self.camera.position.z).speed(0.1));
                         });
                         ui.end_row();
 
@@ -148,11 +153,11 @@ impl App for SceneBuilder {
                         ui.label("To");
                         ui.horizontal(|ui| {
                             ui.label("X:");
-                            ui.add(egui::DragValue::new(&mut self.camera.to_x).speed(0.1));
+                            ui.add(egui::DragValue::new(&mut self.camera.target.x).speed(0.1));
                             ui.label("Y:");
-                            ui.add(egui::DragValue::new(&mut self.camera.to_y).speed(0.1));
+                            ui.add(egui::DragValue::new(&mut self.camera.target.y).speed(0.1));
                             ui.label("Z:");
-                            ui.add(egui::DragValue::new(&mut self.camera.to_z).speed(0.1));
+                            ui.add(egui::DragValue::new(&mut self.camera.target.z).speed(0.1));
                         });
                         ui.end_row();
                     });
@@ -231,8 +236,16 @@ impl SceneBuilder {
         }
 
         let camera_transform = Transform::view(
-            Point::new(self.camera.pos_x, self.camera.pos_y, self.camera.pos_z),
-            Point::new(self.camera.to_x, self.camera.to_y, self.camera.to_z),
+            Point::new(
+                self.camera.position.x,
+                self.camera.position.y,
+                self.camera.position.z,
+            ),
+            Point::new(
+                self.camera.target.x,
+                self.camera.target.y,
+                self.camera.target.z,
+            ),
             POSITIVE_Y,
         );
 
