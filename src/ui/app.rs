@@ -201,9 +201,9 @@ impl SceneBuilder {
         for info in &self.shapes {
             let material = MaterialBuilder::new()
                 .flat_color(Color::new(
-                    info.color[0].to_f64(),
-                    info.color[1].to_f64(),
-                    info.color[2].to_f64(),
+                    info.color[0].into(),
+                    info.color[1].into(),
+                    info.color[2].into(),
                 ))
                 .ambient(info.ambient)
                 .diffuse(info.diffuse)
