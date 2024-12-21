@@ -42,11 +42,11 @@ pub fn shape_menu(ui: &mut Ui, info: &mut ShapeInfo) {
             ui.label("Position");
             ui.horizontal(|ui| {
                 ui.label("X:");
-                ui.add(egui::DragValue::new(&mut info.pos_x).speed(0.1));
+                ui.add(egui::DragValue::new(&mut info.position.x).speed(0.1));
                 ui.label("Y:");
-                ui.add(egui::DragValue::new(&mut info.pos_y).speed(0.1));
+                ui.add(egui::DragValue::new(&mut info.position.y).speed(0.1));
                 ui.label("Z:");
-                ui.add(egui::DragValue::new(&mut info.pos_z).speed(0.1));
+                ui.add(egui::DragValue::new(&mut info.position.z).speed(0.1));
             });
             ui.end_row();
 
