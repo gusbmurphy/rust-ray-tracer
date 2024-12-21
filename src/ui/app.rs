@@ -4,6 +4,7 @@ use eframe::App;
 use egui::Color32;
 use egui::ColorImage;
 use egui::Context;
+use egui::ScrollArea;
 use egui::TextureHandle;
 use egui::Ui;
 use std::rc::Rc;
@@ -171,11 +172,18 @@ impl App for SceneBuilder {
                 self.shape_button(ui, "Plane", ShapeType::Plane);
             });
 
-            for info in &mut self.shapes {
-                ui.collapsing(info.name.clone(), |ui| {
-                    shape_menu(ui, info);
-                });
-            }
+            ScrollArea::vertical().auto_shrink(true).show_rows(
+                ui,
+                20.0,
+                self.shapes.len(),
+                |ui, _| {
+                    for info in &mut self.shapes {
+                        ui.collapsing(info.name.clone(), |ui| {
+                            shape_menu(ui, info);
+                        });
+                    }
+                },
+            );
 
             if let Some(texture) = &self.image_texture {
                 ui.image((texture.id(), texture.size_vec2()));
