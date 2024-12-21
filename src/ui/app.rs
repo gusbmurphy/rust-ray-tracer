@@ -132,7 +132,7 @@ impl App for SceneBuilder {
             });
         });
 
-        egui::CentralPanel::default().show(ctx, |ui| {
+        egui::SidePanel::right("tools_panel").show(ctx, |ui| {
             ui.collapsing("Camera", |ui| {
                 egui::Grid::new("camera-grid")
                     .num_columns(2)
@@ -164,6 +164,8 @@ impl App for SceneBuilder {
                     });
             });
 
+            ui.separator();
+
             ui.horizontal(|ui| {
                 ui.label("Add shape: ");
 
@@ -184,7 +186,9 @@ impl App for SceneBuilder {
                     }
                 },
             );
+        });
 
+        egui::CentralPanel::default().show(ctx, |ui| {
             if let Some(texture) = &self.image_texture {
                 ui.image((texture.id(), texture.size_vec2()));
             };
