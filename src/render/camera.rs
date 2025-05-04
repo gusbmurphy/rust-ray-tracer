@@ -7,6 +7,7 @@ use crate::render::shading::shade_ray;
 pub struct Camera<'l> {
     horizontal_size: u32,
     vertical_size: u32,
+    total_pixels: u32,
     field_of_view: f64,
     transform: Transform,
     progress_listeners: Vec<&'l dyn RenderProgressListener>,
@@ -17,6 +18,7 @@ impl<'l> Camera<'l> {
         Camera {
             horizontal_size,
             vertical_size,
+            total_pixels: horizontal_size * vertical_size,
             field_of_view,
             transform: Transform::new(IDENTITY_MATRIX),
             progress_listeners: Vec::new(),
@@ -32,6 +34,7 @@ impl<'l> Camera<'l> {
         Camera {
             horizontal_size,
             vertical_size,
+            total_pixels: horizontal_size * vertical_size,
             field_of_view,
             transform,
             progress_listeners: Vec::new(),
@@ -59,8 +62,8 @@ impl<'l> Camera<'l> {
     }
 
     fn current_completion(&self, x: u32, y: u32) -> f64 {
-        (x * self.horizontal_size + y + 1).to_f64()
-            / (self.horizontal_size * self.vertical_size).to_f64()
+        let pixels_completed = x * self.horizontal_size + y + 1;
+        pixels_completed.to_f64() / self.total_pixels.to_f64()
     }
 
     pub fn get_pixel_size(&self) -> f64 {
