@@ -24,15 +24,15 @@ pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn
 
     for node in nodes {
         match node {
-            yaml_rust::Yaml::Hash(ref h) => {
+            yaml_rust::Yaml::Hash(h) => {
                 for (key, value) in h {
                     match key.as_str().unwrap() {
-                        "camera" => camera = parse_camera(value.as_hash().unwrap())?,
+                        "camera" => camera = parse_camera(value.as_hash().unwrap().clone())?,
                         "light" => world.set_light(parse_light(value.as_hash().unwrap())?),
                         "sphere" | "plane" => {
                             world.add_shape(parse_shape(value.as_hash(), key.as_str().unwrap())?)
                         }
-                        "background" => background = parse_color(value).unwrap(),
+                        "background" => background = parse_color(&value).unwrap(),
                         _ => todo!(),
                     }
                 }

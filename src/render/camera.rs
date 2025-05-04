@@ -1,20 +1,25 @@
+use egui::emath::Numeric;
+use mockall::automock;
+
 use crate::prelude::*;
 use crate::render::shading::shade_ray;
 
-pub struct Camera {
+pub struct Camera<'l> {
     horizontal_size: u32,
     vertical_size: u32,
     field_of_view: f64,
     transform: Transform,
+    progress_listeners: Vec<&'l dyn RenderProgressListener>,
 }
 
-impl Camera {
+impl<'l> Camera<'l> {
     pub fn new(horizontal_size: u32, vertical_size: u32, field_of_view: f64) -> Self {
         Camera {
             horizontal_size,
             vertical_size,
             field_of_view,
             transform: Transform::new(IDENTITY_MATRIX),
+            progress_listeners: Vec::new(),
         }
     }
 
@@ -29,23 +34,33 @@ impl Camera {
             vertical_size,
             field_of_view,
             transform,
+            progress_listeners: Vec::new(),
         }
     }
 
     pub fn render(&self, world: World) -> Canvas {
         let mut canvas = Canvas::new(self.horizontal_size, self.vertical_size);
 
-        for pixel_x in 0..self.horizontal_size {
-            for pixel_y in 0..self.vertical_size {
-                let ray = self.get_ray_for_pixel(pixel_x, pixel_y);
+        for x in 0..self.horizontal_size {
+            for y in 0..self.vertical_size {
+                let ray = self.get_ray_for_pixel(x, y);
 
                 let color = shade_ray(&world, &ray);
 
-                canvas.write_pixel(pixel_x as usize, pixel_y as usize, color);
+                canvas.write_pixel(x as usize, y as usize, color);
+
+                for listener in &self.progress_listeners {
+                    listener.on_progress(self.current_completion(x, y));
+                }
             }
         }
 
         return canvas;
+    }
+
+    fn current_completion(&self, x: u32, y: u32) -> f64 {
+        (x * self.horizontal_size + y + 1).to_f64()
+            / (self.horizontal_size * self.vertical_size).to_f64()
     }
 
     pub fn get_pixel_size(&self) -> f64 {
@@ -65,6 +80,10 @@ impl Camera {
         let direction = (pixel_position - origin).normalize();
 
         Ray::new(origin, direction)
+    }
+
+    pub fn subscribe_to_progress(&mut self, listener: &'l dyn RenderProgressListener) {
+        self.progress_listeners.push(listener);
     }
 
     fn half_view(&self) -> f64 {
@@ -112,9 +131,16 @@ impl Camera {
     }
 }
 
+#[automock]
+pub trait RenderProgressListener {
+    fn on_progress(&self, completion: f64);
+}
+
 #[cfg(test)]
 mod test {
     use std::f64::consts::PI;
+
+    use mockall::{predicate::eq, Sequence};
 
     use super::*;
 
@@ -189,5 +215,31 @@ mod test {
         let canvas: Canvas = camera.render(world);
 
         assert_eq!(*canvas.pixel_at(5, 5), Color::new(0.38066, 0.47583, 0.2855));
+    }
+
+    #[test]
+    fn when_rendering_progress_is_reported() {
+        let mut listener = MockRenderProgressListener::new();
+        let mut call_sequence = Sequence::new();
+
+        let mut expect_progress_reported = |progress: f64| {
+            listener
+                .expect_on_progress()
+                .once()
+                .with(eq(progress))
+                .in_sequence(&mut call_sequence)
+                .return_const(());
+        };
+
+        expect_progress_reported(0.25);
+        expect_progress_reported(0.5);
+        expect_progress_reported(0.75);
+        expect_progress_reported(1.0);
+
+        let mut camera = Camera::new(2, 2, 10.0);
+        camera.subscribe_to_progress(&listener);
+
+        let world = World::create_default();
+        camera.render(world);
     }
 }
