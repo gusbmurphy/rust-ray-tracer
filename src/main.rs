@@ -26,6 +26,10 @@ struct ProgressListener;
 
 impl RenderProgressListener for ProgressListener {
     fn on_progress(&self, completion: f64) {
-        println!("{}% complete...", completion)
+        let completion_percentage = 100f64 * completion;
+
+        if completion_percentage < 100f64 {
+            println!("{:.2}% complete...", completion_percentage)
+        }
     }
 }
