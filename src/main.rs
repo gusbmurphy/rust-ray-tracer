@@ -29,7 +29,7 @@ impl RenderProgressListener for ProgressListener {
         let completion_percentage = 100f64 * completion;
 
         if completion_percentage < 100f64 {
-            println!("{:.2}% complete...", completion_percentage)
+            print!("\r{:.2}% complete...", completion_percentage)
         }
     }
 }
