@@ -78,7 +78,7 @@ pub fn adjust_hit_under(hit: &Intersection) -> Point {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::rc::Rc;
+    use std::sync::Arc;
 
     #[test]
     fn shading_a_ray() {
@@ -140,7 +140,7 @@ mod test {
         sphere.set_material(material);
 
         let mut world = World::new();
-        world.add_shape(Rc::new(sphere));
+        world.add_shape(Arc::new(sphere));
 
         let ray_hitting_black = Ray::new(Point::new(-0.1, 0.0, -5.0), POSITIVE_Z);
         let ray_hitting_white = Ray::new(Point::new(0.1, 0.0, -5.0), POSITIVE_Z);
@@ -166,7 +166,7 @@ mod test {
         sphere.set_material(material);
 
         let mut world = World::new();
-        world.add_shape(Rc::new(sphere));
+        world.add_shape(Arc::new(sphere));
 
         let ray = Ray::new(Point::new(1.5, 0.0, 0.0), POSITIVE_Z);
 
@@ -188,7 +188,7 @@ mod test {
         sphere.set_material(material);
 
         let mut world = World::new();
-        world.add_shape(Rc::new(sphere));
+        world.add_shape(Arc::new(sphere));
 
         let ray = Ray::new(Point::new(1.5, 0.0, 0.0), POSITIVE_Z);
 
@@ -209,7 +209,7 @@ mod test {
         sphere.set_material(material);
 
         let mut world = World::new();
-        world.add_shape(Rc::new(sphere));
+        world.add_shape(Arc::new(sphere));
 
         let ray_at_start = Ray::new(Point::new(-0.5, 0.0, 0.0), POSITIVE_Z);
         let ray_at_end = Ray::new(Point::new(0.5, 0.0, 0.0), POSITIVE_Z);
@@ -234,7 +234,7 @@ mod test {
         sphere.set_material(material);
 
         let mut world = World::new();
-        world.add_shape(Rc::new(sphere));
+        world.add_shape(Arc::new(sphere));
 
         let ray_at_center = Ray::new(Point::new(0.0, 2.0, 0.0), NEGATIVE_Y);
         let ray_on_ring_in_x = Ray::new(Point::new(0.25, 2.0, 0.0), NEGATIVE_Y);
@@ -313,7 +313,7 @@ mod test {
         plane.set_material(plane_material);
         plane.set_transform(Transform::translation(0.0, -1.0, 0.0));
 
-        world.add_shape(Rc::new(plane));
+        world.add_shape(Arc::new(plane));
 
         // This ray hits the plane we just added, which should reflect the green color of one of
         // the spheres.
@@ -343,8 +343,8 @@ mod test {
         upper_plane.set_material(material_b);
         upper_plane.set_transform(Transform::translation(0.0, 1.0, 0.0));
 
-        world.add_shape(Rc::new(lower_plane));
-        world.add_shape(Rc::new(upper_plane));
+        world.add_shape(Arc::new(lower_plane));
+        world.add_shape(Arc::new(upper_plane));
 
         shade_ray(&world, &Ray::new(ORIGIN, POSITIVE_Y));
         // No assertion here because we just shouldn't get a stack overflow...
@@ -372,8 +372,8 @@ mod test {
                 .build(),
         );
 
-        world.add_shape(Rc::new(ball));
-        world.add_shape(Rc::new(new_floor));
+        world.add_shape(Arc::new(ball));
+        world.add_shape(Arc::new(new_floor));
 
         let ray = Ray::new(
             Point::new(0.0, 0.0, -3.0),
@@ -408,8 +408,8 @@ mod test {
                 .build(),
         );
 
-        world.add_shape(Rc::new(ball));
-        world.add_shape(Rc::new(new_floor));
+        world.add_shape(Arc::new(ball));
+        world.add_shape(Arc::new(new_floor));
 
         let ray = Ray::new(
             Point::new(0.0, 0.0, -3.0),
@@ -435,7 +435,7 @@ mod test {
                 .diffuse(0.0)
                 .build(),
         );
-        let transparent_rc = Rc::new(transparent_sphere);
+        let transparent_rc = Arc::new(transparent_sphere);
 
         let mut red_sphere = Sphere::new();
         red_sphere.set_transform(Transform::translation(0.0, 0.0, 3.0));
@@ -447,7 +447,7 @@ mod test {
                 .ambient(1.0)
                 .build(),
         );
-        let red_rc = Rc::new(red_sphere);
+        let red_rc = Arc::new(red_sphere);
 
         world.set_shapes(vec![transparent_rc, red_rc]);
 

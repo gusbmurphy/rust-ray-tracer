@@ -1,3 +1,6 @@
+use std::sync::mpsc;
+use std::thread;
+
 use egui::emath::Numeric;
 use mockall::automock;
 
@@ -10,7 +13,7 @@ pub struct Camera<'l> {
     total_pixels: u32,
     field_of_view: f64,
     transform: Transform,
-    progress_listeners: Vec<&'l dyn RenderProgressListener>,
+    progress_listeners: Vec<&'l (dyn RenderProgressListener + Sync)>,
 }
 
 impl<'l> Camera<'l> {
@@ -43,6 +46,29 @@ impl<'l> Camera<'l> {
 
     pub fn render(&self, world: World) -> Canvas {
         let mut canvas = Canvas::new(self.horizontal_size, self.vertical_size);
+
+        const THREAD_COUNT: u32 = 8;
+        let (sender, receiver) = mpsc::channel::<(u32, u32, Color)>();
+
+        let horizontal_size_per_thread = self.horizontal_size / THREAD_COUNT;
+        let vertical_size_per_thread = self.vertical_size / THREAD_COUNT;
+
+        for i in 0..THREAD_COUNT {
+            thread::spawn(move || {
+                let h_start = horizontal_size_per_thread * i;
+                let h_end = horizontal_size_per_thread * (i + 1);
+                let v_start = vertical_size_per_thread * i;
+                let v_end = vertical_size_per_thread * (i + 1);
+
+                for x in h_start..h_end {
+                    for y in v_start..v_end {
+                        let ray = self.get_ray_for_pixel(x, y);
+
+                        let color = shade_ray(&world, &ray);
+                    }
+                }
+            });
+        }
 
         for x in 0..self.horizontal_size {
             for y in 0..self.vertical_size {
@@ -85,7 +111,7 @@ impl<'l> Camera<'l> {
         Ray::new(origin, direction)
     }
 
-    pub fn subscribe_to_progress(&mut self, listener: &'l dyn RenderProgressListener) {
+    pub fn subscribe_to_progress(&mut self, listener: &'l (dyn RenderProgressListener + Sync)) {
         self.progress_listeners.push(listener);
     }
 

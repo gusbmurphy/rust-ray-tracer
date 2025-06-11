@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::{parse::parse_little_things::parse_values, prelude::*};
 use linked_hash_map::LinkedHashMap;
@@ -10,11 +11,11 @@ use super::parse_little_things::{parse_color, parse_f64_from_integer_or_real};
 pub fn parse_shape(
     map: Option<&LinkedHashMap<Yaml, Yaml>>,
     shape_name: &str,
-) -> Result<Rc<dyn Shape>, Box<dyn Error>> {
+) -> Result<WorldShape, Box<dyn Error>> {
     let mut given_material: Option<Material> = None;
     let mut given_transform: Option<Transform> = None;
 
-    let mut shape: Box<dyn Shape> = match shape_name {
+    let mut shape: Box<dyn Shape + Sync + Send> = match shape_name {
         "sphere" => Box::new(Sphere::new()),
         "plane" => Box::new(Plane::new()),
         _ => todo!(),
@@ -37,7 +38,7 @@ pub fn parse_shape(
         }
     }
 
-    Ok(Rc::from(shape))
+    Ok(Arc::from(shape))
 }
 
 fn parse_material(yaml: &Yaml) -> Result<Material, Box<dyn Error>> {

@@ -5,7 +5,7 @@ use crate::{
 
 #[derive(Debug)]
 pub struct Material {
-    pattern: Box<dyn Pattern>,
+    pattern: Box<dyn Pattern + Sync + Send>,
     ambient: f64,
     diffuse: f64,
     specular: f64,
@@ -50,7 +50,7 @@ impl Material {
 }
 
 pub struct MaterialBuilder {
-    pattern: Box<dyn Pattern>,
+    pattern: Box<dyn Pattern + Sync>,
     ambient: f64,
     diffuse: f64,
     specular: f64,

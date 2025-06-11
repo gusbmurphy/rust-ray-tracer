@@ -43,7 +43,7 @@ pub fn calculate_refractive_contribution(
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::rc::Rc;
+    use std::sync::Arc;
 
     #[test]
     fn an_opaque_object_has_no_refractive_contribution() {
@@ -66,12 +66,12 @@ mod test {
                 .refractive_index(1.5)
                 .build(),
         );
-        let sphere_rc = Rc::new(sphere) as Rc<dyn Shape>;
-        world.set_shapes(vec![sphere_rc.clone()]);
+        let s = Arc::new(sphere) as WorldShape;
+        world.set_shapes(vec![s.clone()]);
 
         let ray = Ray::new(Point::new(0.0, 0.0, 2f64.sqrt() / 2f64), POSITIVE_Y);
 
-        let intersections = Intersection::of(&sphere_rc, &ray);
+        let intersections = Intersection::of(&s, &ray);
         let hit = intersections.get(1).unwrap();
 
         let result = calculate_refractive_contribution(hit, &world, 0);

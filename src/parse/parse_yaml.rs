@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use std::{error::Error, fs::read_to_string};
 
 use yaml_rust::YamlLoader;
@@ -29,9 +30,10 @@ pub fn parse_scene_from_yaml(file_path: &str) -> Result<(World, Camera), Box<dyn
                     match key.as_str().unwrap() {
                         "camera" => camera = parse_camera(value.as_hash().unwrap().clone())?,
                         "light" => world.set_light(parse_light(value.as_hash().unwrap())?),
-                        "sphere" | "plane" => {
-                            world.add_shape(parse_shape(value.as_hash(), key.as_str().unwrap())?)
-                        }
+                        "sphere" | "plane" => world.add_shape(Arc::from(parse_shape(
+                            value.as_hash(),
+                            key.as_str().unwrap(),
+                        )?)),
                         "background" => background = parse_color(&value).unwrap(),
                         _ => todo!(),
                     }

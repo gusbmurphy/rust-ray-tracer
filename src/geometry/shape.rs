@@ -13,8 +13,8 @@ pub trait Shape {
     fn shape_type(&self) -> ShapeType;
 }
 
-impl PartialEq for dyn Shape {
-    fn eq(&self, other: &dyn Shape) -> bool {
+impl PartialEq for dyn Shape + Sync + Send {
+    fn eq(&self, other: &(dyn Shape + Sync + Send)) -> bool {
         self.shape_type() == other.shape_type() && self.transform() == other.transform()
     }
 }
