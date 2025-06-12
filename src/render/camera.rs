@@ -16,6 +16,7 @@ pub struct Camera<'l> {
     progress_listeners: Vec<&'l (dyn RenderProgressListener + Sync)>,
 }
 
+// TODO: Seems like the horizontal and vertical sizes could be const generics.
 impl<'l> Camera<'l> {
     pub fn new(horizontal_size: u32, vertical_size: u32, field_of_view: f64) -> Self {
         Camera {
