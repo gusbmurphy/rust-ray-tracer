@@ -1,11 +1,11 @@
-use std::sync::Arc;
+use std::rc::Rc;
 
 use crate::prelude::*;
 
 #[derive(Clone)]
 pub struct Intersection<'r> {
     time: f64,
-    object: WorldShape,
+    object: Rc<dyn Shape>,
     ray: &'r Ray,
 }
 
@@ -13,16 +13,16 @@ impl<'r> Eq for Intersection<'r> {}
 
 impl<'r> PartialEq for Intersection<'r> {
     fn eq(&self, other: &Intersection) -> bool {
-        self.time == other.time && self.ray == other.ray && Arc::ptr_eq(&self.object, &other.object)
+        self.time == other.time && self.ray == other.ray && Rc::ptr_eq(&self.object, &other.object)
     }
 }
 
 impl<'r> Intersection<'r> {
-    fn new(time: f64, object: WorldShape, ray: &'r Ray) -> Self {
+    fn new(time: f64, object: Rc<dyn Shape>, ray: &'r Ray) -> Self {
         Intersection { time, object, ray }
     }
 
-    pub fn of(object: &WorldShape, ray: &'r Ray) -> Vec<Self> {
+    pub fn of(object: &Rc<dyn Shape>, ray: &'r Ray) -> Vec<Self> {
         let mut intersections = Vec::new();
 
         let intersection_times = object.times_of_intersections_with(&ray);
@@ -35,7 +35,7 @@ impl<'r> Intersection<'r> {
         intersections
     }
 
-    pub fn object(&self) -> &WorldShape {
+    pub fn object(&self) -> &Rc<dyn Shape> {
         &self.object
     }
 
@@ -103,7 +103,7 @@ mod test {
 
     #[test]
     fn the_lowest_positive_t_among_positives_is_the_hit() {
-        let interesected_sphere = Arc::new(Sphere::new());
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
         let i1 = Intersection::new(1.0, interesected_sphere.clone(), &ray);
@@ -116,7 +116,7 @@ mod test {
 
     #[test]
     fn the_lowest_positive_t_is_the_hit_when_a_negative_is_present() {
-        let interesected_sphere = Arc::new(Sphere::new());
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
         let i1 = Intersection::new(-1.0, interesected_sphere.clone(), &ray);
@@ -130,7 +130,7 @@ mod test {
 
     #[test]
     fn there_is_no_hit_if_every_t_is_negative() {
-        let interesected_sphere = Arc::new(Sphere::new());
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
         let i1 = Intersection::new(-1.0, interesected_sphere.clone(), &ray);
@@ -143,7 +143,7 @@ mod test {
 
     #[test]
     fn let_me_say_it_again_there_is_no_hit_if_every_t_is_negative() {
-        let interesected_sphere = Arc::new(Sphere::new());
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
         let i1 = Intersection::new(-1.07378995, interesected_sphere.clone(), &ray);
@@ -156,7 +156,7 @@ mod test {
 
     #[test]
     fn the_hit_is_always_the_lowest_nonnegative_intersection() {
-        let interesected_sphere = Arc::new(Sphere::new());
+        let interesected_sphere = Rc::new(Sphere::new());
         let ray = Ray::new(ORIGIN, Vector::new(0.0, 0.0, 1.0));
 
         let i1 = Intersection::new(5.0, interesected_sphere.clone(), &ray);
@@ -173,7 +173,7 @@ mod test {
     fn the_normal_vector_when_the_hit_originates_outside_of_the_shape_is_correct() {
         let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(4.0, Arc::new(sphere), &ray);
+        let intersection = Intersection::new(4.0, Rc::new(sphere), &ray);
 
         assert_eq!(intersection.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }
@@ -182,7 +182,7 @@ mod test {
     fn the_normal_vector_is_correct_when_we_are_inside_of_the_shape() {
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
         let sphere = Sphere::new();
-        let intersection = Intersection::new(1.0, Arc::new(sphere), &ray);
+        let intersection = Intersection::new(1.0, Rc::new(sphere), &ray);
 
         assert_eq!(intersection.normal_vector(), Vector::new(0.0, 0.0, -1.0));
     }

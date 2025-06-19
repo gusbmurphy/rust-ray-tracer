@@ -31,16 +31,16 @@ pub fn schlick_approximation(intersection: &Intersection) -> f64 {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::sync::Arc;
+    use std::rc::Rc;
 
     #[test]
     fn reflectance_is_1_under_total_internal_reflection() {
-        let sphere = Arc::new(Sphere::new_with_material(
+        let sphere = Rc::new(Sphere::new_with_material(
             MaterialBuilder::new()
                 .transparency(1.0)
                 .refractive_index(1.5)
                 .build(),
-        )) as WorldShape;
+        )) as Rc<dyn Shape>;
 
         let ray = Ray::new(Point::new(0.0, 0.0, 2f64.sqrt() / 2f64), POSITIVE_Y);
 
@@ -52,12 +52,12 @@ mod test {
 
     #[test]
     fn relfectance_of_perpindicular_ray() {
-        let sphere = Arc::new(Sphere::new_with_material(
+        let sphere = Rc::new(Sphere::new_with_material(
             MaterialBuilder::new()
                 .transparency(1.0)
                 .refractive_index(1.5)
                 .build(),
-        )) as WorldShape;
+        )) as Rc<dyn Shape>;
 
         let ray = Ray::new(Point::new(0.0, 0.0, 0.0), POSITIVE_Y);
 
@@ -72,12 +72,12 @@ mod test {
 
     #[test]
     fn relfectance_is_high_when_the_surface_is_struck_at_a_small_angle() {
-        let sphere = Arc::new(Sphere::new_with_material(
+        let sphere = Rc::new(Sphere::new_with_material(
             MaterialBuilder::new()
                 .transparency(1.0)
                 .refractive_index(1.5)
                 .build(),
-        )) as WorldShape;
+        )) as Rc<dyn Shape>;
 
         let ray = Ray::new(Point::new(0.0, 0.99, -2.0), POSITIVE_Z);
 

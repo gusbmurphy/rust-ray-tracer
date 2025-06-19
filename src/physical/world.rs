@@ -1,11 +1,9 @@
 use crate::prelude::*;
-use std::sync::Arc;
-
-pub type WorldShape = Arc<dyn Shape + Sync + Send>;
+use std::rc::Rc;
 
 pub struct World {
     light: PointLight,
-    shapes: Vec<WorldShape>,
+    shapes: Vec<Rc<dyn Shape>>,
     background: Color,
 }
 
@@ -33,9 +31,9 @@ impl World {
         let mut second_sphere = Sphere::new();
         second_sphere.set_transform(second_sphere_scaling);
 
-        let mut shapes: Vec<WorldShape> = Vec::new();
-        shapes.push(Arc::new(first_sphere));
-        shapes.push(Arc::new(second_sphere));
+        let mut shapes: Vec<Rc<dyn Shape>> = Vec::new();
+        shapes.push(Rc::new(first_sphere));
+        shapes.push(Rc::new(second_sphere));
 
         World {
             light: PointLight::new(Color::new(1.0, 1.0, 1.0), Point::new(-10.0, 10.0, -10.0)),
@@ -77,11 +75,11 @@ impl World {
     }
 
     pub fn add_sphere(&mut self, sphere: Sphere) {
-        self.shapes.push(Arc::new(sphere));
+        self.shapes.push(Rc::new(sphere));
     }
 
     pub fn add_plane(&mut self, plane: Plane) {
-        self.shapes.push(Arc::new(plane));
+        self.shapes.push(Rc::new(plane));
     }
 
     pub fn is_point_shadowed(&self, point: &Point) -> bool {
@@ -100,15 +98,15 @@ impl World {
         return false;
     }
 
-    pub fn shapes(&self) -> &Vec<WorldShape> {
+    pub fn shapes(&self) -> &Vec<Rc<dyn Shape>> {
         &self.shapes
     }
 
-    pub fn set_shapes(&mut self, shapes: Vec<WorldShape>) {
+    pub fn set_shapes(&mut self, shapes: Vec<Rc<dyn Shape>>) {
         self.shapes = shapes;
     }
 
-    pub fn add_shape(&mut self, shape: WorldShape) {
+    pub fn add_shape(&mut self, shape: Rc<dyn Shape>) {
         self.shapes.push(shape);
     }
 
