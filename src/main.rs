@@ -1,5 +1,6 @@
 use dialoguer::theme::ColorfulTheme;
 use dialoguer::Input;
+use indicatif::ProgressBar;
 use ray_tracer::parse::parse_scene_from_yaml;
 use ray_tracer::render::create_ppm_from_canvas;
 use ray_tracer::render::RenderProgressListener;
@@ -33,7 +34,7 @@ fn get_input_with_prompt(prompt: &'static str) -> String {
 
 fn render_from_file_at_path_to(path: String, target: String) -> Result<(), Box<dyn Error>> {
     let (world, mut camera) = parse_scene_from_yaml(&path)?;
-    let listener = ProgressListener::default();
+    let listener: ProgressListener<100> = ProgressListener::default();
     camera.subscribe_to_progress(&listener);
 
     let ppm = create_ppm_from_canvas(camera.render(world));
@@ -44,15 +45,21 @@ fn render_from_file_at_path_to(path: String, target: String) -> Result<(), Box<d
     Ok(())
 }
 
-#[derive(Default)]
-struct ProgressListener;
+struct ProgressListener<const L: u64> {
+    bar: ProgressBar,
+}
 
-impl RenderProgressListener for ProgressListener {
-    fn on_progress(&self, completion: f64) {
-        let completion_percentage = 100f64 * completion;
-
-        if completion_percentage < 100f64 {
-            print!("\r{:.2}% complete... ", completion_percentage)
+impl<const L: u64> Default for ProgressListener<L> {
+    fn default() -> Self {
+        ProgressListener {
+            bar: ProgressBar::new(L),
         }
+    }
+}
+
+impl<const L: u64> RenderProgressListener for ProgressListener<L> {
+    fn on_progress(&self, completion_percentage: f64) {
+        let bar_position = (completion_percentage * L as f64).floor() as u64;
+        self.bar.set_position(bar_position);
     }
 }
