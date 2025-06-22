@@ -1,3 +1,5 @@
+use dialoguer::theme::ColorfulTheme;
+use dialoguer::Input;
 use ray_tracer::parse::parse_scene_from_yaml;
 use ray_tracer::render::create_ppm_from_canvas;
 use ray_tracer::render::RenderProgressListener;
@@ -5,10 +7,17 @@ use std::time::SystemTime;
 use std::{error::Error, fs::File, io::Write};
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let start_time = SystemTime::now();
+    let path: String = Input::with_theme(&ColorfulTheme::default())
+        .with_prompt("Path to scene file")
+        .interact_text()
+        .unwrap();
 
-    let path = std::env::args().nth(1).expect("No file path given");
-    let target = std::env::args().nth(2).expect("No target name given");
+    let target: String = Input::with_theme(&ColorfulTheme::default())
+        .with_prompt("Name for image")
+        .interact_text()
+        .unwrap();
+
+    let start_time = SystemTime::now();
 
     let (world, mut camera) = parse_scene_from_yaml(&path)?;
     let listener = ProgressListener::default();
