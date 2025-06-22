@@ -7,15 +7,8 @@ use std::time::SystemTime;
 use std::{error::Error, fs::File, io::Write};
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let path: String = Input::with_theme(&ColorfulTheme::default())
-        .with_prompt("Path to scene file")
-        .interact_text()
-        .unwrap();
-
-    let target: String = Input::with_theme(&ColorfulTheme::default())
-        .with_prompt("Name for image")
-        .interact_text()
-        .unwrap();
+    let path: String = get_input_with_prompt("Path to scene file");
+    let target: String = get_input_with_prompt("Name for image");
 
     let start_time = SystemTime::now();
 
@@ -36,6 +29,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     );
 
     Ok(())
+}
+
+fn get_input_with_prompt(prompt: &'static str) -> String {
+    return Input::with_theme(&ColorfulTheme::default())
+        .with_prompt(prompt)
+        .interact_text()
+        .unwrap();
 }
 
 #[derive(Default)]
