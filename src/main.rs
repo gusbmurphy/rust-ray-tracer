@@ -12,14 +12,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let start_time = SystemTime::now();
 
-    let (world, mut camera) = parse_scene_from_yaml(&path)?;
-    let listener = ProgressListener::default();
-    camera.subscribe_to_progress(&listener);
-
-    let ppm = create_ppm_from_canvas(camera.render(world));
-
-    let mut file = File::create(format!("{}.ppm", target))?;
-    file.write_all(ppm.as_bytes())?;
+    render_from_file_at_path_to(path, target.clone())?;
 
     let end_time = SystemTime::now();
     let time_taken = end_time.duration_since(start_time).ok().unwrap();
@@ -36,6 +29,19 @@ fn get_input_with_prompt(prompt: &'static str) -> String {
         .with_prompt(prompt)
         .interact_text()
         .unwrap();
+}
+
+fn render_from_file_at_path_to(path: String, target: String) -> Result<(), Box<dyn Error>> {
+    let (world, mut camera) = parse_scene_from_yaml(&path)?;
+    let listener = ProgressListener::default();
+    camera.subscribe_to_progress(&listener);
+
+    let ppm = create_ppm_from_canvas(camera.render(world));
+
+    let mut file = File::create(format!("{}.ppm", target))?;
+    file.write_all(ppm.as_bytes())?;
+
+    Ok(())
 }
 
 #[derive(Default)]
